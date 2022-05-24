@@ -9,3 +9,7 @@ export type {
   CreateMiddlewareConfig,
   CreateOpenAPISchemaConfig,
 } from './bridge'
+
+export { createHttpExecutor, createSchemaExecutor } from './graphQLExecutor'
+
+export type { GraphQLExecutor } from './graphQLExecutor'

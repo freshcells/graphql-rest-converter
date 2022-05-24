@@ -2,7 +2,6 @@ import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter } from 'express'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse } from 'graphql'
-import { request as graphqlRequest } from 'graphql-request'
 import { DocumentNode, GraphQLSchema } from 'graphql'
 import OpenAPIRequestCoercer from 'openapi-request-coercer'
 import OpenAPIRequestValidator from 'openapi-request-validator'
@@ -18,6 +17,7 @@ import {
   OpenAPIGraphQLOperations,
   SchemaComponents,
 } from './types'
+import { GraphQLExecutor } from './graphQLExecutor'
 
 const asyncHandler =
   (handler: RequestHandler) =>
@@ -48,6 +48,7 @@ const addOperation = (
   router: IRouter,
   operation: OpenAPIGraphQLOperation,
   schemaComponents: SchemaComponents,
+  executor: GraphQLExecutor,
   config: CreateMiddlewareConfig
 ) => {
   const route = pathTemplateToExpressRoute(operation.path)
@@ -94,11 +95,9 @@ const addOperation = (
       }
       const parameters = { ...reqClone.params, ...reqClone.query }
 
-      const data = await graphqlRequest({
-        url: config.graphqlEndpoint,
+      const data = await executor({
         document: operation.graphqlDocument,
         variables: parameters,
-        requestHeaders: {},
       })
 
       if (responseValidator) {
@@ -114,20 +113,20 @@ const addOperation = (
 }
 
 export type CreateMiddlewareConfig = {
-  graphqlEndpoint: string
   validateRequest?: boolean
   validateResponse?: boolean
 }
 
 const createExpressMiddleware = (
   operations: OpenAPIGraphQLOperations,
+  executor: GraphQLExecutor,
   config: CreateMiddlewareConfig
 ) => {
   // TODO: Avoid depending on express directly?
   const router = express.Router()
 
   for (const operation of operations.operations) {
-    addOperation(router, operation, operations.schemaComponents, config)
+    addOperation(router, operation, operations.schemaComponents, executor, config)
   }
 
   return router
@@ -170,10 +169,11 @@ const getGraphQLOpenAPIOperationsFromOpenAPISchema = (
 
 export const createExpressMiddlewareFromOpenAPISchema = (
   schema: OpenAPIV3.Document<OperationCustomProperties>,
+  executor: GraphQLExecutor,
   config: CreateMiddlewareConfig
 ) => {
   const operations = getGraphQLOpenAPIOperationsFromOpenAPISchema(schema)
-  return createExpressMiddleware(operations, config)
+  return createExpressMiddleware(operations, executor, config)
 }
 
 export const removeCustomProperties = (
@@ -227,8 +227,8 @@ export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeCon
   const operations = getOpenAPIGraphQLOperations(graphqlSchema, graphqlDocument, customScalars)
 
   return {
-    getExpressMiddleware: (config: CreateMiddlewareConfig) =>
-      createExpressMiddleware(operations, config),
+    getExpressMiddleware: (executor: GraphQLExecutor, config: CreateMiddlewareConfig) =>
+      createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (
       config: CreateOpenAPISchemaConfig
     ): OpenAPIV3.Document<OperationCustomProperties> =>
