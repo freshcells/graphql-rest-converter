@@ -14,6 +14,18 @@ import {
   visit,
 } from 'graphql'
 
+export const hasDirective = (node: ASTNode, directiveName: string | string[]) =>
+  (('directives' in node && node.directives) || []).some((directive) =>
+    (typeof directiveName === 'string' ? [directiveName] : directiveName).includes(
+      directive.name.value
+    )
+  )
+
+export const getDirective = (node: ASTNode, directiveName: string) =>
+  (('directives' in node && node.directives) || []).find(
+    (directive) => directiveName === directive.name.value
+  )
+
 export const getDirectiveArguments = (
   directiveDefinition: GraphQLDirective,
   directive: DirectiveNode

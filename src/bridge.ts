@@ -1,8 +1,7 @@
 import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter } from 'express'
 import { OpenAPIV3 } from 'openapi-types'
-import { parse } from 'graphql'
-import { DocumentNode, GraphQLSchema } from 'graphql'
+import { parse, buildSchema, DocumentNode, GraphQLSchema, print } from 'graphql'
 import OpenAPIRequestCoercer from 'openapi-request-coercer'
 import OpenAPIRequestValidator from 'openapi-request-validator'
 import OpenAPIResponseValidator from 'openapi-response-validator'
@@ -63,41 +62,58 @@ const addOperation = (
 
   const requestValidator =
     typeof config.validateRequest !== 'boolean' || config.validateRequest
-      ? new OpenAPIRequestValidator({
-          parameters: parameters_,
-        })
+      ? new OpenAPIRequestValidator({ parameters: parameters_ })
       : undefined
 
   const responseValidator = config.validateResponse
     ? new OpenAPIResponseValidator({
         // @ts-ignore
         responses: operation.openAPIOperation.responses,
-        components: {
-          schemas: schemaComponents,
-        },
+        components: { schemas: schemaComponents },
       })
     : undefined
+
+  const graphqlDocument_ = print(operation.graphqlDocument)
 
   router[operation.httpMethod](
     route,
     asyncHandler(async (req, res) => {
-      const reqClone = {
+      const req_ = {
         ...req,
+        cookies: { ...req.cookies },
         headers: { ...req.headers },
         params: { ...req.params },
         query: { ...req.query },
       }
-      requestCoercer.coerce(reqClone)
-      const errors = requestValidator ? requestValidator.validateRequest(reqClone) : null
+
+      // TODO: Cookies not supported
+      requestCoercer.coerce(req_)
+
+      const errors = requestValidator ? requestValidator.validateRequest(req_) : null
+
       if (errors) {
         res.status(400).json(errors)
         return
       }
-      const parameters = { ...reqClone.params, ...reqClone.query }
+
+      const variables: Record<string, any> = {}
+      for (const parameter of operation.openAPIOperation
+        .parameters as OpenAPIV3.ParameterObject[]) {
+        const variableName = operation.variableMap[parameter.name] || parameter.name
+        if (parameter.in === 'path') {
+          variables[variableName] = req_.params[parameter.name]
+        }
+        if (parameter.in === 'query') {
+          variables[variableName] = req_.query[parameter.name]
+        }
+        if (parameter.in === 'header') {
+          variables[variableName] = req_.headers[parameter.name]
+        }
+      }
 
       const data = await executor({
-        document: operation.graphqlDocument,
-        variables: parameters,
+        document: graphqlDocument_,
+        variables,
       })
 
       if (responseValidator) {
@@ -136,6 +152,18 @@ type OperationCustomProperties = {
   [CustomProperties.Operation]?: string
 }
 
+const getVariableMapFromParameters = (parameters: OpenAPIV3.ParameterObject[]) => {
+  const variableMap: Record<string, string> = {}
+  for (const parameter of parameters) {
+    // @ts-ignore
+    const variableName = parameter[CustomProperties.VariableName]
+    if (variableName) {
+      variableMap[parameter.name] = variableName
+    }
+  }
+  return variableMap
+}
+
 const getGraphQLOpenAPIOperationsFromOpenAPISchema = (
   schema: OpenAPIV3.Document<OperationCustomProperties>
 ) => {
@@ -155,6 +183,8 @@ const getGraphQLOpenAPIOperationsFromOpenAPISchema = (
         httpMethod: httpMethod as OpenAPIV3.HttpMethods,
         // @ts-ignore
         graphqlDocument: parse(operation[CustomProperties.Operation]),
+        // @ts-ignore
+        variableMap: getVariableMapFromParameters(operation.parameters || []),
       })
     }
   }
@@ -185,11 +215,15 @@ export const removeCustomProperties = (
       continue
     }
     for (const operation of Object.values(pathItem)) {
-      if (typeof operation !== 'object') {
+      if (typeof operation !== 'object' || operation === null) {
         continue
       }
       // @ts-ignore
       delete operation[CustomProperties.Operation]
+      // @ts-ignore
+      for (const parameter of operation.parameters || []) {
+        delete parameter[CustomProperties.VariableName]
+      }
     }
   }
   return schemaClone
@@ -216,15 +250,21 @@ const createOpenAPISchemaWithValidate = (
 }
 
 export type CreateOpenAPIGraphQLBridgeConfig = {
-  graphqlSchema: GraphQLSchema
-  graphqlDocument: DocumentNode
+  graphqlSchema: GraphQLSchema | string
+  graphqlDocument: DocumentNode | string
   customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject
 }
 
 export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeConfig) => {
   const { graphqlSchema, graphqlDocument, customScalars } = config
 
-  const operations = getOpenAPIGraphQLOperations(graphqlSchema, graphqlDocument, customScalars)
+  const graphqlSchema_ =
+    typeof graphqlSchema === 'string' ? buildSchema(graphqlSchema) : graphqlSchema
+
+  const graphqlDocument_ =
+    typeof graphqlDocument === 'string' ? parse(graphqlDocument) : graphqlDocument
+
+  const operations = getOpenAPIGraphQLOperations(graphqlSchema_, graphqlDocument_, customScalars)
 
   return {
     getExpressMiddleware: (executor: GraphQLExecutor, config: CreateMiddlewareConfig) =>

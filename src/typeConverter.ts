@@ -32,14 +32,7 @@ import {
   valueFromAST,
 } from 'graphql'
 import { OAType, SchemaComponents } from './types'
-import { isFragmentDefinitionNode } from './graphqlUtils'
-
-const hasDirective = (node: ASTNode, directiveName: string | string[]) =>
-  (('directives' in node && node.directives) || []).some((directive) =>
-    (typeof directiveName === 'string' ? [directiveName] : directiveName).includes(
-      directive.name.value
-    )
-  )
+import { hasDirective, isFragmentDefinitionNode } from './graphqlUtils'
 
 const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', 'skip'])
 

@@ -9,6 +9,7 @@ export type OpenAPIGraphQLOperation = {
   path: string
   httpMethod: OpenAPIV3.HttpMethods
   graphqlDocument: DocumentNode
+  variableMap: Record<string, string>
 }
 
 export type OAType = OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject
@@ -22,4 +23,5 @@ export type OpenAPIGraphQLOperations = {
 
 export enum CustomProperties {
   Operation = 'x-graphql-operation',
+  VariableName = 'x-graphql-variable-name',
 }

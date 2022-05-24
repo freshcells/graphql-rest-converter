@@ -8,6 +8,8 @@ import {
   Kind,
   ASTNode,
   buildASTSchema,
+  OperationDefinitionNode,
+  GraphQLDirective,
 } from 'graphql'
 import { gql } from 'graphql-tag'
 import { OpenAPIV3 } from 'openapi-types'
@@ -15,9 +17,11 @@ import { getVariablesFromPathTemplate } from './pathTemplate'
 import {
   createFragmentMap,
   getDependencyClosure,
+  getDirective,
   getDirectiveArguments,
   getFragmentDependencies,
   getReferencedFragments,
+  hasDirective,
   isOperationDefinitionNode,
 } from './graphqlUtils'
 import { CustomProperties, OAType, OpenAPIGraphQLOperation } from './types'
@@ -28,6 +32,7 @@ const DIRECTIVE_DEFINITION = gql`
     url: String!
     description: String
   }
+
   directive @OAQuery(
     path: String!
     tags: [String!]
@@ -36,10 +41,18 @@ const DIRECTIVE_DEFINITION = gql`
     externalDocs: OAExternalDocsInput
     deprecated: Boolean
   ) on QUERY
+
+  directive @OAParam(
+    in: String
+    deprecated: Boolean
+    description: String
+    name: String
+  ) on VARIABLE_DEFINITION
 `
 
 enum OpenAPIDirectives {
   Query = 'OAQuery',
+  Param = 'OAParam',
 }
 
 const graphqlQueryDirectiveDataToOpenAPIOperation = (requestConfig: OpenAPIQueryDirectiveData) => {
@@ -53,13 +66,71 @@ const graphqlQueryDirectiveDataToOpenAPIOperation = (requestConfig: OpenAPIQuery
   }
 }
 
-const assignParameterTypes = (parameters: any, path: string) => {
-  const pathVariables = new Set(getVariablesFromPathTemplate(path))
+const getOpenAPIParameters = (
+  parameters: Omit<OpenAPIV3.ParameterObject, 'in'>[],
+  path: string,
+  variablesDirectiveData: Record<string, OpenAPIParamDirectiveData>
+) => {
+  const adjustedParameters: OpenAPIV3.ParameterObject[] = []
+  const variableMap: Record<string, string> = {}
 
-  return parameters.map((parameter: any) => ({
-    ...parameter,
-    in: pathVariables.has(parameter.name) ? 'path' : 'query',
-  }))
+  const pathVariables = new Set(getVariablesFromPathTemplate(path))
+  for (const parameter of parameters) {
+    const variableName = parameter.name
+    const variableDirectiveData = variablesDirectiveData[variableName]
+    let parameterName = variableName
+    const nameOverride = variableDirectiveData.name
+    if (nameOverride) {
+      parameterName = nameOverride
+    }
+    if (variableDirectiveData.in) {
+      if (pathVariables.has(parameterName) && variableDirectiveData.in !== 'path') {
+        throw new Error(
+          `Location ${variableDirectiveData.in} invalid for parameter ${parameterName} because it is part of the path`
+        )
+      }
+      if (!pathVariables.has(parameterName) && variableDirectiveData.in === 'path') {
+        throw new Error(
+          `Location ${variableDirectiveData.in} invalid for parameter ${parameterName} because it is not part of the path`
+        )
+      }
+      if (variableDirectiveData.in === 'cookie') {
+        throw new Error(`Unsupported parameter location cookie for parameter ${parameterName}`)
+      }
+      if (!['path', 'query', 'header'].includes(variableDirectiveData.in)) {
+        throw new Error(
+          `Unknown parameter location ${variableDirectiveData.in} for parameter ${parameterName}`
+        )
+      }
+    }
+    if (variableDirectiveData.in && variableDirectiveData.in === 'header') {
+      parameterName = parameterName.toLowerCase()
+    }
+    if (parameterName !== variableName) {
+      variableMap[parameterName] = variableName
+    }
+
+    const in_ = pathVariables.has(parameterName)
+      ? 'path'
+      : variableDirectiveData.in && ['header', 'cookie'].includes(variableDirectiveData.in)
+      ? variableDirectiveData.in
+      : 'query'
+    const deprecated = variableDirectiveData.deprecated
+    const description = variableDirectiveData.description
+    adjustedParameters.push({
+      ...parameter,
+      in: in_,
+      name: parameterName,
+      ...(nameOverride ? { [CustomProperties.VariableName]: parameter.name } : {}),
+      ...(deprecated === true ? { deprecated } : {}),
+      ...(description ? { description } : {}),
+    })
+  }
+
+  return {
+    parameters: adjustedParameters,
+    variableMap,
+  }
 }
 
 type OpenAPIQueryDirectiveData = {
@@ -74,12 +145,19 @@ type OpenAPIQueryDirectiveData = {
   deprecated?: boolean
 }
 
+type OpenAPIParamDirectiveData = {
+  in?: string
+  deprecated?: boolean
+  description?: string
+  name?: string
+}
+
 const createOpenAPIOperation = (
   operationId: string | null,
   operationSource: string,
-  parameters: Omit<OpenAPIV3.ParameterObject, 'in'>[],
+  parameters: OpenAPIV3.ParameterObject[],
   responseSchema: OAType,
-  directiveData: OpenAPIQueryDirectiveData
+  queryDirectiveData: OpenAPIQueryDirectiveData
 ) => {
   const responses = {
     '200': {
@@ -100,10 +178,24 @@ const createOpenAPIOperation = (
   return {
     ...(operationId !== null ? { operationId } : {}),
     [CustomProperties.Operation]: operationSource,
-    ...graphqlQueryDirectiveDataToOpenAPIOperation(directiveData),
-    parameters: assignParameterTypes(parameters, directiveData.path),
+    ...graphqlQueryDirectiveDataToOpenAPIOperation(queryDirectiveData),
+    parameters,
     responses,
   }
+}
+
+const getVariablesDirectiveData = (
+  directive: GraphQLDirective,
+  operation: OperationDefinitionNode
+) => {
+  const result: Record<string, OpenAPIParamDirectiveData> = {}
+  for (const variableDefinition of operation.variableDefinitions || []) {
+    const paramDirective = getDirective(variableDefinition, OpenAPIDirectives.Param)
+    result[variableDefinition.variable.name.value] = paramDirective
+      ? (getDirectiveArguments(directive, paramDirective) as OpenAPIParamDirectiveData)
+      : {}
+  }
+  return result
 }
 
 export const getOpenAPIGraphQLOperations = (
@@ -133,17 +225,20 @@ export const getOpenAPIGraphQLOperations = (
       continue
     }
 
-    const queryDirective = (operation.directives || []).find(
-      (directive: DirectiveNode) => directive.name.value === OpenAPIDirectives.Query
-    )
+    const queryDirective = getDirective(operation, OpenAPIDirectives.Query)
     if (!queryDirective) {
       continue
     }
 
-    const directiveData = getDirectiveArguments(
+    const queryDirectiveData = getDirectiveArguments(
       directiveSchema.getDirective(OpenAPIDirectives.Query)!,
       queryDirective
     ) as OpenAPIQueryDirectiveData
+
+    const variablesDirectiveData = getVariablesDirectiveData(
+      directiveSchema.getDirective(OpenAPIDirectives.Param)!,
+      operation
+    )
 
     const operation_ = removeOpenAPIDirectives(operation)
 
@@ -158,7 +253,7 @@ export const getOpenAPIGraphQLOperations = (
     const singleOperationDocument = {
       kind: Kind.DOCUMENT,
       definitions: [operation_, ...referencedFragments],
-    }
+    } as DocumentNode
 
     const operationId = operation_.name ? operation_.name.value : null
 
@@ -166,21 +261,28 @@ export const getOpenAPIGraphQLOperations = (
 
     const responseSchema = typeConverter.responseSchemaFromOperation(operation_)
 
+    const { parameters, variableMap } = getOpenAPIParameters(
+      parametersSchema,
+      queryDirectiveData.path,
+      variablesDirectiveData
+    )
+
     const operationSource = print(singleOperationDocument)
 
     const openAPIOperation = createOpenAPIOperation(
       operationId,
       operationSource,
-      parametersSchema,
+      parameters,
       responseSchema,
-      directiveData
+      queryDirectiveData
     )
 
     const graphqlOpenAPIOperation = {
       openAPIOperation,
       httpMethod: OpenAPIV3.HttpMethods.GET,
       graphqlDocument: singleOperationDocument,
-      path: directiveData.path,
+      variableMap,
+      path: queryDirectiveData.path,
     }
     result.push(graphqlOpenAPIOperation)
   }
@@ -191,11 +293,11 @@ export const getOpenAPIGraphQLOperations = (
   }
 }
 
-const removeOpenAPIDirectives = (node: ASTNode) => {
+const removeOpenAPIDirectives = <T extends ASTNode>(node: T): T => {
   return visit(node, {
     Directive: {
       enter(node) {
-        if (node.name.value === OpenAPIDirectives.Query) {
+        if (Object.values(OpenAPIDirectives).includes(node.name.value as OpenAPIDirectives)) {
           return null
         }
       },
