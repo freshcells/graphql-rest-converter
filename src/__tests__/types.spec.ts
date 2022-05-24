@@ -83,7 +83,9 @@ const EXPECTATIONS = {
         a: {
           type: 'object',
           properties: {
-            __typename: { enum: ['A1', 'A2'], type: 'string' },
+            __typename: {
+              $ref: '#/components/schemas/A|__typename',
+            },
             a1: {
               type: 'integer',
               format: 'int32',
@@ -101,6 +103,12 @@ const EXPECTATIONS = {
       },
       required: ['a'],
     },
+    schemaComponents: {
+      'A|__typename': {
+        enum: ['A1', 'A2'],
+        type: 'string',
+      },
+    },
   },
 }
 
@@ -111,6 +119,7 @@ describe('graphql', () => {
     const converter = new GraphQLTypeToOpenAPITypeSchemaConverter(dummySchema)
 
     for (const [operationId, expectation] of Object.entries(EXPECTATIONS)) {
+      converter.resetSchemaComponents()
       expect(converter.fromOperation(getOperationAST(dummyDocument, operationId)!)).toEqual({
         name: operationId,
         ...expectation,

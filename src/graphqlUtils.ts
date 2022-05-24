@@ -62,6 +62,41 @@ export const inlineFragmentsDocument = (document: DocumentNode) => {
 export const createFragmentMap = (input: readonly DefinitionNode[]) =>
   _.keyBy(input.filter(isFragmentDefinitionNode), (node) => node.name.value)
 
+export const getReferencedFragments = <T extends ASTNode>(ast: T): Set<string> => {
+  const referencedFragments = new Set<string>()
+  visit(ast, {
+    FragmentSpread: {
+      enter(node) {
+        referencedFragments.add(node.name.value)
+      },
+    },
+  })
+  return referencedFragments
+}
+
+export const getFragmentDependencies = (fragmentMap: Record<string, FragmentDefinitionNode>) =>
+  _.mapValues(fragmentMap, getReferencedFragments)
+
+export const getDependencyClosure = (
+  roots: Set<string>,
+  dependencies: Record<string, Set<string>>
+) => {
+  const seen = new Set()
+  const stack = [...roots]
+  while (stack.length) {
+    const node = stack.pop()!
+    if (seen.has(node)) {
+      continue
+    }
+    seen.add(node)
+    const dependencySet = dependencies[node]
+    if (dependencySet) {
+      stack.push(...dependencySet)
+    }
+  }
+  return seen
+}
+
 export const inlineFragments = <T extends ASTNode>(
   ast: T,
   fragmentMap: Record<string, FragmentDefinitionNode>

@@ -2,13 +2,13 @@ import _ from 'lodash'
 import { PartialDeep } from 'type-fest'
 import { OpenAPIV3 } from 'openapi-types'
 import { print } from 'graphql'
-import { CustomProperties, OpenAPIGraphQLOperation } from './types'
+import { CustomProperties, OpenAPIGraphQLOperations } from './types'
 
 export const createOpenAPISchemaFromOperations = (
   openAPIBaseSchema: PartialDeep<OpenAPIV3.Document>,
-  openAPIGraphqlOperation: Array<OpenAPIGraphQLOperation>
+  openAPIGraphqlOperations: OpenAPIGraphQLOperations
 ) => {
-  const openAPIPaths = openAPIGraphqlOperation.map((x) => ({
+  const openAPIPaths = openAPIGraphqlOperations.operations.map((x) => ({
     paths: {
       [x.path]: {
         [x.httpMethod]: {
@@ -16,6 +16,9 @@ export const createOpenAPISchemaFromOperations = (
           [CustomProperties.Operation]: print(x.graphqlDocument),
         },
       },
+    },
+    components: {
+      schemas: openAPIGraphqlOperations.schemaComponents,
     },
   }))
 

@@ -49,7 +49,7 @@ const BASE_OPENAPI_SCHEMA = {
   ],
 }
 
-export const getCustomScalars = (scalarTypeName: string) => {
+const getCustomScalars = (scalarTypeName: string) => {
   return {
     DateTime: {
       type: 'string',

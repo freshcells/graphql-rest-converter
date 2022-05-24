@@ -11,6 +11,15 @@ export type OpenAPIGraphQLOperation = {
   graphqlDocument: DocumentNode
 }
 
+export type OAType = OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject
+
+export type SchemaComponents = Record<string, OpenAPIV3.SchemaObject>
+
+export type OpenAPIGraphQLOperations = {
+  operations: Array<OpenAPIGraphQLOperation>
+  schemaComponents: SchemaComponents
+}
+
 export enum CustomProperties {
   Operation = 'x-graphql-operation',
 }

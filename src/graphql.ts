@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import {
   DirectiveNode,
   DocumentNode,
@@ -13,12 +14,14 @@ import { OpenAPIV3 } from 'openapi-types'
 import { getVariablesFromPathTemplate } from './pathTemplate'
 import {
   createFragmentMap,
+  getDependencyClosure,
   getDirectiveArguments,
-  inlineFragments,
+  getFragmentDependencies,
+  getReferencedFragments,
   isOperationDefinitionNode,
 } from './graphqlUtils'
-import { CustomProperties, OpenAPIGraphQLOperation } from './types'
-import { GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
+import { CustomProperties, OAType, OpenAPIGraphQLOperation } from './types'
+import { getReferenceableFragments, GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
 
 const DIRECTIVE_DEFINITION = gql`
   input OAExternalDocsInput {
@@ -75,7 +78,7 @@ const createOpenAPIOperation = (
   operationId: string | null,
   operationSource: string,
   parameters: Omit<OpenAPIV3.ParameterObject, 'in'>[],
-  responseSchema: OpenAPIV3.SchemaObject,
+  responseSchema: OAType,
   directiveData: OpenAPIQueryDirectiveData
 ) => {
   const responses = {
@@ -112,7 +115,16 @@ export const getOpenAPIGraphQLOperations = (
 
   const fragmentMap = createFragmentMap(document.definitions)
 
-  const typeConverter = new GraphQLTypeToOpenAPITypeSchemaConverter(schema, customScalars)
+  const fragmentDependencies = getFragmentDependencies(fragmentMap)
+
+  const referencableFragments = getReferenceableFragments(schema, fragmentMap, document)
+
+  const typeConverter = new GraphQLTypeToOpenAPITypeSchemaConverter(
+    schema,
+    customScalars,
+    fragmentMap,
+    referencableFragments
+  )
 
   const directiveSchema = buildASTSchema(DIRECTIVE_DEFINITION)
 
@@ -133,11 +145,19 @@ export const getOpenAPIGraphQLOperations = (
       queryDirective
     ) as OpenAPIQueryDirectiveData
 
-    const operation_ = removeOpenAPIDirectives(inlineFragments(operation, fragmentMap))
+    const operation_ = removeOpenAPIDirectives(operation)
+
+    const operationFragmentDependencies = getDependencyClosure(
+      getReferencedFragments(operation_),
+      fragmentDependencies
+    )
+    const referencedFragments = Object.values(
+      _.pickBy(fragmentMap, (v, k) => operationFragmentDependencies.has(k))
+    )
 
     const singleOperationDocument = {
       kind: Kind.DOCUMENT,
-      definitions: [operation_],
+      definitions: [operation_, ...referencedFragments],
     }
 
     const operationId = operation_.name ? operation_.name.value : null
@@ -165,7 +185,10 @@ export const getOpenAPIGraphQLOperations = (
     result.push(graphqlOpenAPIOperation)
   }
 
-  return result
+  return {
+    operations: result,
+    schemaComponents: typeConverter.getSchemaComponents(),
+  }
 }
 
 const removeOpenAPIDirectives = (node: ASTNode) => {
