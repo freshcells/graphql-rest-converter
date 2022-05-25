@@ -23,7 +23,6 @@ import {
   GraphQLType,
   GraphQLUnionType,
   isCompositeType,
-  isTypeSubTypeOf,
   isWrappingType,
   Kind,
   OperationDefinitionNode,
@@ -70,6 +69,36 @@ const mergeDefaultValueToOpenAPISchema = (defaultValue: unknown, openAPISchema: 
   }
 }
 
+const getPossibleTypes = (schema: GraphQLSchema, type: GraphQLCompositeType) =>
+  type instanceof GraphQLObjectType
+    ? [type.name]
+    : schema.getPossibleTypes(type).map((possibleType) => possibleType.name)
+
+export const possibleTypesSubsetChecker = (schema: GraphQLSchema) => {
+  const cache = new Map()
+  return (typeA: GraphQLCompositeType, typeB: GraphQLCompositeType) => {
+    const cacheKey = JSON.stringify([typeA.name, typeB.name])
+    if (cache.has(cacheKey)) {
+      return cache.get(cacheKey)
+    }
+    const possibleTypesA = getPossibleTypes(schema, typeA)
+    const possibleTypesB = new Set(getPossibleTypes(schema, typeB))
+    let result = true
+    if (possibleTypesA.length > possibleTypesB.size) {
+      result = false
+    } else {
+      for (const possibleType of possibleTypesA) {
+        if (!possibleTypesB.has(possibleType)) {
+          result = false
+          break
+        }
+      }
+    }
+    cache.set(cacheKey, result)
+    return result
+  }
+}
+
 // A subset of fragments that can be referenced
 export const getReferenceableFragments = (
   schema: GraphQLSchema,
@@ -77,6 +106,7 @@ export const getReferenceableFragments = (
   document: DocumentNode
 ) => {
   const referenceableFragments = new Map()
+  const isPossibleTypesSubset = possibleTypesSubsetChecker(schema)
 
   const checkSelectionSet = (
     selectionSet: SelectionSetNode,
@@ -95,7 +125,10 @@ export const getReferenceableFragments = (
           isOptional ||
           hasOptionalDirective(selection) ||
           (selection.typeCondition !== undefined &&
-            isTypeSubTypeOf(schema, type, schema.getType(selection.typeCondition.name.value)!))
+            isPossibleTypesSubset(
+              type,
+              schema.getType(selection.typeCondition.name.value)! as GraphQLCompositeType
+            ))
         if (!checkSelectionSet(selection.selectionSet, type, isOptional_)) {
           return false
         }
@@ -121,7 +154,7 @@ export const getReferenceableFragments = (
 
   const checkFragment = (definition: FragmentDefinitionNode, type: GraphQLCompositeType) => {
     const fragmentType = schema.getType(definition.typeCondition.name.value) as GraphQLCompositeType
-    if (!isTypeSubTypeOf(schema, type, fragmentType)) {
+    if (!isPossibleTypesSubset(type, fragmentType)) {
       return false
     }
     const fragmentName = definition.name.value
@@ -153,6 +186,8 @@ const isNullable = (schema: OAType) => {
 export class GraphQLTypeToOpenAPITypeSchemaConverter {
   #schemaComponents: SchemaComponents = {}
 
+  #isPossibleTypesSubset: (typeA: GraphQLCompositeType, typeB: GraphQLCompositeType) => Boolean
+
   constructor(
     private graphqlSchema: GraphQLSchema,
     private customScalars: (scalarTypeName: string) => OpenAPIV3.SchemaObject = (
@@ -162,7 +197,9 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     },
     private fragmentMap: Record<string, FragmentDefinitionNode> = {},
     private referenceableFragments: Set<string> = new Set()
-  ) {}
+  ) {
+    this.#isPossibleTypesSubset = possibleTypesSubsetChecker(graphqlSchema)
+  }
 
   public fromDocument(document: DocumentNode) {
     document.definitions.flatMap((definition) =>
@@ -298,9 +335,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   }
 
   public getPossibleTypes(type: GraphQLCompositeType) {
-    return type instanceof GraphQLObjectType
-      ? [type.name]
-      : this.graphqlSchema.getPossibleTypes(type).map((possibleType) => possibleType.name)
+    return getPossibleTypes(this.graphqlSchema, type)
   }
 
   public getTypenameSchema = this.fromReference<GraphQLCompositeType>(
@@ -377,7 +412,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         const isSelectionSetOptional =
           isOptional ||
           hasOptionalDirective(selection) ||
-          !isTypeSubTypeOf(this.graphqlSchema, type, fragmentType)
+          !this.#isPossibleTypesSubset(type, fragmentType as GraphQLCompositeType)
 
         if (!isSelectionSetOptional || this.referenceableFragments.has(fragmentName)) {
           allOf.push(this.fromFragment(fragment))
@@ -404,7 +439,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         const isSelectionSetOptional =
           isOptional ||
           hasOptionalDirective(selection) ||
-          !isTypeSubTypeOf(this.graphqlSchema, type, fragmentType)
+          !this.#isPossibleTypesSubset(type, fragmentType)
 
         this.addSelectionSet(
           properties,
