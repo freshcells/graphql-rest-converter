@@ -10,7 +10,12 @@ The package allows to create an OpenAPI-compatible HTTP API based on annotated G
 import express from 'express'
 import { buildClientSchema, getIntrospectionQuery } from 'graphql'
 import { gql } from 'graphql-tag'
-import { createOpenAPIGraphQLBridge, removeCustomProperties, createExpressMiddlewareFromOpenAPISchema } from 'openapi-graphql-bridge'
+import {
+  createOpenAPIGraphQLBridge,
+  removeCustomProperties,
+  createExpressMiddlewareFromOpenAPISchema,
+  createHttpExecutor,
+} from 'openapi-graphql-bridge'
 
 const GRAPHQL_ENDPOINT = 'https://example.org/graphql'
 
@@ -86,17 +91,21 @@ async function main() {
     validate: true, // Default is false
   })
 
-  const apiMiddleware = openAPIGraphQLBridge.getExpressMiddleware({
-    graphqlEndpoint: GRAPHQL_ENDPOINT,
-    validateRequest: true, // Default is true
-    validateResponse: true, // Default is false
-  })
+  const httpExecutor = createHttpExecutor(GRAPHQL_ENDPOINT)
+
+  const apiMiddleware = openAPIGraphQLBridge.getExpressMiddleware(
+    httpExecutor,
+    {
+      validateRequest: true, // Default is true
+      validateResponse: true, // Default is false
+    }
+  )
 
   // Alternatively the middleware can be created from the OpenAPI schema, using the `x-graphql-operation` custom properties that are included when generating the schema
   // const apiMiddleware = createExpressMiddlewareFromOpenAPISchema(
   //   openAPISchema,
+  //   httpExecutor,
   //   {
-  //     graphqlEndpoint: GRAPHQL_ENDPOINT,
   //     validateRequest: true, // Default is true
   //     validateResponse: true, // Default is false
   //   }
