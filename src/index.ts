@@ -13,3 +13,7 @@ export type {
 export { createHttpExecutor, createSchemaExecutor } from './graphQLExecutor'
 
 export type { GraphQLExecutor } from './graphQLExecutor'
+
+export { visitOpenAPI } from './openApiVisitor'
+
+export type { OpenAPIVisitor } from './openApiVisitor'

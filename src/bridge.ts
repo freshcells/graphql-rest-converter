@@ -9,7 +9,7 @@ import OpenAPISchemaValidator from 'openapi-schema-validator'
 import { PartialDeep } from 'type-fest'
 import { getOpenAPIGraphQLOperations } from './graphql'
 import { pathTemplateToExpressRoute } from './pathTemplate'
-import { createOpenAPISchemaFromOperations } from './openapi'
+import { createOpenAPISchemaFromOperations } from './openApi'
 import {
   CustomProperties,
   OpenAPIGraphQLOperation,
