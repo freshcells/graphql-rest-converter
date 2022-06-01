@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter } from 'express'
 import { OpenAPIV3 } from 'openapi-types'
-import { parse, buildSchema, DocumentNode, GraphQLSchema, print } from 'graphql'
+import { parse, buildSchema, DocumentNode, GraphQLSchema, print, ExecutionResult } from 'graphql'
 import OpenAPIRequestCoercer from 'openapi-request-coercer'
 import OpenAPIRequestValidator from 'openapi-request-validator'
 import OpenAPIResponseValidator from 'openapi-response-validator'
@@ -16,7 +16,7 @@ import {
   OpenAPIGraphQLOperations,
   SchemaComponents,
 } from './types'
-import { GraphQLExecutor } from './graphQLExecutor'
+import { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'
 
 const asyncHandler =
   (handler: RequestHandler) =>
@@ -111,24 +111,76 @@ const addOperation = (
         }
       }
 
-      const data = await executor({
+      const request = {
         document: graphqlDocument_,
         variables,
-      })
+      }
+      const result = await executor(request)
+      let statusCode = 200
+      let contentType: string | undefined = 'application/json'
+      let data: string | Buffer | undefined = JSON.stringify(result.data)
+      let isTransformed = false
 
-      if (responseValidator) {
-        const responseValidationErrors = responseValidator.validateResponse(200, data)
+      if (config.responseTransformer) {
+        const response_ = config.responseTransformer({
+          result,
+          request,
+          openAPISchema: {
+            operation: operation.openAPIOperation,
+            method: operation.httpMethod,
+            path: operation.path,
+          },
+        })
+        if (response_) {
+          statusCode = response_.statusCode
+          contentType = response_.contentType
+          data = response_.data
+          // TODO: The validation can only handle JSON for now
+          isTransformed = true
+        }
+      }
+
+      if (responseValidator && !isTransformed) {
+        const responseValidationErrors = responseValidator.validateResponse(statusCode, result.data)
         if (responseValidationErrors) {
           throw new Error(JSON.stringify(responseValidationErrors))
         }
       }
 
-      res.json(data)
+      if (contentType) {
+        res.set('Content-Type', contentType)
+      }
+      res.status(statusCode)
+      if (data) {
+        res.send(data)
+      }
+      res.end()
     })
   )
 }
 
+export type ResponseTransformerArgs = {
+  result: ExecutionResult
+  request: GraphQLExecutorArgs
+  openAPISchema: {
+    operation: OpenAPIV3.OperationObject
+    method: OpenAPIV3.HttpMethods
+    path: string
+  }
+}
+
+export type ResponseTransformerResult = {
+  statusCode: number
+  contentType?: string
+  data?: string | Buffer
+}
+
+export type ResponseTransformer = (
+  args: ResponseTransformerArgs
+) => ResponseTransformerResult | undefined
+
 export type CreateMiddlewareConfig = {
+  responseTransformer?: ResponseTransformer
   validateRequest?: boolean
   validateResponse?: boolean
 }

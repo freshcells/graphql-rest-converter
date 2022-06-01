@@ -98,6 +98,16 @@ async function main() {
     {
       validateRequest: true, // Default is true
       validateResponse: true, // Default is false
+      // Optional, can be used for customized status codes for example
+      responseTransformer: ({ result, openAPISchema: { operation } }) => {
+        if (operation?.operationId === 'getHeroByEpisode' && !result?.data?.hero?.length) {
+          return {
+            statusCode: 404,
+            contentType: 'application/json',
+            data: JSON.stringify({ error: 'No heros found' }),
+          }
+        }
+      },
     }
   )
 
