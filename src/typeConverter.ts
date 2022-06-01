@@ -37,7 +37,6 @@ const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', '
 
 const mergeDefaultValueToOpenAPISchema = (defaultValue: unknown, openAPISchema: OAType) => {
   // Since components are shared we cannot merge default values in
-  //
   if ('$ref' in openAPISchema) {
     if (typeof defaultValue === 'object' && defaultValue !== null) {
       // We lose the default value information here, but the component cannot be mutated
@@ -285,31 +284,46 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     }
   }
 
+  // NOTE: Interaction between `$ref` and `nullable`
+  // There is a lot of discussion about this topic:
+  // * https://github.com/OAI/OpenAPI-Specification/issues/1368
+  // * https://github.com/OAI/OpenAPI-Specification/blob/main/proposals/2019-10-31-Clarify-Nullable.md
+  // The strategy here is to define all schema components as nullable,
+  // because that gives the choice to keep them nullable or make them non-nullable when wrapping them,
+  // which doesn't seem possible when defining the schema components as non-nullable
+  // TODO: With OpenAPI 3.1 this should become easier
+  public setNullable(typeSchema: OAType, nullable: boolean): OAType {
+    if ('$ref' in typeSchema) {
+      const typeSchemaType = this.#schemaComponents[typeSchema.$ref.split('/').slice(-1)[0]].type
+      // TODO: Cannot use `nullable` without `type`
+      if (typeSchemaType) {
+        return {
+          type: typeSchemaType as any,
+          allOf: [typeSchema],
+          // `nullable: false` should be a no-op, but it seems to help some tooling
+          nullable,
+        }
+      }
+      // TODO: Cannot use `nullable` without `type`
+    } else if (nullable && typeSchema.type) {
+      return {
+        ...typeSchema,
+        nullable: true,
+      }
+    }
+    return typeSchema
+  }
+
   public fromType(type: GraphQLType, selectionSet?: SelectionSetNode, root = false): OAType {
     if (root) {
-      return this.fromTypeNonNull(type, selectionSet)
+      return this.setNullable(this.fromTypeNonNull(type, selectionSet), false)
     }
     if (type instanceof GraphQLNonNull) {
-      return this.fromTypeNonNull(type.ofType, selectionSet)
+      return this.setNullable(this.fromTypeNonNull(type.ofType, selectionSet), false)
     }
     const typeSchema = this.fromTypeNonNull(type, selectionSet)
-    // NOTE: Interaction between `$ref` and `nullable`
-    // Following the suggestion here: https://stackoverflow.com/questions/40920441/how-to-specify-a-property-can-be-null-or-a-reference-with-swagger
-    // There is a lot of discussion about this topic:
-    // * https://github.com/OAI/OpenAPI-Specification/issues/1368
-    // * https://github.com/OAI/OpenAPI-Specification/blob/main/proposals/2019-10-31-Clarify-Nullable.md
-    // TODO: Will be easier in OpenAPI v3.1
-    const nonNullableTypeSchema =
-      '$ref' in typeSchema
-        ? {
-            allOf: [typeSchema],
-            nullable: true,
-          }
-        : {
-            ...typeSchema,
-            nullable: true,
-          }
-    return nonNullableTypeSchema
+
+    return this.setNullable(typeSchema, true)
   }
 
   public fromInputObjectType(type: GraphQLInputObjectType): OpenAPIV3.SchemaObject {
@@ -380,6 +394,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         ...(!_.isEmpty(properties) ? { properties } : {}),
         ...(allOf.length ? { allOf } : {}),
         ...(required.length ? { required: _.uniq(required) } : {}),
+        nullable: true,
       }
     }
   )
@@ -473,12 +488,17 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       // TODO: OpenAPI 3.1: The metadata (name, description, deprecated) can be expressed with oneOf and const
       enum: type.getValues().map((x) => x.value),
       ...(type.description ? { description: type.description } : {}),
+      nullable: true,
     })
   )
 
   public fromCustomScalar = this.fromReference<GraphQLScalarType>(
     (type) => type.name,
-    (type) => this.customScalars(type.name)
+    (type) => {
+      const typeSchema = this.customScalars(type.name)
+      // TODO: Cannot use `nullable` without `type`
+      return typeSchema.type ? { ...typeSchema, nullable: true } : typeSchema
+    }
   )
 
   private fromReference<T>(
