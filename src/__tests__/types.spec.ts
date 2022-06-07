@@ -1,4 +1,4 @@
-import expect from 'expect'
+import { expect } from '@jest/globals'
 import { buildSchema, getOperationAST, parse } from 'graphql'
 import { GraphQLTypeToOpenAPITypeSchemaConverter } from '../typeConverter'
 

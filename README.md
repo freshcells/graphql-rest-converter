@@ -1,13 +1,14 @@
-# openapi-graphql-bridge
+# graphql-rest-converter
 
 ## Purpose
 
-The package allows to create an OpenAPI-compatible HTTP API based on annotated GraphQL operations.
+The package creates an OpenAPI-compatible HTTP API based on annotated GraphQL operations.
 
 ## Usage example
 
 ```javascript
 import express from 'express'
+import fetch from 'node-fetch'
 import { buildClientSchema, getIntrospectionQuery } from 'graphql'
 import { gql } from 'graphql-tag'
 import {
@@ -15,7 +16,7 @@ import {
   removeCustomProperties,
   createExpressMiddlewareFromOpenAPISchema,
   createHttpExecutor,
-} from 'openapi-graphql-bridge'
+} from '@freshcells/openapi-graphql-bridge'
 
 const GRAPHQL_ENDPOINT = 'https://example.org/graphql'
 
@@ -54,7 +55,7 @@ const BASE_OPENAPI_SCHEMA = {
   ],
 }
 
-const getCustomScalars = (scalarTypeName: string) => {
+const getCustomScalars = scalarTypeName => {
   return {
     DateTime: {
       type: 'string',
@@ -77,7 +78,7 @@ async function main() {
         },
         body: JSON.stringify({ query: getIntrospectionQuery() })
       }
-    ).json())).data
+    )).json()).data
   )
 
   const openAPIGraphQLBridge = createOpenAPIGraphQLBridge({
@@ -100,7 +101,7 @@ async function main() {
       validateResponse: true, // Default is false
       // Optional, can be used for customized status codes for example
       responseTransformer: ({ result, openAPISchema: { operation } }) => {
-        if (operation?.operationId === 'getHeroByEpisode' && !result?.data?.hero?.length) {
+        if (operation?.operationId === 'getHeroByEpisode' && result?.status === 200 && !result?.data?.hero?.length) {
           return {
             statusCode: 404,
             contentType: 'application/json',

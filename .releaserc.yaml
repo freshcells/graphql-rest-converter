@@ -1,0 +1,7 @@
+{
+  "repositoryUrl": "git@github.com:freshcells/graphql-rest-converter.git",
+  "branches": [
+      "main",
+      "next"
+  ]
+}

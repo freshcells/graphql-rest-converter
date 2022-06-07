@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import {
-  DirectiveNode,
   DocumentNode,
   GraphQLSchema,
   visit,
@@ -21,7 +20,6 @@ import {
   getDirectiveArguments,
   getFragmentDependencies,
   getReferencedFragments,
-  hasDirective,
   isOperationDefinitionNode,
 } from './graphqlUtils'
 import { CustomProperties, OAType, OpenAPIGraphQLOperation } from './types'

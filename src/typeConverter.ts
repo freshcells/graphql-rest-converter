@@ -46,13 +46,10 @@ const mergeDefaultValueToOpenAPISchema = (defaultValue: unknown, openAPISchema: 
     } else {
       const componentPath = openAPISchema.$ref
       for (const prop of Object.keys(openAPISchema)) {
-        // @ts-ignore
-        delete openAPISchema[prop]
+        delete (openAPISchema as any)[prop]
       }
-      // @ts-ignore
-      openAPISchema.default = defaultValue
-      // @ts-ignore
-      openAPISchema.allOf = [{ $ref: componentPath }]
+      ;(openAPISchema as any).default = defaultValue as any
+      ;(openAPISchema as any).allOf = [{ $ref: componentPath }]
     }
   } else {
     if (typeof defaultValue === 'object' && defaultValue !== null) {
@@ -185,7 +182,7 @@ const isNullable = (schema: OAType) => {
 export class GraphQLTypeToOpenAPITypeSchemaConverter {
   #schemaComponents: SchemaComponents = {}
 
-  #isPossibleTypesSubset: (typeA: GraphQLCompositeType, typeB: GraphQLCompositeType) => Boolean
+  #isPossibleTypesSubset: (typeA: GraphQLCompositeType, typeB: GraphQLCompositeType) => boolean
 
   constructor(
     private graphqlSchema: GraphQLSchema,

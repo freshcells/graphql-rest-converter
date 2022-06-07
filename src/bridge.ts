@@ -67,8 +67,8 @@ const addOperation = (
 
   const responseValidator = config.validateResponse
     ? new OpenAPIResponseValidator({
-        // @ts-ignore
-        responses: operation.openAPIOperation.responses,
+        // Type in `openapi-response-validator` seems wrong
+        responses: operation.openAPIOperation.responses as any,
         components: { schemas: schemaComponents },
       })
     : undefined
@@ -181,7 +181,13 @@ export type ResponseTransformer = (
 
 export type CreateMiddlewareConfig = {
   responseTransformer?: ResponseTransformer
+  /**
+   * Default is `true`
+   */
   validateRequest?: boolean
+  /**
+   * Default is `false`
+   */
   validateResponse?: boolean
 }
 
@@ -207,8 +213,7 @@ type OperationCustomProperties = {
 const getVariableMapFromParameters = (parameters: OpenAPIV3.ParameterObject[]) => {
   const variableMap: Record<string, string> = {}
   for (const parameter of parameters) {
-    // @ts-ignore
-    const variableName = parameter[CustomProperties.VariableName]
+    const variableName = (parameter as any)[CustomProperties.VariableName]
     if (variableName) {
       variableMap[parameter.name] = variableName
     }
@@ -225,18 +230,15 @@ const getGraphQLOpenAPIOperationsFromOpenAPISchema = (
       continue
     }
     for (const [httpMethod, operation] of Object.entries(pathItem)) {
-      // @ts-ignore
-      if (!operation[CustomProperties.Operation]) {
+      if (!(operation as any)[CustomProperties.Operation]) {
         continue
       }
       operations.push({
         openAPIOperation: operation as OpenAPIV3.OperationObject,
         path,
         httpMethod: httpMethod as OpenAPIV3.HttpMethods,
-        // @ts-ignore
-        graphqlDocument: parse(operation[CustomProperties.Operation]),
-        // @ts-ignore
-        variableMap: getVariableMapFromParameters(operation.parameters || []),
+        graphqlDocument: parse((operation as any)[CustomProperties.Operation]),
+        variableMap: getVariableMapFromParameters((operation as any).parameters || []),
       })
     }
   }
@@ -270,10 +272,8 @@ export const removeCustomProperties = (
       if (typeof operation !== 'object' || operation === null) {
         continue
       }
-      // @ts-ignore
-      delete operation[CustomProperties.Operation]
-      // @ts-ignore
-      for (const parameter of operation.parameters || []) {
+      delete (operation as any)[CustomProperties.Operation]
+      for (const parameter of (operation as any).parameters || []) {
         delete parameter[CustomProperties.VariableName]
       }
     }

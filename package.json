@@ -1,71 +1,89 @@
 {
-  "name": "openapi-graphql-bridge",
+  "name": "@freshcells/graphql-rest-converter",
   "version": "1.0.0",
+  "description": "Create an OpenAPI-compatible HTTP API based on annotated GraphQL operations",
+  "license": "MIT",
+  "keywords": [
+    "graphql",
+    "openapi",
+    "rest"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/freshcells/graphql-rest-converter"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "ajv": "^8.11.0",
-    "express": "^4.18.1",
     "graphql": "^16.2.0",
     "graphql-request": "^4.2.0",
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
-    "openapi-jsonschema-parameters": "^11.0.0",
-    "openapi-request-coercer": "^11.0.0",
-    "openapi-request-validator": "^11.0.0",
-    "openapi-response-validator": "^11.0.0",
-    "openapi-schema-validator": "^11.0.0",
+    "openapi-jsonschema-parameters": "^12.0.0",
+    "openapi-request-coercer": "^12.0.0",
+    "openapi-request-validator": "^12.0.0",
+    "openapi-response-validator": "^12.0.0",
+    "openapi-schema-validator": "^12.0.0",
     "type-fest": "^2.12.2"
+  },
+  "peerDependencies": {
+    "express": "^4"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc && cpx \"./src/**/*.{csv,json}\" dist/src",
-    "test": "cross-env JEST_JUNIT_OUTPUT_NAME=\"reports/junit/js-test-results.xml\" jest --coverage --ci --reporters=default --reporters=jest-junit ",
+    "build": "tsc",
+    "test": "jest --ci",
     "test:watch": "jest --watch",
-    "prepack": "yarn build",
-    "semantic-release": "semantic-release"
+    "test:coverage": "jest --coverage",
+    "format": "prettier --loglevel warn --check src",
+    "format:fix": "prettier --write src",
+    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint:fix": "yarn lint --fix",
+    "qa": "tsc --noEmit && yarn test && yarn lint && yarn format",
+    "prepack": "yarn build"
   },
   "devDependencies": {
-    "@semantic-release/git": "^10.0.1",
     "@types/express": "^4.17.13",
-    "@types/jest": "^27.4.1",
+    "@types/jest": "^28.1.1",
     "@types/lodash": "^4.14.177",
-    "@types/node": "^16.11.7",
-    "cpx": "^1.5.0",
-    "cross-env": "^7.0.3",
-    "expect": "^27.5.1",
-    "jest": "^27.5.1",
-    "jest-junit": "^13.0.0",
-    "openapi-types": "^10.0.0",
-    "semantic-release": "^18.0.1",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.4.0",
+    "@types/node": "^17.0.40",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
+    "eslint": "^8.17.0",
+    "jest": "^28.1.1",
+    "openapi-types": "^12.0.0",
+    "prettier": "^2.6.2",
+    "semantic-release": "^19.0.3",
+    "ts-jest": "^28.0.4",
+    "typedoc": "^0.22.17",
     "typescript": "^4.6.3"
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/"
     ],
     "moduleFileExtensions": [
       "ts",
       "js"
     ],
-    "roots": [
-      "."
-    ],
     "testMatch": [
-      "**/__tests__/**/*.spec.[jt]s?(x)"
+      "**/__tests__/**/*.spec.[jt]s"
     ],
     "transform": {
-      "\\.(ts|tsx)$": "ts-jest"
+      "\\.ts$": "ts-jest"
     },
     "coverageReporters": [
-      "text",
-      "cobertura"
+      "text"
     ],
     "collectCoverageFrom": [
-      "src/**/*.{js,ts,tsx}"
+      "src/**/*.{js,ts}"
     ]
   }
 }

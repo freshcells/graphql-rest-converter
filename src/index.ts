@@ -8,12 +8,11 @@ export type {
   CreateOpenAPIGraphQLBridgeConfig,
   CreateMiddlewareConfig,
   CreateOpenAPISchemaConfig,
+  ResponseTransformer,
+  ResponseTransformerArgs,
+  ResponseTransformerResult,
 } from './bridge'
 
 export { createHttpExecutor, createSchemaExecutor } from './graphQLExecutor'
 
-export type { GraphQLExecutor } from './graphQLExecutor'
-
-export { visitOpenAPI } from './openApiVisitor'
-
-export type { OpenAPIVisitor } from './openApiVisitor'
+export type { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'

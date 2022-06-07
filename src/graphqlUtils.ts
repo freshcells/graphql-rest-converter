@@ -59,11 +59,10 @@ export const isOperationDefinitionNode = (node: DefinitionNode): node is Operati
 export const isFragmentDefinitionNode = (node: DefinitionNode): node is FragmentDefinitionNode =>
   node.kind === Kind.FRAGMENT_DEFINITION
 
-export const inlineFragmentsDocument = (document: DocumentNode) => {
+export const inlineFragmentsDocument = (document: DocumentNode): DocumentNode => {
   const fragmentMap = createFragmentMap(document.definitions)
-  const newDocument = inlineFragments(document, fragmentMap)
+  const newDocument: any = inlineFragments(document, fragmentMap)
 
-  // @ts-ignore
   newDocument.definitions = newDocument.definitions.filter(
     (node: DefinitionNode) => !isFragmentDefinitionNode(node)
   )
