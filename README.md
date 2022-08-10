@@ -16,7 +16,7 @@ import {
   removeCustomProperties,
   createExpressMiddlewareFromOpenAPISchema,
   createHttpExecutor,
-} from '@freshcells/openapi-graphql-bridge'
+} from '@freshcells/graphql-rest-converter'
 
 const GRAPHQL_ENDPOINT = 'https://example.org/graphql'
 
