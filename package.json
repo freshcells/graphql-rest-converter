@@ -28,6 +28,7 @@
     "openapi-request-validator": "^12.0.0",
     "openapi-response-validator": "^12.0.0",
     "openapi-schema-validator": "^12.0.0",
+    "openapi-types": "^12.0.0",
     "type-fest": "^2.12.2"
   },
   "peerDependencies": {
@@ -57,7 +58,6 @@
     "@typescript-eslint/parser": "^5.27.1",
     "eslint": "^8.17.0",
     "jest": "^28.1.1",
-    "openapi-types": "^12.0.0",
     "prettier": "^2.6.2",
     "semantic-release": "^19.0.3",
     "ts-jest": "^28.0.4",
