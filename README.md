@@ -4,6 +4,8 @@
 
 The package creates an OpenAPI-compatible HTTP API based on annotated GraphQL operations.
 
+## [API documentation](https://freshcells.github.io/graphql-rest-converter/)
+
 ## Usage example
 
 ```javascript
