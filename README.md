@@ -2,11 +2,193 @@
 
 ## Purpose
 
-The package creates an OpenAPI-compatible HTTP API based on annotated GraphQL operations.
+The package creates an HTTP API and a corresponding OpenAPI schema based on annotated GraphQL operations.
+
+## Features
+
+* Automatically generated request handlers
+* Automatically generated OpenAPI schema
+* Arbitrary GraphQL queries supported
+* Accurate OpenAPI type schemas for response and parameters derived from GraphQL schema
+* Support OpenAPI 3.0 for maximum compatibility with the OpenAPI ecosystem
+
+## Installation
+
+With `npm`:
+
+    npm install @freshcells/graphql-rest-converter
+
+With `yarn`:
+
+    yarn add @freshcells/graphql-rest-converter
 
 ## [API documentation](https://freshcells.github.io/graphql-rest-converter/)
 
+## Supported OpenAPI versions
+
+The package generates an OpenAPI schema for version 3.0 of the specification.
+
+## How to use
+
+### General work flow
+
+To define a HTTP API request:
+
+1. Define a GraphQL operation to get the data from your GraphQL API
+2. Use directives on the operation to define URL path, parameter mapping, additional OpenAPI documentation, etc.
+3. The package will generate a request handler and an OpenAPI schema for the request
+
+### Entry point
+
+The entry point is the [`createOpenAPIGraphQLBridge`](https://freshcells.github.io/graphql-rest-converter/modules.html#createOpenAPIGraphQLBridge) function.
+
+The function takes a config with:
+
+* The GraphQL document containing the operations with directives to define the HTTP API requests
+* The GraphQL schema of the target GraphQL API
+* A function to map custom scalars used in the target GraphQL API to OpenAPI type schemas (optional)
+
+The function returns an object with two functions:
+
+* The function [`getExpressMiddleware`](https://freshcells.github.io/graphql-rest-converter/modules.html#createOpenAPIGraphQLBridge) is used to get the request handlers for the HTTP API as an `express` middleware
+* The function [`getOpenAPISchema`](https://freshcells.github.io/graphql-rest-converter/modules.html#createOpenAPIGraphQLBridge) is used to the get the OpenAPI schema for the HTTP API
+
+### Annotating GraphQL operations
+
+#### `QAQuery`
+
+The `OAQuery` GraphQL directive is required on an GraphQL operation to map it to a HTTP request.
+
+The arguments of the directive are described by the TS type:
+
+```typescript
+interface OAQuery {
+  path: string
+  tags?: [string]
+  summary?: string
+  description?: string
+  externalDocs?: {
+    url: string
+    description?: string
+  }
+  deprecated: boolean
+}
+```
+
+The `path` argument is required and defines the URL path of the resulting request.
+Path parameters can be defined with OpenAPI syntax, for example: `/my/api/user/{id}`.
+
+The other arguments are mapped directly to the resulting OpenAPI schema for the request.
+
+#### `OAParam`
+
+The `OAParam` is optional, every operation's variable declaration results in an API parameter.
+
+If the path defined in the operation's `OAQuery` directive contains a parameter matching the variable name, the variable will be mapped from the path parameter.
+Otherwise, the variable will be mapped from a query parameter.
+
+The arguments of the directive are described by the TS type:
+
+```typescript
+interface OAParam {
+  in: 'path' | 'query' | 'header'
+  name: string
+  description: string
+  deprecated: boolean
+}
+```
+
+The `in` argument can be used to set change type of parameter.
+It is useful, for example, if a variable should be mapped from a `header` instead of a `query` parameter.
+
+The `name` argument can be used to explicitly define the parameter name. If it is not provided it uses the variable name.
+It is useful, for example, if the desired parameter name is not a valid GraphQL variable name.
+
+The other arguments are mapped directly to the resulting OpenAPI schema for the request.
+
+### Generating the request handlers
+
+To generate the request handlers the function [`getExpressMiddleware`](https://freshcells.github.io/graphql-rest-converter/modules.html#createOpenAPIGraphQLBridge) is used.
+
+As the first argument it takes a `GraphQLExecutor` implementation:
+
+* The package already provides two implementations:
+  * [`createHTTPExecutor`](https://freshcells.github.io/graphql-rest-converter/modules.html#createHttpExecutor)
+    * Takes the same arguments [`GraphQLClient`](https://github.com/prisma-labs/graphql-request#usage) from the `graphql-request` package (mainly a URL)
+    * Creates an executor that resolves GraphQL operations via HTTP
+  * [`createSchemaExecutor`](https://freshcells.github.io/graphql-rest-converter/modules.html#createSchemaExecutor)
+    * Takes a (`GraphQLSchema`)[https://graphql.org/graphql-js/type/#graphqlschema] from the `graphql` package as argument
+    * Creates an executor that resolves GraphQL operations via the provided in-process GraphQL schema
+* Custom implementations can be created
+
+As a second optional argument it takes a configuration object with the properties:
+
+* `responseTransformer`
+  * See next section
+* `validateRequest`
+  * Validate HTTP requests against the generated OpenAPI schema
+  * Defaults to `true`
+* `validateResponse`
+  * Validate HTTP responses against generated OpenAPI schema
+  * Defaults to `false`
+
+#### `responseTransformer` configuration option
+
+Sometimes it may be necessary to adjust the HTTP response to achieve some required API behavior.
+
+For example:
+
+* The structure of a GraphQL operation may need to be customized
+* Some values within a GraphQL operation result may need to be mapped or differently encoded
+* Some GraphQL operation results should be mapped to HTTP error codes
+* Another encoding for the response body than JSON is required
+* ...
+
+In general, when making use of this feature the OpenAPI schema needs to be adjusted accordingly.
+
+If a response is transformed it will not be validated even if `validateResponse` is configured.
+
+If used, a function should be provided. See the API documentation for the type of the function: https://freshcells.github.io/graphql-rest-converter/modules.html#ResponseTransformer.
+
+It will be called for every request to the HTTP API with:
+
+* The OpenAPI schema details of the request
+* The GraphQL request details
+* The GraphQL response details
+
+It should return:
+
+* `undefined` if the response should not be customized
+* HTTP response details in case the response should be customized
+
+### Generating the OpenAPI schema
+
+To generate the OpenAPI schema the function [`getOpenAPISchema`](https://freshcells.github.io/graphql-rest-converter/modules.html#createOpenAPIGraphQLBridge) is used.
+
+As an argument it takes a configuration object with the properties:
+
+* `baseSchema`
+  * As a convenience, this object will be recursively merged into the generated OpenAPI schema
+  * It can be used
+* `validate`
+  * Validates that the returned OpenAPI schema is valid according to the OpenAPI specification
+  * Defaults to `false`
+
+### Custom OpenAPI properties
+
+The generated OpenAPI schema contains the customer properties `x-graphql-operation` and `x-graphql-variable-name`.
+
+These custom properties contain all necessary information to generate the request handlers.
+
+The function [`createExpressMiddlewareFromOpenAPISchema`](https://freshcells.github.io/graphql-rest-converter/modules.html#createExpressMiddlewareFromOpenAPISchema) can be used to create the request handlers as an express middleware
+from an OpenAPI schema containing these custom properties.
+
+To remove the custom properties from the OpenAPI schema, for example before serving it publicly, the function [`removeCustomProperties`](https://freshcells.github.io/graphql-rest-converter/modules.html#removeCustomProperties) can be used.
+
 ## Usage example
+
+This example showcases most of the usage discussed so far.
+The hypothetical Star Wars GraphQL schema is inspired by the official GraphQL introduction: https://graphql.org/learn/.
 
 ```javascript
 import express from 'express'
@@ -23,7 +205,11 @@ import {
 const GRAPHQL_ENDPOINT = 'https://example.org/graphql'
 
 const BRIDGE_DOCUMENT = gql`
-  query getHeroByEpisode($episode: String!, $include_appears_in: Boolean! = false)
+  query getHeroByEpisode(
+    $episode: String!
+    $includeAppearsIn: Boolean! = false
+      @OAParam(in: "query", name: "include_appears_in", description: "Include all episodes the hero appears in", deprecated: false)
+  )
   @OAQuery(
     path: "/hero/{episode}"
     tags: ["Star Wars", "Hero"]
@@ -34,7 +220,7 @@ const BRIDGE_DOCUMENT = gql`
   ) {
     hero(episode: $episode) {
       name
-      appearsIn @include(if: $include_appears_in)
+      appearsIn @include(if: $includeAppearsIn)
     }
   }
 `
@@ -136,3 +322,11 @@ async function main() {
 
 main()
 ```
+
+## Upcoming features
+
+* Support for mutations
+* OpenAPI 3.1 support
+* Direct support for more HTTP servers than express
+* Support for cookie parameters
+* ...
