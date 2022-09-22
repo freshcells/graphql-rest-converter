@@ -98,13 +98,13 @@ interface OAParam {
 }
 ```
 
-The `in` argument can be used to set change type of parameter.
+The `in` argument can be used to change the type of parameter.
 It is useful, for example, if a variable should be mapped from a `header` instead of a `query` parameter.
 
 The `name` argument can be used to explicitly define the parameter name. If it is not provided it uses the variable name.
 It is useful, for example, if the desired parameter name is not a valid GraphQL variable name.
 
-The other arguments are mapped directly to the resulting OpenAPI schema for the request.
+The other arguments are mapped directly to the resulting OpenAPI schema for the parameter.
 
 ### Generating the request handlers
 
@@ -117,14 +117,14 @@ As the first argument it takes a `GraphQLExecutor` implementation:
     * Takes the same arguments [`GraphQLClient`](https://github.com/prisma-labs/graphql-request#usage) from the `graphql-request` package (mainly a URL)
     * Creates an executor that resolves GraphQL operations via HTTP
   * [`createSchemaExecutor`](https://freshcells.github.io/graphql-rest-converter/modules.html#createSchemaExecutor)
-    * Takes a (`GraphQLSchema`)[https://graphql.org/graphql-js/type/#graphqlschema] from the `graphql` package as argument
+    * Takes a [`GraphQLSchema`](https://graphql.org/graphql-js/type/#graphqlschema) from the `graphql` package as argument
     * Creates an executor that resolves GraphQL operations via the provided in-process GraphQL schema
 * Custom implementations can be created
 
 As a second optional argument it takes a configuration object with the properties:
 
 * `responseTransformer`
-  * See next section
+  * See [Configuration option `responseTransformer`](#configuration-option-responsetransformer)
 * `validateRequest`
   * Validate HTTP requests against the generated OpenAPI schema
   * Defaults to `true`
@@ -132,7 +132,7 @@ As a second optional argument it takes a configuration object with the propertie
   * Validate HTTP responses against generated OpenAPI schema
   * Defaults to `false`
 
-#### `responseTransformer` configuration option
+#### Configuration option `responseTransformer`
 
 Sometimes it may be necessary to adjust the HTTP response to achieve some required API behavior.
 
@@ -142,7 +142,6 @@ For example:
 * Some values within a GraphQL operation result may need to be mapped or differently encoded
 * Some GraphQL operation results should be mapped to HTTP error codes
 * Another encoding for the response body than JSON is required
-* ...
 
 In general, when making use of this feature the OpenAPI schema needs to be adjusted accordingly.
 
@@ -169,7 +168,6 @@ As an argument it takes a configuration object with the properties:
 
 * `baseSchema`
   * As a convenience, this object will be recursively merged into the generated OpenAPI schema
-  * It can be used
 * `validate`
   * Validates that the returned OpenAPI schema is valid according to the OpenAPI specification
   * Defaults to `false`
@@ -180,8 +178,8 @@ The generated OpenAPI schema contains the customer properties `x-graphql-operati
 
 These custom properties contain all necessary information to generate the request handlers.
 
-The function [`createExpressMiddlewareFromOpenAPISchema`](https://freshcells.github.io/graphql-rest-converter/modules.html#createExpressMiddlewareFromOpenAPISchema) can be used to create the request handlers as an express middleware
-from an OpenAPI schema containing these custom properties.
+The function [`createExpressMiddlewareFromOpenAPISchema`](https://freshcells.github.io/graphql-rest-converter/modules.html#createExpressMiddlewareFromOpenAPISchema)
+can be used to create the request handlers as an express middleware from an OpenAPI schema containing these custom properties.
 
 To remove the custom properties from the OpenAPI schema, for example before serving it publicly, the function [`removeCustomProperties`](https://freshcells.github.io/graphql-rest-converter/modules.html#removeCustomProperties) can be used.
 
