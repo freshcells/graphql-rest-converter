@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "ES2022",
     "module": "commonjs",
     "declaration": true,
     "declarationMap": true,
@@ -11,9 +11,7 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "src"
+    "src", "types/**/*.d.ts"
   ],
-  "exclude": [
-    "**/__tests__"
-  ]
+  "exclude": []
 }

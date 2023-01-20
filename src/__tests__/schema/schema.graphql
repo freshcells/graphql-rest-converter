@@ -1,0 +1,23 @@
+type Sample {
+  id: String!
+  name: String!
+}
+
+input SampleInput {
+  name: String!
+  references: [SampleInput!]!
+}
+
+type Mutation {
+  createSample(input: SampleInput!): Sample
+  updateSample(id: String!, input: SampleInput!): Boolean
+}
+
+type Query {
+  getSamples: [Sample!]!
+}
+
+schema {
+  mutation: Mutation
+  query: Query
+}

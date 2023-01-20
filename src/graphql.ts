@@ -31,6 +31,18 @@ const DIRECTIVE_DEFINITION = gql`
     description: String
   }
 
+  enum HTTPVerb {
+    POST
+    PUT
+    DELETE
+  }
+
+  enum ParameterSource {
+    PATH
+    QUERY
+    HEADER
+  }
+
   directive @OAQuery(
     path: String!
     tags: [String!]
@@ -41,16 +53,39 @@ const DIRECTIVE_DEFINITION = gql`
   ) on QUERY
 
   directive @OAParam(
-    in: String
+    in: ParameterSource
     deprecated: Boolean
     description: String
     name: String
   ) on VARIABLE_DEFINITION
+
+  directive @OAMutation(
+    path: String!
+    tags: [String!]
+    summary: String
+    description: String
+    externalDocs: OAExternalDocsInput
+    deprecated: Boolean
+    "defaults to POST"
+    httpVerb: HTTPVerb
+  ) on MUTATION
+
+  directive @OABody(
+    "Assume variable name if undefined"
+    path: String
+    deprecated: Boolean
+    description: String
+  ) on VARIABLE_DEFINITION
+
+  directive @OAMap(to: String, from: String) on INPUT_FIELD_DEFINITION | VARIABLE_DEFINITION
 `
 
 enum OpenAPIDirectives {
   Query = 'OAQuery',
   Param = 'OAParam',
+  Mutation = 'OAMutation',
+  Body = 'OABody',
+  Map = 'OAMap',
 }
 
 const graphqlQueryDirectiveDataToOpenAPIOperation = (requestConfig: OpenAPIQueryDirectiveData) => {
@@ -81,27 +116,29 @@ const getOpenAPIParameters = (
     if (nameOverride) {
       parameterName = nameOverride
     }
-    if (variableDirectiveData.in) {
-      if (pathVariables.has(parameterName) && variableDirectiveData.in !== 'path') {
+    const variableDirectiveDataIn = variableDirectiveData.in?.toLowerCase()
+
+    if (variableDirectiveDataIn) {
+      if (pathVariables.has(parameterName) && variableDirectiveDataIn !== 'path') {
         throw new Error(
-          `Location ${variableDirectiveData.in} invalid for parameter ${parameterName} because it is part of the path`
+          `Location ${variableDirectiveDataIn} invalid for parameter ${parameterName} because it is part of the path`
         )
       }
-      if (!pathVariables.has(parameterName) && variableDirectiveData.in === 'path') {
+      if (!pathVariables.has(parameterName) && variableDirectiveDataIn === 'path') {
         throw new Error(
-          `Location ${variableDirectiveData.in} invalid for parameter ${parameterName} because it is not part of the path`
+          `Location ${variableDirectiveDataIn} invalid for parameter ${parameterName} because it is not part of the path`
         )
       }
-      if (variableDirectiveData.in === 'cookie') {
+      if (variableDirectiveDataIn === 'cookie') {
         throw new Error(`Unsupported parameter location cookie for parameter ${parameterName}`)
       }
-      if (!['path', 'query', 'header'].includes(variableDirectiveData.in)) {
+      if (!['path', 'query', 'header'].includes(variableDirectiveDataIn)) {
         throw new Error(
-          `Unknown parameter location ${variableDirectiveData.in} for parameter ${parameterName}`
+          `Unknown parameter location ${variableDirectiveDataIn} for parameter ${parameterName}`
         )
       }
     }
-    if (variableDirectiveData.in && variableDirectiveData.in === 'header') {
+    if (variableDirectiveDataIn && variableDirectiveDataIn === 'header') {
       parameterName = parameterName.toLowerCase()
     }
     if (parameterName !== variableName) {
@@ -110,8 +147,8 @@ const getOpenAPIParameters = (
 
     const in_ = pathVariables.has(parameterName)
       ? 'path'
-      : variableDirectiveData.in && ['header', 'cookie'].includes(variableDirectiveData.in)
-      ? variableDirectiveData.in
+      : variableDirectiveDataIn && ['header', 'cookie'].includes(variableDirectiveDataIn)
+      ? variableDirectiveDataIn
       : 'query'
     const deprecated = variableDirectiveData.deprecated
     const description = variableDirectiveData.description
