@@ -4325,11 +4325,11 @@ openapi-jsonschema-parameters@^12.0.0:
     openapi-types "^12.0.0"
 
 openapi-request-coercer@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/openapi-request-coercer/-/openapi-request-coercer-12.0.0.tgz#ce5093a89aaf0f38528de58f7b601289dfba0b86"
-  integrity sha512-iWgPUfyrGT5C6MNYnL61YJygwymqwVF57K6Ny9nZC41E14JaC+Wxbw1Q5XsNDi8Q+PolmYO2108RxStrk9wKyA==
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/openapi-request-coercer/-/openapi-request-coercer-12.1.0.tgz#cb2779d0210e97a6627b39b0b57c6435114fc1f9"
+  integrity sha512-fcZSwRsE/L5coxLhCUCa7LMFBJl8lVbihkR8yXbgLr6jAKHXsKGDB9UWVyZCkJecdROSNwUHmBsnN9kScN27Aw==
   dependencies:
-    openapi-types "^12.0.0"
+    openapi-types "^12.1.0"
     ts-log "^2.1.4"
 
 openapi-request-validator@^12.0.0:
@@ -4362,10 +4362,10 @@ openapi-schema-validator@^12.0.0:
     lodash.merge "^4.6.1"
     openapi-types "^12.0.0"
 
-openapi-types@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-12.0.0.tgz#458a99d048f9eae1c067e15d56a8bfb3726041f1"
-  integrity sha512-6Wd9k8nmGQHgCbehZCP6wwWcfXcvinhybUTBatuhjRsCxUIujuYFZc9QnGeae75CyHASewBtxs0HX/qwREReUw==
+openapi-types@^12.0.0, openapi-types@^12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-12.1.0.tgz#bd01acc937b73c9f6db2ac2031bf0231e21ebff0"
+  integrity sha512-XpeCy01X6L5EpP+6Hc3jWN7rMZJ+/k1lwki/kTmWzbVhdPie3jd5O2ZtedEx8Yp58icJ0osVldLMrTB/zslQXA==
 
 opener@^1.5.2:
   version "1.5.2"
