@@ -4345,12 +4345,12 @@ openapi-request-validator@^12.0.0:
     ts-log "^2.1.4"
 
 openapi-response-validator@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/openapi-response-validator/-/openapi-response-validator-12.0.0.tgz#5bbe4c015b33a636572786de63a61b0782dc7894"
-  integrity sha512-02zzantcJFYBeBeDJVLLNUushxMYkdM4tD9+V1BM7U/witfEc++IX0C/GRuEa1KJ/TTLvnzsXbyR/o/9DipUKg==
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/openapi-response-validator/-/openapi-response-validator-12.1.0.tgz#644dc1069dc8c8c1a452751e46df1e5af891ee9f"
+  integrity sha512-GavGFToPoCt6iF5IZXfyXggmu4urNYmC0FN4CLJF5y8mbwWviI73Te5fybiUE2TmXvvaGSs9EKumSX7Ibxv6Sw==
   dependencies:
     ajv "^8.4.0"
-    openapi-types "^12.0.0"
+    openapi-types "^12.1.0"
 
 openapi-schema-validator@^12.0.0:
   version "12.0.0"
@@ -4362,10 +4362,10 @@ openapi-schema-validator@^12.0.0:
     lodash.merge "^4.6.1"
     openapi-types "^12.0.0"
 
-openapi-types@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-12.0.0.tgz#458a99d048f9eae1c067e15d56a8bfb3726041f1"
-  integrity sha512-6Wd9k8nmGQHgCbehZCP6wwWcfXcvinhybUTBatuhjRsCxUIujuYFZc9QnGeae75CyHASewBtxs0HX/qwREReUw==
+openapi-types@^12.0.0, openapi-types@^12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-12.1.0.tgz#bd01acc937b73c9f6db2ac2031bf0231e21ebff0"
+  integrity sha512-XpeCy01X6L5EpP+6Hc3jWN7rMZJ+/k1lwki/kTmWzbVhdPie3jd5O2ZtedEx8Yp58icJ0osVldLMrTB/zslQXA==
 
 opener@^1.5.2:
   version "1.5.2"
