@@ -26,12 +26,15 @@ import {
   isWrappingType,
   Kind,
   OperationDefinitionNode,
+  OperationTypeNode,
+  printSourceLocation,
   SelectionSetNode,
   typeFromAST,
   valueFromAST,
 } from 'graphql'
 import { OAType, SchemaComponents } from './types'
-import { hasDirective, isFragmentDefinitionNode } from './graphqlUtils'
+import { formatMessageWithLocation, hasDirective, isFragmentDefinitionNode } from './graphqlUtils'
+import { printLocation } from 'graphql/language/printLocation'
 
 const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', 'skip'])
 
@@ -233,7 +236,24 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   }
 
   public responseSchemaFromOperation(operation: OperationDefinitionNode) {
-    return this.fromType(this.graphqlSchema.getQueryType()!, operation.selectionSet, true)
+    if (operation.operation === OperationTypeNode.SUBSCRIPTION) {
+      throw new Error(
+        formatMessageWithLocation(
+          `Subscriptions (at: ${
+            operation.name?.value || 'unknown'
+          }) are unsupported at this moment.`,
+          operation.loc
+        )
+      )
+    }
+
+    return this.fromType(
+      operation.operation === OperationTypeNode.MUTATION
+        ? this.graphqlSchema.getMutationType()!
+        : this.graphqlSchema.getQueryType()!,
+      operation.selectionSet,
+      true
+    )
   }
 
   public fromTypeNonNull(type: GraphQLNullableType, selectionSet?: SelectionSetNode): OAType {
@@ -350,7 +370,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   }
 
   public getTypenameSchema = this.fromReference<GraphQLCompositeType>(
-    (type) => `${type.name}|__typename`,
+    (type) => `${type.name}.__typename`,
     (type) => ({
       type: 'string',
       enum: this.getPossibleTypes(type),
@@ -370,7 +390,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   }
 
   public fromFragment = this.fromReference<FragmentDefinitionNode>(
-    (fragment) => `${fragment.typeCondition.name.value}|${fragment.name.value}`,
+    (fragment) => `${fragment.typeCondition.name.value}.${fragment.name.value}`,
     (fragment) => {
       const typeFromConditionName = fragment.typeCondition.name.value
       const typeFromCondition = this.graphqlSchema.getType(typeFromConditionName)!

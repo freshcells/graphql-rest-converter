@@ -84,7 +84,7 @@ const EXPECTATIONS = {
           type: 'object',
           properties: {
             __typename: {
-              $ref: '#/components/schemas/A|__typename',
+              $ref: '#/components/schemas/A.__typename',
             },
             a1: {
               type: 'integer',
@@ -104,7 +104,7 @@ const EXPECTATIONS = {
       required: ['a'],
     },
     schemaComponents: {
-      'A|__typename': {
+      'A.__typename': {
         enum: ['A1', 'A2'],
         type: 'string',
       },

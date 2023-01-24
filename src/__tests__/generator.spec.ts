@@ -6,45 +6,55 @@ import { gql } from 'graphql-tag'
 const api = gql`
   # This will define our OpenAPI Schema
 
-  "The description for this type"
-  input DifferentInputInsideArray {
-    "The description for this field"
-    myName: String! @OAMap(to: "name")
-    "Another description"
-    myReference: [DifferentInputInsideArray!] @OAMap(to: "references")
-  }
-
-  mutation createSample(
-    $name: String! @OABody
-    $references: [SampleInput!]!
-      @OABody(path: "some.where")
-      @OAMap(from: "[DifferentInputInsideArray!]!")
-  )
-  @OAMutation(path: "/sample", httpVerb: POST, tags: ["Sample"], summary: "Creates a new sample") {
-    createSample(input: { name: $name, references: $references }) {
+  mutation createSample($sample: SampleInput! @OABody)
+  @OAOperation(path: "/sample", method: POST, tags: ["Sample"], summary: "Creates a new sample") {
+    createSample(input: $sample) {
       id
       name
     }
   }
 
-  # My sample
   fragment MySamples on Sample {
-    id
-    name
+    myId: id
+    myName: name
   }
 
-  query getSamples @OAQuery(path: "/samples", description: "Get all samples") {
+  query getSamples @OAOperation(path: "/samples", description: "Get all samples") {
     getSamples {
+      ...MySamples
+    }
+  }
+
+  query getSample($id: String! @OAParam(in: PATH))
+  @OAOperation(path: "/sample/{id}", description: "Get all samples") {
+    getSample(id: $id) {
       ...MySamples
     }
   }
 `
 
+const graphqlSchema = buildASTSchema(schema)
+
 describe('OpenAPI Generation', () => {
+  it('should throw for unsupported operations', () => {
+    expect(() => {
+      createOpenAPIGraphQLBridge({
+        graphqlDocument: gql`
+          subscription mySubscription($id: ID!) @OAOperation(path: "/someOp") {
+            sampleAdded(id: $id) {
+              id
+            }
+          }
+        `,
+        graphqlSchema,
+      })
+    }).toThrow(/Subscriptions \(at: mySubscription\) are unsupported at this moment/)
+  })
+
   it('should create schema from graphql api', () => {
     const bridge = createOpenAPIGraphQLBridge({
       graphqlDocument: api,
-      graphqlSchema: buildASTSchema(schema),
+      graphqlSchema,
     })
 
     const openAPISchema = bridge.getOpenAPISchema({

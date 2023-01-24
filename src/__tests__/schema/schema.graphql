@@ -3,9 +3,13 @@ type Sample {
   name: String!
 }
 
+input AnotherInput {
+  anotherProperty: Int
+}
+
 input SampleInput {
   name: String!
-  references: [SampleInput!]!
+  moreData: [AnotherInput!]!
 }
 
 type Mutation {
@@ -15,9 +19,15 @@ type Mutation {
 
 type Query {
   getSamples: [Sample!]!
+  getSample(id: String!): Sample!
+}
+
+type Subscription {
+  sampleAdded(id: ID!): Sample!
 }
 
 schema {
   mutation: Mutation
   query: Query
+  subscription: Subscription
 }

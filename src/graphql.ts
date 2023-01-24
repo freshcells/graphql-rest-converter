@@ -9,6 +9,7 @@ import {
   buildASTSchema,
   OperationDefinitionNode,
   GraphQLDirective,
+  OperationTypeNode,
 } from 'graphql'
 import { gql } from 'graphql-tag'
 import { OpenAPIV3 } from 'openapi-types'
@@ -32,6 +33,7 @@ const DIRECTIVE_DEFINITION = gql`
   }
 
   enum HTTPVerb {
+    GET
     POST
     PUT
     DELETE
@@ -43,14 +45,16 @@ const DIRECTIVE_DEFINITION = gql`
     HEADER
   }
 
-  directive @OAQuery(
+  directive @OAOperation(
     path: String!
     tags: [String!]
     summary: String
     description: String
     externalDocs: OAExternalDocsInput
     deprecated: Boolean
-  ) on QUERY
+    "defaults to GET"
+    method: HTTPVerb
+  ) on QUERY | MUTATION
 
   directive @OAParam(
     in: ParameterSource
@@ -58,17 +62,6 @@ const DIRECTIVE_DEFINITION = gql`
     description: String
     name: String
   ) on VARIABLE_DEFINITION
-
-  directive @OAMutation(
-    path: String!
-    tags: [String!]
-    summary: String
-    description: String
-    externalDocs: OAExternalDocsInput
-    deprecated: Boolean
-    "defaults to POST"
-    httpVerb: HTTPVerb
-  ) on MUTATION
 
   directive @OABody(
     "Assume variable name if undefined"
@@ -81,9 +74,8 @@ const DIRECTIVE_DEFINITION = gql`
 `
 
 enum OpenAPIDirectives {
-  Query = 'OAQuery',
+  Operation = 'OAOperation',
   Param = 'OAParam',
-  Mutation = 'OAMutation',
   Body = 'OABody',
   Map = 'OAMap',
 }
@@ -178,6 +170,7 @@ type OpenAPIQueryDirectiveData = {
     description?: string
   }
   deprecated?: boolean
+  method: OpenAPIV3.HttpMethods
 }
 
 type OpenAPIParamDirectiveData = {
@@ -260,13 +253,13 @@ export const getOpenAPIGraphQLOperations = (
       continue
     }
 
-    const queryDirective = getDirective(operation, OpenAPIDirectives.Query)
+    const queryDirective = getDirective(operation, OpenAPIDirectives.Operation)
     if (!queryDirective) {
       continue
     }
 
     const queryDirectiveData = getDirectiveArguments(
-      directiveSchema.getDirective(OpenAPIDirectives.Query)!,
+      directiveSchema.getDirective(OpenAPIDirectives.Operation)!,
       queryDirective
     ) as OpenAPIQueryDirectiveData
 
@@ -312,9 +305,15 @@ export const getOpenAPIGraphQLOperations = (
       queryDirectiveData
     )
 
+    const defaultMethod =
+      operation_.operation === OperationTypeNode.MUTATION
+        ? OpenAPIV3.HttpMethods.POST
+        : OpenAPIV3.HttpMethods.GET
+
     const graphqlOpenAPIOperation = {
       openAPIOperation,
-      httpMethod: OpenAPIV3.HttpMethods.GET,
+      httpMethod:
+        (queryDirectiveData.method?.toLowerCase() as OpenAPIV3.HttpMethods) || defaultMethod,
       graphqlDocument: singleOperationDocument,
       variableMap,
       path: queryDirectiveData.path,
