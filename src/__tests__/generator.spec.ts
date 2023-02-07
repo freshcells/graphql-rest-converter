@@ -51,6 +51,39 @@ describe('OpenAPI Generation', () => {
     }).toThrow(/Subscriptions \(at: mySubscription\) are unsupported at this moment/)
   })
 
+  it('should generate schema for mutation', () => {
+    const bridgeMutation = createOpenAPIGraphQLBridge({
+      graphqlDocument: gql`
+        mutation createSample($sample: SampleInput! @OABody)
+        @OAOperation(
+          path: "/sample"
+          method: POST
+          tags: ["Sample"]
+          summary: "Creates a new sample"
+        ) {
+          createSample(input: $sample) {
+            id
+            name
+          }
+        }
+      `,
+      graphqlSchema,
+    })
+    const openAPIMutationSchema = bridgeMutation.getOpenAPISchema({
+      baseSchema: {
+        openapi: '3.0.3',
+        info: {
+          title: 'Sample API',
+          version: '1.0.0',
+          description: 'My API',
+        },
+      },
+    })
+    expect(openAPIMutationSchema).toBeTruthy()
+    expect(openAPIMutationSchema.paths['/sample']?.post?.operationId).toEqual('createSample')
+    expect(openAPIMutationSchema.paths['/sample']?.post?.parameters).toBeTruthy()
+  })
+
   it('should create schema from graphql api', () => {
     const bridge = createOpenAPIGraphQLBridge({
       graphqlDocument: api,
