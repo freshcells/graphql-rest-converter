@@ -327,3 +327,80 @@ export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeCon
       createOpenAPISchemaWithValidate(operations, config),
   }
 }
+
+export const transformer = () => {
+  return {
+    transformations: [
+      {
+        test: (operation: OpenAPIGraphQLOperation) => operation.path === '/sample',
+        openAPIOperation: (openAPIOperation: OpenAPIV3.OperationObject) => {
+          let openAPIOperationUpdated = {
+            ...openAPIOperation,
+            responses: {
+              ...openAPIOperation.responses,
+              '201': {
+                description: 'Created',
+              },
+              '401': {
+                description: 'Unauthorized',
+              },
+              '403': {
+                description: 'Forbidden',
+              },
+              '400': {
+                description: 'Field does not exist',
+              },
+              '500': {
+                description: 'Server Error',
+              },
+            },
+          }
+          return openAPIOperationUpdated
+        },
+        request: async (request: GraphQLExecutorArgs, next: any) => {
+          const result: ExecutionResult = await next(request)
+          let resultCopy = {}
+
+          let errorsExistance = result?.errors?.filter(
+            ({ message }) =>
+              message.indexOf('Syntax Error') !== -1 || message.indexOf('Cannot query field') !== -1
+          )
+          let errorsForbidden = result?.errors?.filter(
+            ({ message }) => message.indexOf('forbidden') !== -1
+          )
+
+          if (errorsExistance !== undefined && errorsExistance?.length > 0) {
+            resultCopy = {
+              ...result,
+              errors: {
+                ...result.errors,
+                message: 'Bad Request',
+                code: '400',
+              },
+            }
+          } else if (errorsForbidden !== undefined && errorsForbidden?.length > 0) {
+            resultCopy = {
+              ...result,
+              errors: {
+                ...result.errors,
+                message: 'Forbidden Operation',
+                code: '403',
+              },
+            }
+          } else {
+            resultCopy = {
+              ...result,
+              errors: {
+                ...result.errors,
+                message: 'Internal Server Error',
+                code: '500',
+              },
+            }
+          }
+
+          return resultCopy
+        },
+      },
+    ],
+  }
+}
