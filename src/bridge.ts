@@ -334,7 +334,7 @@ export const transformer = () => {
       {
         test: (operation: OpenAPIGraphQLOperation) => operation.path === '/sample',
         openAPIOperation: (openAPIOperation: OpenAPIV3.OperationObject) => {
-          let openAPIOperationUpdated = {
+          const openAPIOperationUpdated = {
             ...openAPIOperation,
             responses: {
               ...openAPIOperation.responses,
@@ -361,11 +361,11 @@ export const transformer = () => {
           const result: ExecutionResult = await next(request)
           let resultCopy = {}
 
-          let errorsExistance = result?.errors?.filter(
+          const errorsExistance = result?.errors?.filter(
             ({ message }) =>
               message.indexOf('Syntax Error') !== -1 || message.indexOf('Cannot query field') !== -1
           )
-          let errorsForbidden = result?.errors?.filter(
+          const errorsForbidden = result?.errors?.filter(
             ({ message }) => message.indexOf('forbidden') !== -1
           )
 
