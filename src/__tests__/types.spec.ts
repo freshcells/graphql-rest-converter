@@ -68,16 +68,12 @@ query getB ($foo: Boolean!) {
 
 const EXPECTATIONS = {
   getA: {
-    parameters: [
-      {
-        name: 'foo',
-        required: true,
-        schema: {
-          type: 'boolean',
-        },
+    variables: {
+      foo: {
+        type: 'boolean',
       },
-    ],
-    response: {
+    },
+    result: {
       type: 'object',
       properties: {
         a: {

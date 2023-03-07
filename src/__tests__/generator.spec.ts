@@ -57,7 +57,7 @@ describe('OpenAPI Generation', () => {
       graphqlSchema,
     })
 
-    const openAPISchema = bridge.getOpenAPISchema({
+    bridge.getOpenAPISchema({
       baseSchema: {
         openapi: '3.0.3',
         info: {
@@ -67,7 +67,5 @@ describe('OpenAPI Generation', () => {
         },
       },
     })
-    // paste to https://editor.swagger.io/
-    console.log(JSON.stringify(openAPISchema))
   })
 })

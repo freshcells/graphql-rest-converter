@@ -23,8 +23,9 @@ import {
   getReferencedFragments,
   isOperationDefinitionNode,
 } from './graphqlUtils'
-import { CustomProperties, OAType, OpenAPIGraphQLOperation } from './types'
+import { CustomProperties, OAType, BridgeOperation } from './types'
 import { getReferenceableFragments, GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
+import { isNullable } from './openApi'
 
 const DIRECTIVE_DEFINITION = gql`
   input OAExternalDocsInput {
@@ -32,7 +33,7 @@ const DIRECTIVE_DEFINITION = gql`
     description: String
   }
 
-  enum HTTPVerb {
+  enum HttpMethod {
     GET
     POST
     PUT
@@ -53,7 +54,7 @@ const DIRECTIVE_DEFINITION = gql`
     externalDocs: OAExternalDocsInput
     deprecated: Boolean
     "defaults to GET"
-    method: HTTPVerb
+    method: HttpMethod
   ) on QUERY | MUTATION
 
   directive @OAParam(
@@ -63,24 +64,18 @@ const DIRECTIVE_DEFINITION = gql`
     name: String
   ) on VARIABLE_DEFINITION
 
-  directive @OABody(
-    "Assume variable name if undefined"
-    path: String
-    deprecated: Boolean
-    description: String
-  ) on VARIABLE_DEFINITION
-
-  directive @OAMap(to: String, from: String) on INPUT_FIELD_DEFINITION | VARIABLE_DEFINITION
+  directive @OABody(description: String) on VARIABLE_DEFINITION
 `
 
 enum OpenAPIDirectives {
   Operation = 'OAOperation',
   Param = 'OAParam',
   Body = 'OABody',
-  Map = 'OAMap',
 }
 
-const graphqlQueryDirectiveDataToOpenAPIOperation = (requestConfig: OpenAPIQueryDirectiveData) => {
+const graphqlOperationDirectiveDataToOpenAPIOperation = (
+  requestConfig: OpenAPIOperationDirectiveData
+) => {
   const { tags, summary, description, externalDocs, deprecated } = requestConfig
   return {
     ...(tags?.length ? { tags } : {}),
@@ -92,45 +87,44 @@ const graphqlQueryDirectiveDataToOpenAPIOperation = (requestConfig: OpenAPIQuery
 }
 
 const getOpenAPIParameters = (
-  parameters: Omit<OpenAPIV3.ParameterObject, 'in'>[],
+  variablesSchema: Record<string, OAType>,
   path: string,
-  variablesDirectiveData: Record<string, OpenAPIParamDirectiveData>
+  paramsDirectiveData: Record<string, OpenAPIParamDirectiveData>
 ) => {
-  const adjustedParameters: OpenAPIV3.ParameterObject[] = []
+  const parameters: OpenAPIV3.ParameterObject[] = []
   const variableMap: Record<string, string> = {}
 
   const pathVariables = new Set(getVariablesFromPathTemplate(path))
-  for (const parameter of parameters) {
-    const variableName = parameter.name
-    const variableDirectiveData = variablesDirectiveData[variableName]
+
+  for (const [variableName, paramDirectiveData] of Object.entries(paramsDirectiveData)) {
     let parameterName = variableName
-    const nameOverride = variableDirectiveData.name
+    const nameOverride = paramDirectiveData.name
     if (nameOverride) {
       parameterName = nameOverride
     }
-    const variableDirectiveDataIn = variableDirectiveData.in?.toLowerCase()
+    const paramDirectiveDataIn = paramDirectiveData.in?.toLowerCase()
 
-    if (variableDirectiveDataIn) {
-      if (pathVariables.has(parameterName) && variableDirectiveDataIn !== 'path') {
+    if (paramDirectiveDataIn) {
+      if (pathVariables.has(parameterName) && paramDirectiveDataIn !== 'path') {
         throw new Error(
-          `Location ${variableDirectiveDataIn} invalid for parameter ${parameterName} because it is part of the path`
+          `Location ${paramDirectiveDataIn} invalid for parameter ${parameterName} because it is part of the path`
         )
       }
-      if (!pathVariables.has(parameterName) && variableDirectiveDataIn === 'path') {
+      if (!pathVariables.has(parameterName) && paramDirectiveDataIn === 'path') {
         throw new Error(
-          `Location ${variableDirectiveDataIn} invalid for parameter ${parameterName} because it is not part of the path`
+          `Location ${paramDirectiveDataIn} invalid for parameter ${parameterName} because it is not part of the path`
         )
       }
-      if (variableDirectiveDataIn === 'cookie') {
+      if (paramDirectiveDataIn === 'cookie') {
         throw new Error(`Unsupported parameter location cookie for parameter ${parameterName}`)
       }
-      if (!['path', 'query', 'header'].includes(variableDirectiveDataIn)) {
+      if (!['path', 'query', 'header'].includes(paramDirectiveDataIn)) {
         throw new Error(
-          `Unknown parameter location ${variableDirectiveDataIn} for parameter ${parameterName}`
+          `Unknown parameter location ${paramDirectiveDataIn} for parameter ${parameterName}`
         )
       }
     }
-    if (variableDirectiveDataIn && variableDirectiveDataIn === 'header') {
+    if (paramDirectiveDataIn && paramDirectiveDataIn === 'header') {
       parameterName = parameterName.toLowerCase()
     }
     if (parameterName !== variableName) {
@@ -139,28 +133,47 @@ const getOpenAPIParameters = (
 
     const in_ = pathVariables.has(parameterName)
       ? 'path'
-      : variableDirectiveDataIn && ['header', 'cookie'].includes(variableDirectiveDataIn)
-      ? variableDirectiveDataIn
+      : paramDirectiveDataIn && ['header', 'cookie'].includes(paramDirectiveDataIn)
+      ? paramDirectiveDataIn
       : 'query'
-    const deprecated = variableDirectiveData.deprecated
-    const description = variableDirectiveData.description
-    adjustedParameters.push({
-      ...parameter,
+    const deprecated = paramDirectiveData.deprecated
+    const description = paramDirectiveData.description
+    const schema = variablesSchema[variableName]
+    parameters.push({
       in: in_,
       name: parameterName,
-      ...(nameOverride ? { [CustomProperties.VariableName]: parameter.name } : {}),
+      schema,
+      ...(isNullable(schema) ? { required: true } : {}),
+      ...(nameOverride ? { [CustomProperties.VariableName]: variableName } : {}),
       ...(deprecated === true ? { deprecated } : {}),
       ...(description ? { description } : {}),
     })
   }
 
   return {
-    parameters: adjustedParameters,
+    parameters,
     variableMap,
   }
 }
 
-type OpenAPIQueryDirectiveData = {
+const getOpenAPIRequestBody = (
+  variablesSchema: Record<string, OAType>,
+  variableName: string,
+  bodyDirectiveData: OpenAPIBodyDirectiveData
+) => {
+  const description = bodyDirectiveData.description
+  return {
+    content: {
+      'application/json': {
+        schema: variablesSchema[variableName],
+      },
+    },
+    ...(description ? { description } : {}),
+    [CustomProperties.VariableName]: variableName,
+  }
+}
+
+type OpenAPIOperationDirectiveData = {
   path: string
   tags?: [string]
   summary?: string
@@ -180,19 +193,24 @@ type OpenAPIParamDirectiveData = {
   name?: string
 }
 
+type OpenAPIBodyDirectiveData = {
+  description?: string
+}
+
 const createOpenAPIOperation = (
   operationId: string | null,
   operationSource: string,
   parameters: OpenAPIV3.ParameterObject[],
-  responseSchema: OAType,
-  queryDirectiveData: OpenAPIQueryDirectiveData
+  requestBody: OpenAPIV3.RequestBodyObject | null,
+  resultSchema: OAType,
+  operationDirectiveData: OpenAPIOperationDirectiveData
 ) => {
   const responses = {
     '200': {
       description: 'Success',
       content: {
         'application/json': {
-          schema: responseSchema,
+          schema: resultSchema,
         },
       },
     },
@@ -206,32 +224,51 @@ const createOpenAPIOperation = (
   return {
     ...(operationId !== null ? { operationId } : {}),
     [CustomProperties.Operation]: operationSource,
-    ...graphqlQueryDirectiveDataToOpenAPIOperation(queryDirectiveData),
+    ...graphqlOperationDirectiveDataToOpenAPIOperation(operationDirectiveData),
     parameters,
+    ...(requestBody !== null ? { requestBody } : {}),
     responses,
   }
 }
 
 const getVariablesDirectiveData = (
-  directive: GraphQLDirective,
+  paramDirectiveDefinition: GraphQLDirective,
+  bodyDirectiveDefinition: GraphQLDirective,
   operation: OperationDefinitionNode
 ) => {
-  const result: Record<string, OpenAPIParamDirectiveData> = {}
+  const paramsDirectiveData: Record<string, OpenAPIParamDirectiveData> = {}
+  const bodiesDirectiveData: Record<string, OpenAPIParamDirectiveData> = {}
+
   for (const variableDefinition of operation.variableDefinitions || []) {
+    const bodyDirective = getDirective(variableDefinition, OpenAPIDirectives.Body)
+    if (bodyDirective) {
+      bodiesDirectiveData[variableDefinition.variable.name.value] = getDirectiveArguments(
+        bodyDirectiveDefinition,
+        bodyDirective
+      ) as OpenAPIBodyDirectiveData
+      continue
+    }
     const paramDirective = getDirective(variableDefinition, OpenAPIDirectives.Param)
-    result[variableDefinition.variable.name.value] = paramDirective
-      ? (getDirectiveArguments(directive, paramDirective) as OpenAPIParamDirectiveData)
+    paramsDirectiveData[variableDefinition.variable.name.value] = paramDirective
+      ? (getDirectiveArguments(
+          paramDirectiveDefinition,
+          paramDirective
+        ) as OpenAPIParamDirectiveData)
       : {}
   }
-  return result
+
+  return {
+    paramsDirectiveData,
+    bodiesDirectiveData,
+  }
 }
 
-export const getOpenAPIGraphQLOperations = (
+export const getBridgeOperations = (
   schema: GraphQLSchema,
   document: DocumentNode,
   customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject
 ) => {
-  const result: Array<OpenAPIGraphQLOperation> = []
+  const bridgeOperations: Array<BridgeOperation> = []
 
   const fragmentMap = createFragmentMap(document.definitions)
 
@@ -253,22 +290,31 @@ export const getOpenAPIGraphQLOperations = (
       continue
     }
 
-    const queryDirective = getDirective(operation, OpenAPIDirectives.Operation)
-    if (!queryDirective) {
+    const operationDirective = getDirective(operation, OpenAPIDirectives.Operation)
+    if (!operationDirective) {
       continue
     }
 
-    const queryDirectiveData = getDirectiveArguments(
-      directiveSchema.getDirective(OpenAPIDirectives.Operation)!,
-      queryDirective
-    ) as OpenAPIQueryDirectiveData
+    // # Extract all directives
 
-    const variablesDirectiveData = getVariablesDirectiveData(
+    const operationDirectiveData = getDirectiveArguments(
+      directiveSchema.getDirective(OpenAPIDirectives.Operation)!,
+      operationDirective
+    ) as OpenAPIOperationDirectiveData
+
+    const { paramsDirectiveData, bodiesDirectiveData } = getVariablesDirectiveData(
       directiveSchema.getDirective(OpenAPIDirectives.Param)!,
+      directiveSchema.getDirective(OpenAPIDirectives.Body)!,
       operation
     )
 
+    // # Compile stand-alone document
+
+    // ## Remove custom directives
+
     const operation_ = removeOpenAPIDirectives(operation)
+
+    // ## Include dependency fragments
 
     const operationFragmentDependencies = getDependencyClosure(
       getReferencedFragments(operation_),
@@ -285,44 +331,75 @@ export const getOpenAPIGraphQLOperations = (
 
     const operationId = operation_.name ? operation_.name.value : null
 
-    const parametersSchema = typeConverter.parametersFromOperation(operation_)
+    // # Extract types from GraphQL operation
 
-    const responseSchema = typeConverter.responseSchemaFromOperation(operation_)
+    const variablesSchema = typeConverter.variablesFromOperation(operation_)
+
+    const resultSchema = typeConverter.resultFromOperation(operation_)
+
+    // # Build OpenAPI schema
+
+    // ## Build OpenAPI schema: Parameters
 
     const { parameters, variableMap } = getOpenAPIParameters(
-      parametersSchema,
-      queryDirectiveData.path,
-      variablesDirectiveData
+      variablesSchema,
+      operationDirectiveData.path,
+      paramsDirectiveData
     )
 
+    // ## Build OpenAPI schema: Request body
+
+    const bodyVariables = Object.keys(bodiesDirectiveData)
+    if (bodyVariables.length > 1) {
+      throw new Error('Only one "OABody" variable allowed')
+    }
+    const requestBodyVariable = bodyVariables.length === 1 ? bodyVariables[0] : null
+    const requestBody = requestBodyVariable
+      ? getOpenAPIRequestBody(
+          variablesSchema,
+          requestBodyVariable,
+          bodiesDirectiveData[requestBodyVariable]
+        )
+      : null
+
     const operationSource = print(singleOperationDocument)
+
+    // ## Build OpenAPI schema: Operation
 
     const openAPIOperation = createOpenAPIOperation(
       operationId,
       operationSource,
       parameters,
-      responseSchema,
-      queryDirectiveData
+      requestBody,
+      resultSchema,
+      operationDirectiveData
     )
 
-    const defaultMethod =
+    // # Build bridge operation
+
+    const defaultHttpMethod =
       operation_.operation === OperationTypeNode.MUTATION
         ? OpenAPIV3.HttpMethods.POST
         : OpenAPIV3.HttpMethods.GET
 
-    const graphqlOpenAPIOperation = {
+    const httpMethod =
+      (operationDirectiveData.method?.toLowerCase() as OpenAPIV3.HttpMethods | undefined) ??
+      defaultHttpMethod
+
+    const bridgeOperation = {
       openAPIOperation,
-      httpMethod:
-        (queryDirectiveData.method?.toLowerCase() as OpenAPIV3.HttpMethods) || defaultMethod,
+      path: operationDirectiveData.path,
+      httpMethod,
       graphqlDocument: singleOperationDocument,
       variableMap,
-      path: queryDirectiveData.path,
+      requestBodyVariable,
     }
-    result.push(graphqlOpenAPIOperation)
+
+    bridgeOperations.push(bridgeOperation)
   }
 
   return {
-    operations: result,
+    operations: bridgeOperations,
     schemaComponents: typeConverter.getSchemaComponents(),
   }
 }

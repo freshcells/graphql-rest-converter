@@ -4,20 +4,21 @@ import { PartialDeep } from 'type-fest'
 
 export type PartialOpenAPIDocument = PartialDeep<OpenAPIV3.Document>
 
-export type OpenAPIGraphQLOperation = {
+export type BridgeOperation = {
   openAPIOperation: OpenAPIV3.OperationObject
   path: string
   httpMethod: OpenAPIV3.HttpMethods
   graphqlDocument: DocumentNode
   variableMap: Record<string, string>
+  requestBodyVariable: string | null
 }
 
 export type OAType = OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject
 
 export type SchemaComponents = Record<string, OpenAPIV3.SchemaObject>
 
-export type OpenAPIGraphQLOperations = {
-  operations: Array<OpenAPIGraphQLOperation>
+export type BridgeOperations = {
+  operations: Array<BridgeOperation>
   schemaComponents: SchemaComponents
 }
 

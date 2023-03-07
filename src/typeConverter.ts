@@ -27,14 +27,13 @@ import {
   Kind,
   OperationDefinitionNode,
   OperationTypeNode,
-  printSourceLocation,
   SelectionSetNode,
   typeFromAST,
   valueFromAST,
 } from 'graphql'
 import { OAType, SchemaComponents } from './types'
 import { formatMessageWithLocation, hasDirective, isFragmentDefinitionNode } from './graphqlUtils'
-import { printLocation } from 'graphql/language/printLocation'
+import { isNullable } from './openApi'
 
 const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', 'skip'])
 
@@ -73,6 +72,9 @@ const getPossibleTypes = (schema: GraphQLSchema, type: GraphQLCompositeType) =>
     ? [type.name]
     : schema.getPossibleTypes(type).map((possibleType) => possibleType.name)
 
+// NOTE: `isSubType` alternative
+// There is function with a similar functionality available from the GraphQL schema.
+// The check here is broader, as it uses an extensional definition.
 export const possibleTypesSubsetChecker = (schema: GraphQLSchema) => {
   const cache = new Map()
   return (typeA: GraphQLCompositeType, typeB: GraphQLCompositeType) => {
@@ -178,10 +180,6 @@ export const getReferenceableFragments = (
   return new Set([...referenceableFragments].flatMap(([k, v]) => (v ? [k] : [])))
 }
 
-const isNullable = (schema: OAType) => {
-  return 'nullable' in schema && schema.nullable
-}
-
 export class GraphQLTypeToOpenAPITypeSchemaConverter {
   #schemaComponents: SchemaComponents = {}
 
@@ -192,7 +190,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     private customScalars: (scalarTypeName: string) => OpenAPIV3.SchemaObject = (
       scalarTypeName
     ) => {
-      throw new Error('Unknown custom scalar: ' + scalarTypeName)
+      throw new Error(`Unknown custom scalar "${scalarTypeName}"`)
     },
     private fragmentMap: Record<string, FragmentDefinitionNode> = {},
     private referenceableFragments: Set<string> = new Set()
@@ -209,33 +207,26 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   public fromOperation(operation: OperationDefinitionNode) {
     return {
       name: operation.name?.value || null,
-      parameters: this.parametersFromOperation(operation),
-      response: this.responseSchemaFromOperation(operation),
+      variables: this.variablesFromOperation(operation),
+      result: this.resultFromOperation(operation),
       schemaComponents: this.#schemaComponents,
     }
   }
 
-  public parametersFromOperation(
-    operation: OperationDefinitionNode
-  ): Omit<OpenAPIV3.ParameterObject, 'in'>[] {
-    if (!operation.variableDefinitions?.length) {
-      return []
-    }
-    return operation.variableDefinitions.map((variable) => {
+  public variablesFromOperation(operation: OperationDefinitionNode) {
+    const result: Record<string, OAType> = {}
+    for (const variable of operation.variableDefinitions || []) {
       const inputType = typeFromAST(this.graphqlSchema, variable.type as any)! as GraphQLInputType
       const typeSchema = this.fromType(inputType)
       if (variable.defaultValue) {
         mergeDefaultValueToOpenAPISchema(valueFromAST(variable.defaultValue, inputType), typeSchema)
       }
-      return {
-        name: variable.variable.name.value,
-        schema: typeSchema,
-        ...(isNullable(typeSchema) ? {} : { required: true }),
-      }
-    })
+      result[variable.variable.name.value] = typeSchema
+    }
+    return result
   }
 
-  public responseSchemaFromOperation(operation: OperationDefinitionNode) {
+  public resultFromOperation(operation: OperationDefinitionNode) {
     if (operation.operation === OperationTypeNode.SUBSCRIPTION) {
       throw new Error(
         formatMessageWithLocation(
@@ -386,7 +377,12 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       return this.getTypenameSchema(type)
     }
     const type_ = type instanceof GraphQLUnionType ? type.getTypes()[0] : type
-    return this.fromType(type_.getFields()[fieldName].type, selectionSet)
+    const field = type_.getFields()[fieldName]
+    if (!field) {
+      // TODO: Use location aware error?
+      throw new Error(`Unknown field "${fieldName}" on type "${type.name}"`)
+    }
+    return this.fromType(field.type, selectionSet)
   }
 
   public fromFragment = this.fromReference<FragmentDefinitionNode>(
