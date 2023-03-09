@@ -1,24 +1,6 @@
-import schemaWithScalar from './schema/custom-scalars.schema.graphql'
-import { buildASTSchema } from 'graphql'
 import { gql } from 'graphql-tag'
-import { OpenAPIV3 } from 'openapi-types'
 import { createOpenAPIGraphQLBridge } from '../bridge'
-
-export const graphqlSchema = buildASTSchema(schemaWithScalar)
-
-const Scalars: Record<string, OpenAPIV3.SchemaObject> = {
-  Datetime: {
-    type: 'string',
-    format: 'date-time',
-  },
-  Date: {
-    type: 'string',
-    format: 'date',
-  },
-  JSON: {
-    type: 'object',
-  },
-}
+import { Scalars, customScalarSchema as graphqlSchema } from './bridgeFixtures'
 
 describe('Scalars', () => {
   it('should throw if a scalar is not defined', () => {
@@ -93,7 +75,6 @@ describe('Scalars', () => {
       },
       validate: true,
     })
-    console.log(JSON.stringify(schema))
     expect(schema).toMatchSnapshot()
   })
 })

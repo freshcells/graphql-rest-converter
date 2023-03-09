@@ -1,9 +1,11 @@
 import { gql } from 'graphql-tag'
 import { buildASTSchema } from 'graphql/index'
 import schema from './schema/schema.graphql'
+import scalarSchema from './schema/custom-scalars.schema.graphql'
 import { addMocksToSchema } from '@graphql-tools/mock'
 import { createOpenAPIGraphQLBridge } from '../bridge'
 import { makeExecutableSchema } from '@graphql-tools/schema'
+import { OpenAPIV3 } from 'openapi-types'
 
 export const bridgeFixtures = gql`
   # This will define our OpenAPI Schema
@@ -49,6 +51,22 @@ export const bridgeFixtures = gql`
 `
 
 export const graphqlSchema = buildASTSchema(schema)
+
+export const customScalarSchema = buildASTSchema(scalarSchema)
+
+export const Scalars: Record<string, OpenAPIV3.SchemaObject> = {
+  Datetime: {
+    type: 'string',
+    format: 'date-time',
+  },
+  Date: {
+    type: 'string',
+    format: 'date',
+  },
+  JSON: {
+    type: 'object',
+  },
+}
 
 export const gqlSchema = addMocksToSchema({
   schema: makeExecutableSchema({ typeDefs: graphqlSchema }),

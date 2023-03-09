@@ -73,6 +73,7 @@ const addOperation = (
     | undefined
 
   resolveSchemaComponents(parameters_, schemaComponents)
+  resolveSchemaComponents(requestBody_, schemaComponents)
 
   const requestCoercer = new OpenAPIRequestCoercer({
     parameters: parameters_,
