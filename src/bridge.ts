@@ -238,9 +238,9 @@ export type CreateMiddlewareConfig = {
   validateResponse?: boolean
 }
 
-const createExpressMiddleware = (
+const createExpressMiddleware = <R extends Request>(
   operations: BridgeOperations,
-  executor: GraphQLExecutor<Request>,
+  executor: GraphQLExecutor<R>,
   config?: CreateMiddlewareConfig
 ) => {
   // TODO: Avoid depending on express directly?
@@ -369,8 +369,10 @@ export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeCon
   const operations = getBridgeOperations(graphqlSchema_, graphqlDocument_, customScalars)
 
   return {
-    getExpressMiddleware: (executor: GraphQLExecutor<Request>, config?: CreateMiddlewareConfig) =>
-      createExpressMiddleware(operations, executor, config),
+    getExpressMiddleware: <R extends Request>(
+      executor: GraphQLExecutor<R>,
+      config?: CreateMiddlewareConfig
+    ) => createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (
       config: CreateOpenAPISchemaConfig
     ): OpenAPIV3.Document<OperationCustomProperties> =>
