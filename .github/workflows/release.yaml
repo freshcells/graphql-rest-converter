@@ -22,7 +22,7 @@ jobs:
           node-version: '16'
           cache: yarn
       - run: corepack enable
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
