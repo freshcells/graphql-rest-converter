@@ -32,10 +32,24 @@ import {
   valueFromAST,
 } from 'graphql'
 import { OAType, SchemaComponents } from './types'
-import { formatMessageWithLocation, hasDirective, isFragmentDefinitionNode } from './graphqlUtils'
+import {
+  formatMessageWithLocation,
+  getDirective,
+  getDirectiveArgumentsUntyped,
+  hasDirective,
+  isFragmentDefinitionNode,
+} from './graphqlUtils'
 import { isNullable } from './openApi'
+import { OpenAPIDirectives } from './graphql'
 
 const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', 'skip'])
+
+const getDescriptionFromNode = (node?: ASTNode) => {
+  const descriptionDirective = node ? getDirective(node, OpenAPIDirectives.Description) : null
+  return descriptionDirective
+    ? (getDirectiveArgumentsUntyped(descriptionDirective)?.['description'] as string)
+    : undefined
+}
 
 const mergeDefaultValueToOpenAPISchema = (defaultValue: unknown, openAPISchema: OAType) => {
   // Since components are shared we cannot merge default values in
@@ -306,7 +320,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       // TODO: Cannot use `nullable` without `type`
       if (typeSchemaType) {
         return {
-          type: typeSchemaType as any,
+          type: typeSchemaType as OpenAPIV3.NonArraySchemaObjectType,
           allOf: [typeSchema],
           // `nullable: false` should be a no-op, but it seems to help some tooling
           nullable,
@@ -346,11 +360,15 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       if (field.defaultValue) {
         mergeDefaultValueToOpenAPISchema(field.defaultValue, propertyType)
       }
-      properties[field.name] = propertyType
+      properties[field.name] = {
+        description: field.description || undefined,
+        ...propertyType,
+      }
     }
 
     return {
       type: 'object',
+      description: type.description || undefined,
       properties,
       ...(required.length ? { required: _.uniq(required) } : {}),
     }
@@ -402,8 +420,12 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         typeFromCondition as GraphQLCompositeType,
         fragment.selectionSet
       )
+
+      const description = getDescriptionFromNode(fragment)
+
       return {
         type: 'object',
+        description,
         ...(!_.isEmpty(properties) ? { properties } : {}),
         ...(allOf.length ? { allOf } : {}),
         ...(required.length ? { required: _.uniq(required) } : {}),
@@ -424,7 +446,10 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       if (selection.kind === Kind.FIELD) {
         const fieldName = selection.name.value
         const fieldAlias = selection.alias?.value || fieldName
-        properties[fieldAlias] = this.fromField(type, fieldName, selection.selectionSet)
+        properties[fieldAlias] = {
+          description: type.description || getDescriptionFromNode(selection),
+          ...this.fromField(type, fieldName, selection.selectionSet),
+        }
         const isFieldOptional = isOptional || hasOptionalDirective(selection)
         if (!isFieldOptional) {
           required.push(fieldAlias)
@@ -488,6 +513,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     this.addSelectionSet(properties, required, allOf, false, type, selectionSet)
     return {
       type: 'object',
+      description: type?.description || undefined,
       ...(!_.isEmpty(properties) ? { properties } : {}),
       ...(allOf.length ? { allOf } : {}),
       ...(required.length ? { required: _.uniq(required) } : {}),

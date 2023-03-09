@@ -1,30 +1,28 @@
 import { execute, parse, GraphQLSchema, ExecutionResult } from 'graphql'
-import { ClientError, GraphQLClient } from 'graphql-request'
+import { GraphQLClient } from 'graphql-request'
 
 export type GraphQLExecutorArgs = {
   document: string
-  variables: { [key: string]: any }
+  variables: { [key: string]: unknown }
 }
 
 export type GraphQLExecutor = (args: GraphQLExecutorArgs) => Promise<ExecutionResult>
 
+type ExecutorArgs = ConstructorParameters<typeof GraphQLClient>
+
 export const createHttpExecutor = (
-  ...args: ConstructorParameters<typeof GraphQLClient>
+  url: ExecutorArgs[0],
+  requestConfig: ExecutorArgs[1]
 ): GraphQLExecutor => {
-  const client = new GraphQLClient(...args)
+  const client = new GraphQLClient(url, {
+    ...requestConfig,
+    errorPolicy: 'all',
+  })
   return async ({ document, variables }) => {
-    try {
-      // TODO: Use `errorPolicy: 'all'` when released
-      return (await client.rawRequest({
-        query: document,
-        variables,
-      })) as ExecutionResult
-    } catch (e) {
-      if (e instanceof ClientError) {
-        return e.response as ExecutionResult
-      }
-      throw e
-    }
+    return (await client.rawRequest({
+      query: document,
+      variables,
+    })) as ExecutionResult
   }
 }
 

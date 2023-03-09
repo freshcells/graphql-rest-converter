@@ -1,5 +1,6 @@
+"This is the default `Sample` documentation"
 type Sample {
-  id: String!
+  id: Int!
   name: String!
 }
 
@@ -7,23 +8,28 @@ input AnotherInput {
   anotherProperty: Int
 }
 
+"This is the default `SampleInput` documentation"
 input SampleInput {
+  """
+  The name
+  """
   name: String!
   moreData: [AnotherInput!]!
 }
 
 type Mutation {
-  createSample(input: SampleInput!): Sample
-  updateSample(id: String!, input: SampleInput!): Boolean
+  createSample(input: SampleInput!): Sample!
+  updateSample(id: Int!, input: SampleInput!): Sample!
+  deleteSample(id: Int!): Boolean
 }
 
 type Query {
   getSamples: [Sample!]!
-  getSample(id: String!): Sample!
+  getSample(id: Int!): Sample!
 }
 
 type Subscription {
-  sampleAdded(id: ID!): Sample!
+  sampleAdded(id: Int!): Sample!
 }
 
 schema {

@@ -1,8 +1,5 @@
 import { DocumentNode } from 'graphql'
 import { OpenAPIV3 } from 'openapi-types'
-import { PartialDeep } from 'type-fest'
-
-export type PartialOpenAPIDocument = PartialDeep<OpenAPIV3.Document>
 
 export type BridgeOperation = {
   openAPIOperation: OpenAPIV3.OperationObject

@@ -61,16 +61,22 @@ const DIRECTIVE_DEFINITION = gql`
     in: ParameterSource
     deprecated: Boolean
     description: String
+    required: Boolean
     name: String
   ) on VARIABLE_DEFINITION
 
   directive @OABody(description: String) on VARIABLE_DEFINITION
+
+  directive @OADescription(
+    description: String
+  ) on FRAGMENT_DEFINITION | FIELD | INPUT_FIELD_DEFINITION
 `
 
-enum OpenAPIDirectives {
+export enum OpenAPIDirectives {
   Operation = 'OAOperation',
   Param = 'OAParam',
   Body = 'OABody',
+  Description = 'OADescription',
 }
 
 const graphqlOperationDirectiveDataToOpenAPIOperation = (
@@ -138,6 +144,7 @@ const getOpenAPIParameters = (
       : 'query'
     const deprecated = paramDirectiveData.deprecated
     const description = paramDirectiveData.description
+    const required = paramDirectiveData.required
     const schema = variablesSchema[variableName]
     parameters.push({
       in: in_,
@@ -147,6 +154,8 @@ const getOpenAPIParameters = (
       ...(nameOverride ? { [CustomProperties.VariableName]: variableName } : {}),
       ...(deprecated === true ? { deprecated } : {}),
       ...(description ? { description } : {}),
+      // path parameters are always required (see https://swagger.io/docs/specification/describing-parameters/)
+      ...(in_ === 'path' ? { required: true } : { required }),
     })
   }
 
@@ -190,6 +199,7 @@ type OpenAPIParamDirectiveData = {
   in?: string
   deprecated?: boolean
   description?: string
+  required?: boolean
   name?: string
 }
 
@@ -217,7 +227,29 @@ const createOpenAPIOperation = (
     '400': {
       description: 'Invalid request',
       content: {
-        'application/json': {},
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              status: { type: 'number', format: 'int32' },
+              errors: { type: 'array', items: { type: 'object' } },
+            },
+          } as OpenAPIV3.SchemaObject,
+        },
+      },
+    },
+    '500': {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              status: { type: 'number', format: 'int32' },
+              errors: { type: 'array', items: { type: 'object' } },
+            },
+          } as OpenAPIV3.SchemaObject,
+        },
       },
     },
   }

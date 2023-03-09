@@ -13,12 +13,14 @@ import { pathTemplateToExpressRoute } from './pathTemplate'
 import { createOpenAPISchemaFromOperations } from './openApi'
 import { CustomProperties, BridgeOperation, BridgeOperations, SchemaComponents } from './types'
 import { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'
+import RequestBodyObject = OpenAPIV3.RequestBodyObject
+import { InvalidResponseError } from './errors'
 
 const middlewareToPromise =
   (middleware: RequestHandler) =>
   (req: Parameters<RequestHandler>[0], res: Parameters<RequestHandler>[1]) => {
     return new Promise<ReturnType<RequestHandler>>((resolve, reject) => {
-      const next = (x: any) => (x ? reject(x) : resolve())
+      const next = (x: unknown) => (x ? reject(x) : resolve())
       middleware(req, res, next)
     })
   }
@@ -60,24 +62,33 @@ const addOperation = (
   operation: BridgeOperation,
   schemaComponents: SchemaComponents,
   executor: GraphQLExecutor,
-  config: CreateMiddlewareConfig
+  config?: CreateMiddlewareConfig
 ) => {
   const route = pathTemplateToExpressRoute(operation.path)
 
   // Resolving `$ref`, at least OpenAPIRequestValidator cannot handle them properly
   const parameters_ = _.cloneDeep(operation.openAPIOperation.parameters || [])
+  const requestBody_ = _.cloneDeep(operation.openAPIOperation.requestBody) as
+    | RequestBodyObject
+    | undefined
+
   resolveSchemaComponents(parameters_, schemaComponents)
 
   const requestCoercer = new OpenAPIRequestCoercer({
     parameters: parameters_,
+    // TODO: For the future to support application/x-www-form-urlencoded
+    // requestBody: requestBody_,
   })
 
   const requestValidator =
-    typeof config.validateRequest !== 'boolean' || config.validateRequest
-      ? new OpenAPIRequestValidator({ parameters: parameters_ })
+    typeof config?.validateRequest !== 'boolean' || config.validateRequest
+      ? new OpenAPIRequestValidator({
+          parameters: parameters_,
+          requestBody: requestBody_,
+        })
       : undefined
 
-  const responseValidator = config.validateResponse
+  const responseValidator = config?.validateResponse
     ? new OpenAPIResponseValidator({
         // Type in `openapi-response-validator` seems wrong
         responses: operation.openAPIOperation.responses as any,
@@ -141,7 +152,7 @@ const addOperation = (
       let data: string | Buffer | undefined = JSON.stringify(result.data)
       let isTransformed = false
 
-      if (config.responseTransformer) {
+      if (config?.responseTransformer) {
         const response_ = config.responseTransformer({
           result,
           request,
@@ -163,8 +174,21 @@ const addOperation = (
       if (responseValidator && !isTransformed) {
         const responseValidationErrors = responseValidator.validateResponse(statusCode, result.data)
         if (responseValidationErrors) {
-          throw new Error(JSON.stringify(responseValidationErrors))
+          throw new InvalidResponseError(
+            responseValidationErrors.message,
+            responseValidationErrors.errors,
+            result.errors
+          )
         }
+      }
+
+      // Handle GraphQL Errors (in case they were not handled by the default validation)
+      if (!isTransformed && !result.data && result.errors) {
+        res.status(500).json({
+          status: 500,
+          ...result,
+        })
+        return
       }
 
       if (contentType) {
@@ -214,7 +238,7 @@ export type CreateMiddlewareConfig = {
 const createExpressMiddleware = (
   operations: BridgeOperations,
   executor: GraphQLExecutor,
-  config: CreateMiddlewareConfig
+  config?: CreateMiddlewareConfig
 ) => {
   // TODO: Avoid depending on express directly?
   const router = express.Router()
@@ -342,7 +366,7 @@ export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeCon
   const operations = getBridgeOperations(graphqlSchema_, graphqlDocument_, customScalars)
 
   return {
-    getExpressMiddleware: (executor: GraphQLExecutor, config: CreateMiddlewareConfig) =>
+    getExpressMiddleware: (executor: GraphQLExecutor, config?: CreateMiddlewareConfig) =>
       createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (
       config: CreateOpenAPISchemaConfig
