@@ -47,7 +47,7 @@
     "format:fix": "prettier --write src",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "lint:fix": "yarn lint --fix",
-    "prettify": "prettier \"**/*.{ts,tsx,graphql}\" --write",
+    "prettify": "prettier \"**/*.{ts,tsx,graphql,md}\" --write",
     "qa": "tsc --noEmit && yarn test --coverage && yarn lint && yarn format",
     "prepack": "yarn build"
   },

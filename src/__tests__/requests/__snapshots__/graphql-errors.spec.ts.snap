@@ -17,7 +17,7 @@ Object {
 }
 `;
 
-exports[`GraphQL Errors should forward server errors if response validation is disabled 1`] = `
+exports[`GraphQL Errors should forward graphql server errors by default 1`] = `
 Object {
   "data": null,
   "errors": Array [
