@@ -239,13 +239,14 @@ const createOpenAPIOperation = (
       },
     },
     '500': {
-      description: 'Internal server error',
+      description: 'Internal Server Error',
       content: {
         'application/json': {
           schema: {
             type: 'object',
             properties: {
               status: { type: 'number', format: 'int32' },
+              data: { ...resultSchema, nullable: true, description: 'Data without errors' },
               errors: { type: 'array', items: { type: 'object' } },
             },
           } as OpenAPIV3.SchemaObject,

@@ -150,10 +150,6 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
         request: req,
       }
       const result = await executor(request)
-      let statusCode = 200
-      let contentType: string | undefined = 'application/json'
-      let data: string | Buffer | undefined = JSON.stringify(result.data)
-      let isTransformed = false
 
       if (config?.responseTransformer) {
         const response_ = config.responseTransformer({
@@ -166,42 +162,39 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
           },
         })
         if (response_) {
-          statusCode = response_.statusCode
-          contentType = response_.contentType
-          data = response_.data
-          // TODO: The validation can only handle JSON for now
-          isTransformed = true
+          const { statusCode, contentType, data } = response_
+          res.set('Content-Type', contentType).status(statusCode).send(data).end()
+          return
         }
       }
 
-      if (responseValidator && !isTransformed) {
-        const responseValidationErrors = responseValidator.validateResponse(statusCode, result.data)
-        if (responseValidationErrors) {
+      // There are 2 cases of errors handled here;
+
+      // 1. If responseValidation is enabled, it will throw in both cases
+      // - If there is a response validation problem
+      // - If there are any graphql errors
+      if (responseValidator) {
+        const responseValidationErrors = responseValidator.validateResponse(200, result.data)
+        if (responseValidationErrors || result.errors) {
           throw new InvalidResponseError(
-            responseValidationErrors.message,
-            responseValidationErrors.errors,
+            responseValidationErrors.message || 'GraphQL Error',
+            responseValidationErrors.errors || [],
             result.errors
           )
         }
       }
-
-      // Handle GraphQL Errors (in case they were not handled by the default validation)
-      if (!isTransformed && !result.data && result.errors) {
-        res.status(500).json({
-          status: 500,
-          ...result,
-        })
+      // 2. If no response validation is enabled, we will return (possibly) both the errors and a (partial) result
+      if (result.errors) {
+        res
+          .status(500)
+          .json({
+            status: 500,
+            ...result,
+          })
+          .end()
         return
       }
-
-      if (contentType) {
-        res.set('Content-Type', contentType)
-      }
-      res.status(statusCode)
-      if (data) {
-        res.send(data)
-      }
-      res.end()
+      res.status(200).json(result.data).end()
     })
   )
 }

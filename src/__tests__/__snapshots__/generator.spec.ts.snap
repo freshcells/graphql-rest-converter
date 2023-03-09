@@ -105,6 +105,20 @@ Object {
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "deleteSample": Object {
+                          "nullable": true,
+                          "type": "boolean",
+                        },
+                      },
+                      "required": Array [
+                        "deleteSample",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -120,7 +134,7 @@ Object {
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "summary": "Updates a sample",
@@ -252,6 +266,56 @@ Object {
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "createSample": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": Object {
+                            "id": Object {
+                              "format": "int32",
+                              "type": "integer",
+                            },
+                            "name": Object {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                            "price": Object {
+                              "description": "Price of the sample",
+                              "format": "double",
+                              "type": "number",
+                            },
+                            "sku": Object {
+                              "description": "Article number",
+                              "type": "string",
+                            },
+                            "type": Object {
+                              "allOf": Array [
+                                Object {
+                                  "$ref": "#/components/schemas/SampleEnum",
+                                },
+                              ],
+                              "description": "Type of the sample",
+                              "nullable": false,
+                              "type": "string",
+                            },
+                          },
+                          "required": Array [
+                            "id",
+                            "name",
+                            "type",
+                            "sku",
+                            "price",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "createSample",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -267,7 +331,7 @@ Object {
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "summary": "Creates a new sample",
@@ -356,6 +420,29 @@ Object {
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "getSample": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": Object {
+                            "name": Object {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                          },
+                          "required": Array [
+                            "name",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "getSample",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -371,7 +458,7 @@ Object {
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "x-graphql-operation": "query getSampleWithDefault($id: Int! = 10) {
@@ -450,6 +537,25 @@ Object {
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "getSample": Object {
+                          "allOf": Array [
+                            Object {
+                              "$ref": "#/components/schemas/Sample.MySamples",
+                            },
+                          ],
+                          "description": "This is the default \`Sample\` documentation",
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "getSample",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -465,7 +571,7 @@ Object {
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "x-graphql-operation": "query getSample($id: Int!) {
@@ -582,6 +688,29 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "updateSample": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": Object {
+                            "name": Object {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                          },
+                          "required": Array [
+                            "name",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "updateSample",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -597,7 +726,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "summary": "Updates a sample",
@@ -671,6 +800,28 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "samples": Object {
+                          "items": Object {
+                            "allOf": Array [
+                              Object {
+                                "$ref": "#/components/schemas/Sample.MySamples",
+                              },
+                            ],
+                            "description": "This is the default \`Sample\` documentation",
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": Array [
+                        "samples",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -686,7 +837,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "x-graphql-operation": "query getSamples {

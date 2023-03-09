@@ -127,6 +127,66 @@ Object {
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "getData": Object {
+                          "items": Object {
+                            "description": "A Complex type",
+                            "properties": Object {
+                              "created": Object {
+                                "allOf": Array [
+                                  Object {
+                                    "$ref": "#/components/schemas/Date",
+                                  },
+                                ],
+                                "description": "Created when",
+                                "nullable": false,
+                                "type": "string",
+                              },
+                              "data": Object {
+                                "allOf": Array [
+                                  Object {
+                                    "$ref": "#/components/schemas/JSON",
+                                  },
+                                ],
+                                "description": "The JSON data",
+                                "nullable": false,
+                                "type": "object",
+                              },
+                              "id": Object {
+                                "description": "Our ID",
+                                "format": "int32",
+                                "type": "integer",
+                              },
+                              "modified": Object {
+                                "allOf": Array [
+                                  Object {
+                                    "$ref": "#/components/schemas/Datetime",
+                                  },
+                                ],
+                                "description": "Modified when",
+                                "nullable": false,
+                                "type": "string",
+                              },
+                            },
+                            "required": Array [
+                              "id",
+                              "created",
+                              "data",
+                              "modified",
+                            ],
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": Array [
+                        "getData",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -142,7 +202,7 @@ Object {
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "x-graphql-operation": "query getData {
@@ -318,6 +378,55 @@ Object {
               "application/json": Object {
                 "schema": Object {
                   "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "storeData": Object {
+                          "items": Object {
+                            "description": "A Complex type",
+                            "properties": Object {
+                              "created": Object {
+                                "allOf": Array [
+                                  Object {
+                                    "$ref": "#/components/schemas/Date",
+                                  },
+                                ],
+                                "description": "Created when",
+                                "nullable": false,
+                                "type": "string",
+                              },
+                              "id": Object {
+                                "description": "Our ID",
+                                "format": "int32",
+                                "type": "integer",
+                              },
+                              "modified": Object {
+                                "allOf": Array [
+                                  Object {
+                                    "$ref": "#/components/schemas/Datetime",
+                                  },
+                                ],
+                                "description": "Modified when",
+                                "nullable": false,
+                                "type": "string",
+                              },
+                            },
+                            "required": Array [
+                              "id",
+                              "created",
+                              "modified",
+                            ],
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": Array [
+                        "storeData",
+                      ],
+                      "type": "object",
+                    },
                     "errors": Object {
                       "items": Object {
                         "type": "object",
@@ -333,7 +442,7 @@ Object {
                 },
               },
             },
-            "description": "Internal server error",
+            "description": "Internal Server Error",
           },
         },
         "x-graphql-operation": "mutation storeData($input: DataInput!) {
