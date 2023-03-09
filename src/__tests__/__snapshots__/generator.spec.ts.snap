@@ -9,12 +9,10 @@ Object {
         "nullable": true,
         "properties": Object {
           "myId": Object {
-            "description": "This is the default \`Sample\` documentation",
             "format": "int32",
             "type": "integer",
           },
           "myName": Object {
-            "description": "This is the default \`Sample\` documentation",
             "type": "string",
           },
         },
@@ -40,7 +38,7 @@ Object {
           Object {
             "in": "query",
             "name": "id",
-            "required": undefined,
+            "required": false,
             "schema": Object {
               "format": "int32",
               "type": "integer",
@@ -52,10 +50,8 @@ Object {
             "content": Object {
               "application/json": Object {
                 "schema": Object {
-                  "description": undefined,
                   "properties": Object {
                     "deleteSample": Object {
-                      "description": undefined,
                       "nullable": true,
                       "type": "boolean",
                     },
@@ -132,12 +128,9 @@ Object {
                 "description": "This is the default \`SampleInput\` documentation",
                 "properties": Object {
                   "moreData": Object {
-                    "description": undefined,
                     "items": Object {
-                      "description": undefined,
                       "properties": Object {
                         "anotherProperty": Object {
-                          "description": undefined,
                           "format": "int32",
                           "nullable": true,
                           "type": "integer",
@@ -168,18 +161,15 @@ Object {
             "content": Object {
               "application/json": Object {
                 "schema": Object {
-                  "description": undefined,
                   "properties": Object {
                     "createSample": Object {
                       "description": "This is the default \`Sample\` documentation",
                       "properties": Object {
                         "id": Object {
-                          "description": "This is the default \`Sample\` documentation",
                           "format": "int32",
                           "type": "integer",
                         },
                         "name": Object {
-                          "description": "This is the default \`Sample\` documentation",
                           "type": "string",
                         },
                       },
@@ -276,7 +266,6 @@ Object {
             "content": Object {
               "application/json": Object {
                 "schema": Object {
-                  "description": undefined,
                   "properties": Object {
                     "getSample": Object {
                       "allOf": Array [
@@ -373,12 +362,9 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 "description": "This is the default \`SampleInput\` documentation",
                 "properties": Object {
                   "moreData": Object {
-                    "description": undefined,
                     "items": Object {
-                      "description": undefined,
                       "properties": Object {
                         "anotherProperty": Object {
-                          "description": undefined,
                           "format": "int32",
                           "nullable": true,
                           "type": "integer",
@@ -408,13 +394,11 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
             "content": Object {
               "application/json": Object {
                 "schema": Object {
-                  "description": undefined,
                   "properties": Object {
                     "updateSample": Object {
                       "description": "This is the default \`Sample\` documentation",
                       "properties": Object {
                         "name": Object {
-                          "description": "This is the default \`Sample\` documentation",
                           "type": "string",
                         },
                       },
@@ -499,10 +483,8 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
             "content": Object {
               "application/json": Object {
                 "schema": Object {
-                  "description": undefined,
                   "properties": Object {
                     "samples": Object {
-                      "description": undefined,
                       "items": Object {
                         "allOf": Array [
                           Object {

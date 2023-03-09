@@ -27,6 +27,7 @@ describe('GraphQL Errors', () => {
         validateRequest: false,
       })
     )
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     app.use(((err, req, res, next) => {
       res.status(500).send('Something is not right here!')
     }) as ErrorRequestHandler)

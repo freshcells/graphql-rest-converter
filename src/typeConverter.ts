@@ -361,16 +361,16 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         mergeDefaultValueToOpenAPISchema(field.defaultValue, propertyType)
       }
       properties[field.name] = {
-        description: field.description || undefined,
+        ...(field.description ? { description: field.description } : {}),
         ...propertyType,
       }
     }
 
     return {
       type: 'object',
-      description: type.description || undefined,
       properties,
       ...(required.length ? { required: _.uniq(required) } : {}),
+      ...(type.description ? { description: type.description } : {}),
     }
   }
 
@@ -400,7 +400,10 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       // TODO: Use location aware error?
       throw new Error(`Unknown field "${fieldName}" on type "${type.name}"`)
     }
-    return this.fromType(field.type, selectionSet)
+    return {
+      ...this.fromType(field.type, selectionSet),
+      ...(field.description ? { description: field.description } : {}),
+    }
   }
 
   public fromFragment = this.fromReference<FragmentDefinitionNode>(
@@ -425,10 +428,10 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
 
       return {
         type: 'object',
-        description,
         ...(!_.isEmpty(properties) ? { properties } : {}),
         ...(allOf.length ? { allOf } : {}),
         ...(required.length ? { required: _.uniq(required) } : {}),
+        ...(description ? { description } : {}),
         nullable: true,
       }
     }
@@ -446,10 +449,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       if (selection.kind === Kind.FIELD) {
         const fieldName = selection.name.value
         const fieldAlias = selection.alias?.value || fieldName
-        properties[fieldAlias] = {
-          description: type.description || getDescriptionFromNode(selection),
-          ...this.fromField(type, fieldName, selection.selectionSet),
-        }
+        properties[fieldAlias] = this.fromField(type, fieldName, selection.selectionSet)
         const isFieldOptional = isOptional || hasOptionalDirective(selection)
         if (!isFieldOptional) {
           required.push(fieldAlias)
@@ -513,10 +513,10 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     this.addSelectionSet(properties, required, allOf, false, type, selectionSet)
     return {
       type: 'object',
-      description: type?.description || undefined,
       ...(!_.isEmpty(properties) ? { properties } : {}),
       ...(allOf.length ? { allOf } : {}),
       ...(required.length ? { required: _.uniq(required) } : {}),
+      ...(type?.description ? { description: type?.description } : {}),
     }
   }
 
@@ -535,8 +535,23 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     (type) => type.name,
     (type) => {
       const typeSchema = this.customScalars(type.name)
+      if (!typeSchema) {
+        throw new Error(
+          `Expected a valid schema for scalar ${type.name}, but got undefined. Check your scalar provider function.`
+        )
+      }
+      const description = type.description
       // TODO: Cannot use `nullable` without `type`
-      return typeSchema.type ? { ...typeSchema, nullable: true } : typeSchema
+      return typeSchema.type
+        ? {
+            ...typeSchema,
+            nullable: true,
+            ...(description ? { description } : {}),
+          }
+        : {
+            ...typeSchema,
+            ...(description ? { description } : {}),
+          }
     }
   )
 

@@ -1,0 +1,31 @@
+"A Datetime"
+scalar Datetime
+
+"A Date"
+scalar Date
+
+"A JSON Scalar"
+scalar JSON
+
+"A Complex type"
+type ATypeWithCustomScalars {
+  "Our ID"
+  id: Int!
+
+  "Created when"
+  created: Date!
+
+  "Modified when"
+  modified: Datetime!
+
+  "The JSON data"
+  data: JSON!
+}
+
+type Query {
+  getData: [ATypeWithCustomScalars!]!
+}
+
+schema {
+  query: Query
+}

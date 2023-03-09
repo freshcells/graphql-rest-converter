@@ -476,6 +476,7 @@ __metadata:
     typescript: ^4.9.4
   peerDependencies:
     express: ^4
+    graphql: ">= 15"
   languageName: unknown
   linkType: soft
 

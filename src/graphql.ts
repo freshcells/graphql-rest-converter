@@ -155,7 +155,7 @@ const getOpenAPIParameters = (
       ...(deprecated === true ? { deprecated } : {}),
       ...(description ? { description } : {}),
       // path parameters are always required (see https://swagger.io/docs/specification/describing-parameters/)
-      ...(in_ === 'path' ? { required: true } : { required }),
+      ...(in_ === 'path' ? { required: true } : { required: required || false }),
     })
   }
 

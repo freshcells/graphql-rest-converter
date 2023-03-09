@@ -1,0 +1,160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Scalars should allow custom scalars 1`] = `
+Object {
+  "components": Object {
+    "schemas": Object {
+      "Date": Object {
+        "description": "A Date",
+        "format": "date",
+        "nullable": true,
+        "type": "string",
+      },
+      "Datetime": Object {
+        "description": "A Datetime",
+        "format": "date-time",
+        "nullable": true,
+        "type": "string",
+      },
+      "JSON": Object {
+        "description": "A JSON Scalar",
+        "nullable": true,
+        "type": "object",
+      },
+    },
+  },
+  "info": Object {
+    "description": "My API",
+    "title": "Sample API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": Object {
+    "/data": Object {
+      "get": Object {
+        "operationId": "getData",
+        "parameters": Array [],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "getData": Object {
+                      "items": Object {
+                        "description": "A Complex type",
+                        "properties": Object {
+                          "created": Object {
+                            "allOf": Array [
+                              Object {
+                                "$ref": "#/components/schemas/Date",
+                              },
+                            ],
+                            "description": "Created when",
+                            "nullable": false,
+                            "type": "string",
+                          },
+                          "data": Object {
+                            "allOf": Array [
+                              Object {
+                                "$ref": "#/components/schemas/JSON",
+                              },
+                            ],
+                            "description": "The JSON data",
+                            "nullable": false,
+                            "type": "object",
+                          },
+                          "id": Object {
+                            "description": "Our ID",
+                            "format": "int32",
+                            "type": "integer",
+                          },
+                          "modified": Object {
+                            "allOf": Array [
+                              Object {
+                                "$ref": "#/components/schemas/Datetime",
+                              },
+                            ],
+                            "description": "Modified when",
+                            "nullable": false,
+                            "type": "string",
+                          },
+                        },
+                        "required": Array [
+                          "id",
+                          "created",
+                          "data",
+                          "modified",
+                        ],
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": Array [
+                    "getData",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "x-graphql-operation": "query getData {
+  getData {
+    id
+    created
+    data
+    modified
+  }
+}",
+      },
+    },
+  },
+}
+`;
