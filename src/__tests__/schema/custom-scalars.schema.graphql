@@ -22,10 +22,36 @@ type ATypeWithCustomScalars {
   data: JSON!
 }
 
+input ChildInput {
+  "Created when"
+  created: Date!
+  "Modified when"
+  modified: Datetime!
+}
+
+input AnotherChild {
+  "Created when"
+  created: Date!
+  "Modified when"
+  modified: Datetime!
+}
+
+"Input type to create new data"
+input DataInput {
+  id: Int!
+  anotherChild: AnotherChild!
+  child: ChildInput!
+}
+
 type Query {
   getData: [ATypeWithCustomScalars!]!
 }
 
+type Mutation {
+  storeData(data: DataInput): [ATypeWithCustomScalars!]!
+}
+
 schema {
   query: Query
+  mutation: Mutation
 }

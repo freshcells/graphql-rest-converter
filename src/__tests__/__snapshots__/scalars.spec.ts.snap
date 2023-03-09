@@ -154,6 +154,196 @@ Object {
   }
 }",
       },
+      "post": Object {
+        "operationId": "storeData",
+        "parameters": Array [
+          Object {
+            "in": "query",
+            "name": "input",
+            "required": false,
+            "schema": Object {
+              "description": "Input type to create new data",
+              "properties": Object {
+                "anotherChild": Object {
+                  "properties": Object {
+                    "created": Object {
+                      "allOf": Array [
+                        Object {
+                          "$ref": "#/components/schemas/Date",
+                        },
+                      ],
+                      "description": "Created when",
+                      "nullable": false,
+                      "type": "string",
+                    },
+                    "modified": Object {
+                      "allOf": Array [
+                        Object {
+                          "$ref": "#/components/schemas/Datetime",
+                        },
+                      ],
+                      "description": "Modified when",
+                      "nullable": false,
+                      "type": "string",
+                    },
+                  },
+                  "required": Array [
+                    "created",
+                    "modified",
+                  ],
+                  "type": "object",
+                },
+                "child": Object {
+                  "properties": Object {
+                    "created": Object {
+                      "allOf": Array [
+                        Object {
+                          "$ref": "#/components/schemas/Date",
+                        },
+                      ],
+                      "description": "Created when",
+                      "nullable": false,
+                      "type": "string",
+                    },
+                    "modified": Object {
+                      "allOf": Array [
+                        Object {
+                          "$ref": "#/components/schemas/Datetime",
+                        },
+                      ],
+                      "description": "Modified when",
+                      "nullable": false,
+                      "type": "string",
+                    },
+                  },
+                  "required": Array [
+                    "created",
+                    "modified",
+                  ],
+                  "type": "object",
+                },
+                "id": Object {
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
+              "required": Array [
+                "id",
+                "anotherChild",
+                "child",
+              ],
+              "type": "object",
+            },
+          },
+        ],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "storeData": Object {
+                      "items": Object {
+                        "description": "A Complex type",
+                        "properties": Object {
+                          "created": Object {
+                            "allOf": Array [
+                              Object {
+                                "$ref": "#/components/schemas/Date",
+                              },
+                            ],
+                            "description": "Created when",
+                            "nullable": false,
+                            "type": "string",
+                          },
+                          "id": Object {
+                            "description": "Our ID",
+                            "format": "int32",
+                            "type": "integer",
+                          },
+                          "modified": Object {
+                            "allOf": Array [
+                              Object {
+                                "$ref": "#/components/schemas/Datetime",
+                              },
+                            ],
+                            "description": "Modified when",
+                            "nullable": false,
+                            "type": "string",
+                          },
+                        },
+                        "required": Array [
+                          "id",
+                          "created",
+                          "modified",
+                        ],
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": Array [
+                    "storeData",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "x-graphql-operation": "mutation storeData($input: DataInput!) {
+  storeData(data: $input) {
+    id
+    created
+    modified
+  }
+}",
+      },
     },
   },
 }

@@ -35,6 +35,23 @@ describe('Scalars', () => {
             }
           }
         `,
+      })
+    ).toThrow(/Unknown custom scalar/)
+  })
+  it('should throw if a the `customScalars` methods returns undefined', () => {
+    expect(() =>
+      createOpenAPIGraphQLBridge({
+        graphqlSchema,
+        graphqlDocument: gql`
+          query getData @OAOperation(path: "/data") {
+            getData {
+              id
+              created
+              data
+              modified
+            }
+          }
+        `,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore this is expected
         customScalars: () => undefined,
@@ -55,6 +72,13 @@ describe('Scalars', () => {
             modified
           }
         }
+        mutation storeData($input: DataInput!) @OAOperation(path: "/data") {
+          storeData(data: $input) {
+            id
+            created
+            modified
+          }
+        }
       `,
       customScalars: (name: string) => Scalars[name],
     })
@@ -69,6 +93,7 @@ describe('Scalars', () => {
       },
       validate: true,
     })
+    console.log(JSON.stringify(schema))
     expect(schema).toMatchSnapshot()
   })
 })
