@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag'
 import { createOpenAPIGraphQLBridge } from '../bridge'
-import { Scalars, customScalarSchema as graphqlSchema } from './bridgeFixtures'
+import { Scalars, customScalarSchema as graphqlSchema } from './fixtures'
 
 describe('Scalars', () => {
   it('should throw if a scalar is not defined', () => {

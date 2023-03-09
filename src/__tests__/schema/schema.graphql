@@ -1,11 +1,32 @@
 "This is the default `Sample` documentation"
 type Sample {
   id: Int!
+  "Article number"
+  sku: ID!
+  "Price of the sample"
+  price: Float!
+  "The name"
   name: String!
+  "Type of the sample"
+  type: SampleEnum!
 }
 
 input AnotherInput {
   anotherProperty: Int
+}
+
+"This is the enum description"
+enum SampleEnum {
+  "This is A"
+  A
+  "This is B"
+  B
+  "This is C"
+  C
+  "This is D"
+  D
+  "This is E"
+  E
 }
 
 "This is the default `SampleInput` documentation"

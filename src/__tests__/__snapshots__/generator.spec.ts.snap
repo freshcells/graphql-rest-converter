@@ -13,6 +13,7 @@ Object {
             "type": "integer",
           },
           "myName": Object {
+            "description": "The name",
             "type": "string",
           },
         },
@@ -21,6 +22,18 @@ Object {
           "myName",
         ],
         "type": "object",
+      },
+      "SampleEnum": Object {
+        "description": "This is the enum description",
+        "enum": Array [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+        ],
+        "nullable": true,
+        "type": "string",
       },
     },
   },
@@ -170,12 +183,35 @@ Object {
                           "type": "integer",
                         },
                         "name": Object {
+                          "description": "The name",
+                          "type": "string",
+                        },
+                        "price": Object {
+                          "description": "Price of the sample",
+                          "format": "double",
+                          "type": "number",
+                        },
+                        "sku": Object {
+                          "description": "Article number",
+                          "type": "string",
+                        },
+                        "type": Object {
+                          "allOf": Array [
+                            Object {
+                              "$ref": "#/components/schemas/SampleEnum",
+                            },
+                          ],
+                          "description": "Type of the sample",
+                          "nullable": false,
                           "type": "string",
                         },
                       },
                       "required": Array [
                         "id",
                         "name",
+                        "type",
+                        "sku",
+                        "price",
                       ],
                       "type": "object",
                     },
@@ -242,6 +278,107 @@ Object {
   createSample(input: $sample) {
     id
     name
+    type
+    sku
+    price
+  }
+}",
+      },
+    },
+    "/sample-default": Object {
+      "get": Object {
+        "operationId": "getSampleWithDefault",
+        "parameters": Array [
+          Object {
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "schema": Object {
+              "default": 10,
+              "format": "int32",
+              "type": "integer",
+            },
+          },
+        ],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "getSample": Object {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": Object {
+                        "name": Object {
+                          "description": "The name",
+                          "type": "string",
+                        },
+                      },
+                      "required": Array [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "getSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "x-graphql-operation": "query getSampleWithDefault($id: Int! = 10) {
+  getSample(id: $id) {
+    ... on Sample {
+      name
+    }
   }
 }",
       },
@@ -399,6 +536,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                       "description": "This is the default \`Sample\` documentation",
                       "properties": Object {
                         "name": Object {
+                          "description": "The name",
                           "type": "string",
                         },
                       },

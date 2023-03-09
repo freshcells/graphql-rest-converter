@@ -3,7 +3,7 @@ import { createSchemaExecutor } from '../../graphQLExecutor'
 import request from 'supertest'
 import { addMocksToSchema } from '@graphql-tools/mock'
 import { makeExecutableSchema } from '@graphql-tools/schema'
-import { customScalarSchema, Scalars } from '../bridgeFixtures'
+import { customScalarSchema, Scalars } from '../fixtures'
 import { createOpenAPIGraphQLBridge } from '../../bridge'
 import { gql } from 'graphql-tag'
 

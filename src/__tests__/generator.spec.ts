@@ -2,7 +2,7 @@ import schema from './schema/schema.graphql'
 import { buildASTSchema } from 'graphql'
 import { createOpenAPIGraphQLBridge } from '../bridge'
 import { gql } from 'graphql-tag'
-import { bridgeFixtures } from './bridgeFixtures'
+import { bridgeFixtures } from './fixtures'
 import { getBridgeOperations } from '../graphql'
 
 const graphqlSchema = buildASTSchema(schema)

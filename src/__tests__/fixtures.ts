@@ -15,6 +15,9 @@ export const bridgeFixtures = gql`
     createSample(input: $sample) {
       id
       name
+      type
+      sku
+      price
     }
   }
 
@@ -46,6 +49,15 @@ export const bridgeFixtures = gql`
   @OAOperation(path: "/sample/{id}", description: "Get a specific sample") {
     getSample(id: $id) {
       ...MySamples
+    }
+  }
+
+  query getSampleWithDefault($id: Int! = 10 @OAParam(in: QUERY))
+  @OAOperation(path: "/sample-default") {
+    getSample(id: $id) {
+      ... on Sample {
+        name
+      }
     }
   }
 `

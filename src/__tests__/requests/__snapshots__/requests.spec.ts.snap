@@ -35,6 +35,9 @@ Object {
   "createSample": Object {
     "id": Any<Number>,
     "name": "Hello World",
+    "price": Any<Number>,
+    "sku": Any<String>,
+    "type": Any<String>,
   },
 }
 `;
@@ -86,5 +89,13 @@ Object {
     },
   ],
   "status": 400,
+}
+`;
+
+exports[`Requests should handle default values 1`] = `
+Object {
+  "getSample": Object {
+    "name": "Hello World",
+  },
 }
 `;

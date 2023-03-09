@@ -1,4 +1,4 @@
-import { bridge, gqlSchema } from '../bridgeFixtures'
+import { bridge, gqlSchema } from '../fixtures'
 import express from 'express'
 import { createSchemaExecutor } from '../../graphQLExecutor'
 import request from 'supertest'
@@ -48,6 +48,9 @@ describe('Requests', () => {
     expect(response.body).toMatchSnapshot({
       createSample: {
         id: expect.any(Number),
+        sku: expect.any(String),
+        price: expect.any(Number),
+        type: expect.any(String),
       },
     })
   })
@@ -84,5 +87,10 @@ describe('Requests', () => {
     await request(app).post('/samples').expect(404)
     await request(app).delete('/samples').expect(404)
     await request(app).put('/samples').expect(404)
+  })
+
+  it('should handle default values', async () => {
+    const result = await request(app).get('/sample-default').expect(200)
+    expect(result.body).toMatchSnapshot()
   })
 })

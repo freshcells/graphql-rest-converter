@@ -1,4 +1,4 @@
-import { bridgeFixtures, bridge, gqlSchema, graphqlSchema } from '../bridgeFixtures'
+import { bridgeFixtures, bridge, gqlSchema, graphqlSchema } from '../fixtures'
 import express, { ErrorRequestHandler } from 'express'
 import { createSchemaExecutor } from '../../graphQLExecutor'
 import request from 'supertest'
