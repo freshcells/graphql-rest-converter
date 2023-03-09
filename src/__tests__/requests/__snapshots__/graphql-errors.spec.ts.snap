@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GraphQL Errors should forward any gql error if validation is not configured 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "locations": Array [
+        Object {
+          "column": 17,
+          "line": 1,
+        },
+      ],
+      "message": "Variable \\"$id\\" got invalid value \\"not-a-number\\"; Int cannot represent non-integer value: \\"not-a-number\\"",
+    },
+  ],
+  "status": 500,
+}
+`;
+
+exports[`GraphQL Errors should forward graphql server errors by default 1`] = `
+Object {
+  "data": null,
+  "errors": Array [
+    Object {
+      "locations": Array [
+        Object {
+          "column": 3,
+          "line": 2,
+        },
+      ],
+      "message": "Unable to process request.",
+      "path": Array [
+        "getSample",
+      ],
+    },
+  ],
+  "status": 500,
+}
+`;

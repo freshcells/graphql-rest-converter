@@ -2,11 +2,11 @@ import _ from 'lodash'
 import { PartialDeep } from 'type-fest'
 import { OpenAPIV3 } from 'openapi-types'
 import { print } from 'graphql'
-import { CustomProperties, OpenAPIGraphQLOperations } from './types'
+import { CustomProperties, BridgeOperations, OAType } from './types'
 
 export const createOpenAPISchemaFromOperations = (
   openAPIBaseSchema: PartialDeep<OpenAPIV3.Document>,
-  openAPIGraphqlOperations: OpenAPIGraphQLOperations
+  openAPIGraphqlOperations: BridgeOperations
 ) => {
   const openAPIPaths = openAPIGraphqlOperations.operations.map((x) => ({
     paths: {
@@ -23,4 +23,8 @@ export const createOpenAPISchemaFromOperations = (
   }))
 
   return _.merge({}, openAPIBaseSchema, ...openAPIPaths)
+}
+
+export const isNullable = (schema: OAType) => {
+  return 'nullable' in schema && schema.nullable
 }

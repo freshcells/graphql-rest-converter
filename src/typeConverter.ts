@@ -26,14 +26,30 @@ import {
   isWrappingType,
   Kind,
   OperationDefinitionNode,
+  OperationTypeNode,
   SelectionSetNode,
   typeFromAST,
   valueFromAST,
 } from 'graphql'
 import { OAType, SchemaComponents } from './types'
-import { hasDirective, isFragmentDefinitionNode } from './graphqlUtils'
+import {
+  formatMessageWithLocation,
+  getDirective,
+  getDirectiveArgumentsUntyped,
+  hasDirective,
+  isFragmentDefinitionNode,
+} from './graphqlUtils'
+import { isNullable } from './openApi'
+import { OpenAPIDirectives } from './graphql'
 
 const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', 'skip'])
+
+const getDescriptionFromNode = (node?: ASTNode) => {
+  const descriptionDirective = node ? getDirective(node, OpenAPIDirectives.Description) : null
+  return descriptionDirective
+    ? (getDirectiveArgumentsUntyped(descriptionDirective)?.['description'] as string)
+    : undefined
+}
 
 const mergeDefaultValueToOpenAPISchema = (defaultValue: unknown, openAPISchema: OAType) => {
   // Since components are shared we cannot merge default values in
@@ -70,6 +86,9 @@ const getPossibleTypes = (schema: GraphQLSchema, type: GraphQLCompositeType) =>
     ? [type.name]
     : schema.getPossibleTypes(type).map((possibleType) => possibleType.name)
 
+// NOTE: `isSubType` alternative
+// There is function with a similar functionality available from the GraphQL schema.
+// The check here is broader, as it uses an extensional definition.
 export const possibleTypesSubsetChecker = (schema: GraphQLSchema) => {
   const cache = new Map()
   return (typeA: GraphQLCompositeType, typeB: GraphQLCompositeType) => {
@@ -175,10 +194,6 @@ export const getReferenceableFragments = (
   return new Set([...referenceableFragments].flatMap(([k, v]) => (v ? [k] : [])))
 }
 
-const isNullable = (schema: OAType) => {
-  return 'nullable' in schema && schema.nullable
-}
-
 export class GraphQLTypeToOpenAPITypeSchemaConverter {
   #schemaComponents: SchemaComponents = {}
 
@@ -189,7 +204,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     private customScalars: (scalarTypeName: string) => OpenAPIV3.SchemaObject = (
       scalarTypeName
     ) => {
-      throw new Error('Unknown custom scalar: ' + scalarTypeName)
+      throw new Error(`Unknown custom scalar "${scalarTypeName}"`)
     },
     private fragmentMap: Record<string, FragmentDefinitionNode> = {},
     private referenceableFragments: Set<string> = new Set()
@@ -206,34 +221,44 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   public fromOperation(operation: OperationDefinitionNode) {
     return {
       name: operation.name?.value || null,
-      parameters: this.parametersFromOperation(operation),
-      response: this.responseSchemaFromOperation(operation),
+      variables: this.variablesFromOperation(operation),
+      result: this.resultFromOperation(operation),
       schemaComponents: this.#schemaComponents,
     }
   }
 
-  public parametersFromOperation(
-    operation: OperationDefinitionNode
-  ): Omit<OpenAPIV3.ParameterObject, 'in'>[] {
-    if (!operation.variableDefinitions?.length) {
-      return []
-    }
-    return operation.variableDefinitions.map((variable) => {
+  public variablesFromOperation(operation: OperationDefinitionNode) {
+    const result: Record<string, OAType> = {}
+    for (const variable of operation.variableDefinitions || []) {
       const inputType = typeFromAST(this.graphqlSchema, variable.type as any)! as GraphQLInputType
       const typeSchema = this.fromType(inputType)
       if (variable.defaultValue) {
         mergeDefaultValueToOpenAPISchema(valueFromAST(variable.defaultValue, inputType), typeSchema)
       }
-      return {
-        name: variable.variable.name.value,
-        schema: typeSchema,
-        ...(isNullable(typeSchema) ? {} : { required: true }),
-      }
-    })
+      result[variable.variable.name.value] = typeSchema
+    }
+    return result
   }
 
-  public responseSchemaFromOperation(operation: OperationDefinitionNode) {
-    return this.fromType(this.graphqlSchema.getQueryType()!, operation.selectionSet, true)
+  public resultFromOperation(operation: OperationDefinitionNode) {
+    if (operation.operation === OperationTypeNode.SUBSCRIPTION) {
+      throw new Error(
+        formatMessageWithLocation(
+          `Subscriptions (at: ${
+            operation.name?.value || 'unknown'
+          }) are unsupported at this moment.`,
+          operation.loc
+        )
+      )
+    }
+
+    return this.fromType(
+      operation.operation === OperationTypeNode.MUTATION
+        ? this.graphqlSchema.getMutationType()!
+        : this.graphqlSchema.getQueryType()!,
+      operation.selectionSet,
+      true
+    )
   }
 
   public fromTypeNonNull(type: GraphQLNullableType, selectionSet?: SelectionSetNode): OAType {
@@ -295,7 +320,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       // TODO: Cannot use `nullable` without `type`
       if (typeSchemaType) {
         return {
-          type: typeSchemaType as any,
+          type: typeSchemaType as OpenAPIV3.NonArraySchemaObjectType,
           allOf: [typeSchema],
           // `nullable: false` should be a no-op, but it seems to help some tooling
           nullable,
@@ -335,11 +360,15 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       if (field.defaultValue) {
         mergeDefaultValueToOpenAPISchema(field.defaultValue, propertyType)
       }
-      properties[field.name] = propertyType
+      properties[field.name] = {
+        description: field.description || undefined,
+        ...propertyType,
+      }
     }
 
     return {
       type: 'object',
+      description: type.description || undefined,
       properties,
       ...(required.length ? { required: _.uniq(required) } : {}),
     }
@@ -350,7 +379,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   }
 
   public getTypenameSchema = this.fromReference<GraphQLCompositeType>(
-    (type) => `${type.name}|__typename`,
+    (type) => `${type.name}.__typename`,
     (type) => ({
       type: 'string',
       enum: this.getPossibleTypes(type),
@@ -366,11 +395,16 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       return this.getTypenameSchema(type)
     }
     const type_ = type instanceof GraphQLUnionType ? type.getTypes()[0] : type
-    return this.fromType(type_.getFields()[fieldName].type, selectionSet)
+    const field = type_.getFields()[fieldName]
+    if (!field) {
+      // TODO: Use location aware error?
+      throw new Error(`Unknown field "${fieldName}" on type "${type.name}"`)
+    }
+    return this.fromType(field.type, selectionSet)
   }
 
   public fromFragment = this.fromReference<FragmentDefinitionNode>(
-    (fragment) => `${fragment.typeCondition.name.value}|${fragment.name.value}`,
+    (fragment) => `${fragment.typeCondition.name.value}.${fragment.name.value}`,
     (fragment) => {
       const typeFromConditionName = fragment.typeCondition.name.value
       const typeFromCondition = this.graphqlSchema.getType(typeFromConditionName)!
@@ -386,8 +420,12 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         typeFromCondition as GraphQLCompositeType,
         fragment.selectionSet
       )
+
+      const description = getDescriptionFromNode(fragment)
+
       return {
         type: 'object',
+        description,
         ...(!_.isEmpty(properties) ? { properties } : {}),
         ...(allOf.length ? { allOf } : {}),
         ...(required.length ? { required: _.uniq(required) } : {}),
@@ -408,7 +446,10 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       if (selection.kind === Kind.FIELD) {
         const fieldName = selection.name.value
         const fieldAlias = selection.alias?.value || fieldName
-        properties[fieldAlias] = this.fromField(type, fieldName, selection.selectionSet)
+        properties[fieldAlias] = {
+          description: type.description || getDescriptionFromNode(selection),
+          ...this.fromField(type, fieldName, selection.selectionSet),
+        }
         const isFieldOptional = isOptional || hasOptionalDirective(selection)
         if (!isFieldOptional) {
           required.push(fieldAlias)
@@ -472,6 +513,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     this.addSelectionSet(properties, required, allOf, false, type, selectionSet)
     return {
       type: 'object',
+      description: type?.description || undefined,
       ...(!_.isEmpty(properties) ? { properties } : {}),
       ...(allOf.length ? { allOf } : {}),
       ...(required.length ? { required: _.uniq(required) } : {}),

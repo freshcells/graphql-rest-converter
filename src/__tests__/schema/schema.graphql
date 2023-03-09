@@ -1,0 +1,39 @@
+"This is the default `Sample` documentation"
+type Sample {
+  id: Int!
+  name: String!
+}
+
+input AnotherInput {
+  anotherProperty: Int
+}
+
+"This is the default `SampleInput` documentation"
+input SampleInput {
+  """
+  The name
+  """
+  name: String!
+  moreData: [AnotherInput!]!
+}
+
+type Mutation {
+  createSample(input: SampleInput!): Sample!
+  updateSample(id: Int!, input: SampleInput!): Sample!
+  deleteSample(id: Int!): Boolean
+}
+
+type Query {
+  getSamples: [Sample!]!
+  getSample(id: Int!): Sample!
+}
+
+type Subscription {
+  sampleAdded(id: Int!): Sample!
+}
+
+schema {
+  mutation: Mutation
+  query: Query
+  subscription: Subscription
+}

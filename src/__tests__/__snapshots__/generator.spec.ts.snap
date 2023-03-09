@@ -1,0 +1,586 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OpenAPI Generation should create schema from graphql api 1`] = `
+Object {
+  "components": Object {
+    "schemas": Object {
+      "Sample.MySamples": Object {
+        "description": "Description for my MySamples fragment",
+        "nullable": true,
+        "properties": Object {
+          "myId": Object {
+            "description": "This is the default \`Sample\` documentation",
+            "format": "int32",
+            "type": "integer",
+          },
+          "myName": Object {
+            "description": "This is the default \`Sample\` documentation",
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "myId",
+          "myName",
+        ],
+        "type": "object",
+      },
+    },
+  },
+  "info": Object {
+    "description": "My API",
+    "title": "Sample API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": Object {
+    "/sample": Object {
+      "delete": Object {
+        "operationId": "removeSample",
+        "parameters": Array [
+          Object {
+            "in": "query",
+            "name": "id",
+            "required": undefined,
+            "schema": Object {
+              "format": "int32",
+              "type": "integer",
+            },
+          },
+        ],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "description": undefined,
+                  "properties": Object {
+                    "deleteSample": Object {
+                      "description": undefined,
+                      "nullable": true,
+                      "type": "boolean",
+                    },
+                  },
+                  "required": Array [
+                    "deleteSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "summary": "Updates a sample",
+        "tags": Array [
+          "Sample",
+        ],
+        "x-graphql-operation": "mutation removeSample($id: Int!) {
+  deleteSample(id: $id)
+}",
+      },
+      "post": Object {
+        "operationId": "createSample",
+        "parameters": Array [],
+        "requestBody": Object {
+          "content": Object {
+            "application/json": Object {
+              "schema": Object {
+                "description": "This is the default \`SampleInput\` documentation",
+                "properties": Object {
+                  "moreData": Object {
+                    "description": undefined,
+                    "items": Object {
+                      "description": undefined,
+                      "properties": Object {
+                        "anotherProperty": Object {
+                          "description": undefined,
+                          "format": "int32",
+                          "nullable": true,
+                          "type": "integer",
+                        },
+                      },
+                      "type": "object",
+                    },
+                    "type": "array",
+                  },
+                  "name": Object {
+                    "description": "The name",
+                    "type": "string",
+                  },
+                },
+                "required": Array [
+                  "name",
+                  "moreData",
+                ],
+                "type": "object",
+              },
+            },
+          },
+          "description": "A Sample Input",
+          "x-graphql-variable-name": "sample",
+        },
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "description": undefined,
+                  "properties": Object {
+                    "createSample": Object {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": Object {
+                        "id": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "format": "int32",
+                          "type": "integer",
+                        },
+                        "name": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "type": "string",
+                        },
+                      },
+                      "required": Array [
+                        "id",
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "createSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "summary": "Creates a new sample",
+        "tags": Array [
+          "Sample",
+        ],
+        "x-graphql-operation": "mutation createSample($sample: SampleInput!) {
+  createSample(input: $sample) {
+    id
+    name
+  }
+}",
+      },
+    },
+    "/sample/{id}": Object {
+      "get": Object {
+        "description": "Get a specific sample",
+        "operationId": "getSample",
+        "parameters": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": Object {
+              "format": "int32",
+              "type": "integer",
+            },
+          },
+        ],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "description": undefined,
+                  "properties": Object {
+                    "getSample": Object {
+                      "allOf": Array [
+                        Object {
+                          "$ref": "#/components/schemas/Sample.MySamples",
+                        },
+                      ],
+                      "description": "This is the default \`Sample\` documentation",
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "getSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "x-graphql-operation": "query getSample($id: Int!) {
+  getSample(id: $id) {
+    ...MySamples
+  }
+}
+
+fragment MySamples on Sample @OADescription(description: \\"Description for my MySamples fragment\\") {
+  myId: id @OADescription(description: \\"my custom description on a field\\")
+  myName: name
+}",
+      },
+      "put": Object {
+        "operationId": "updateSample",
+        "parameters": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": Object {
+              "format": "int32",
+              "type": "integer",
+            },
+          },
+        ],
+        "requestBody": Object {
+          "content": Object {
+            "application/json": Object {
+              "schema": Object {
+                "description": "This is the default \`SampleInput\` documentation",
+                "properties": Object {
+                  "moreData": Object {
+                    "description": undefined,
+                    "items": Object {
+                      "description": undefined,
+                      "properties": Object {
+                        "anotherProperty": Object {
+                          "description": undefined,
+                          "format": "int32",
+                          "nullable": true,
+                          "type": "integer",
+                        },
+                      },
+                      "type": "object",
+                    },
+                    "type": "array",
+                  },
+                  "name": Object {
+                    "description": "The name",
+                    "type": "string",
+                  },
+                },
+                "required": Array [
+                  "name",
+                  "moreData",
+                ],
+                "type": "object",
+              },
+            },
+          },
+          "x-graphql-variable-name": "sample",
+        },
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "description": undefined,
+                  "properties": Object {
+                    "updateSample": Object {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": Object {
+                        "name": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "type": "string",
+                        },
+                      },
+                      "required": Array [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "updateSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "summary": "Updates a sample",
+        "tags": Array [
+          "Sample",
+        ],
+        "x-graphql-operation": "mutation updateSample($id: Int!, $sample: SampleInput!) {
+  updateSample(id: $id, input: $sample) {
+    name
+  }
+}",
+      },
+    },
+    "/samples": Object {
+      "get": Object {
+        "description": "Get all samples",
+        "operationId": "getSamples",
+        "parameters": Array [],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "description": undefined,
+                  "properties": Object {
+                    "samples": Object {
+                      "description": undefined,
+                      "items": Object {
+                        "allOf": Array [
+                          Object {
+                            "$ref": "#/components/schemas/Sample.MySamples",
+                          },
+                        ],
+                        "description": "This is the default \`Sample\` documentation",
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": Array [
+                    "samples",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal server error",
+          },
+        },
+        "x-graphql-operation": "query getSamples {
+  samples: getSamples {
+    ...MySamples
+  }
+}
+
+fragment MySamples on Sample @OADescription(description: \\"Description for my MySamples fragment\\") {
+  myId: id @OADescription(description: \\"my custom description on a field\\")
+  myName: name
+}",
+      },
+    },
+  },
+}
+`;

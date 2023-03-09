@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Requests should DELETE \`/sample\` 1`] = `
+Object {
+  "deleteSample": Any<Boolean>,
+}
+`;
+
+exports[`Requests should GET \`/sample/id\` 1`] = `
+Object {
+  "getSample": Object {
+    "myId": Any<Number>,
+    "myName": "Hello World",
+  },
+}
+`;
+
+exports[`Requests should GET \`/samples\` 1`] = `
+Object {
+  "samples": Array [
+    Object {
+      "myId": Any<Number>,
+      "myName": "Hello World",
+    },
+    Object {
+      "myId": Any<Number>,
+      "myName": "Hello World",
+    },
+  ],
+}
+`;
+
+exports[`Requests should POST \`/sample\` 1`] = `
+Object {
+  "createSample": Object {
+    "id": Any<Number>,
+    "name": "Hello World",
+  },
+}
+`;
+
+exports[`Requests should PUT \`/sample\` 1`] = `
+Object {
+  "updateSample": Object {
+    "name": "Hello World",
+  },
+}
+`;
+
+exports[`Requests should fail GET \`/sample/id\`, if id is not a number 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "errorCode": "type.openapi.requestValidation",
+      "location": "path",
+      "message": "must be integer",
+      "path": "id",
+    },
+  ],
+  "status": 400,
+}
+`;
+
+exports[`Requests should fail POST \`/sample\` if invalid body 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "errorCode": "required.openapi.requestValidation",
+      "location": "body",
+      "message": "must have required property 'name'",
+      "path": "name",
+    },
+  ],
+  "status": 400,
+}
+`;
+
+exports[`Requests should fail on DELETE \`/sample\` 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "errorCode": "type.openapi.requestValidation",
+      "location": "query",
+      "message": "must be integer",
+      "path": "id",
+    },
+  ],
+  "status": 400,
+}
+`;

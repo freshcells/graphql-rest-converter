@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter } from 'express'
+import bodyParser from 'body-parser'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema, DocumentNode, GraphQLSchema, print, ExecutionResult } from 'graphql'
 import OpenAPIRequestCoercer from 'openapi-request-coercer'
@@ -7,23 +8,36 @@ import OpenAPIRequestValidator from 'openapi-request-validator'
 import OpenAPIResponseValidator from 'openapi-response-validator'
 import OpenAPISchemaValidator from 'openapi-schema-validator'
 import { PartialDeep } from 'type-fest'
-import { getOpenAPIGraphQLOperations } from './graphql'
+import { getBridgeOperations } from './graphql'
 import { pathTemplateToExpressRoute } from './pathTemplate'
 import { createOpenAPISchemaFromOperations } from './openApi'
-import {
-  CustomProperties,
-  OpenAPIGraphQLOperation,
-  OpenAPIGraphQLOperations,
-  SchemaComponents,
-} from './types'
+import { CustomProperties, BridgeOperation, BridgeOperations, SchemaComponents } from './types'
 import { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'
+import RequestBodyObject = OpenAPIV3.RequestBodyObject
+import { InvalidResponseError } from './errors'
 
-const asyncHandler =
-  (handler: RequestHandler) =>
-  (...args: Parameters<RequestHandler>) => {
-    const result = handler(...args)
-    return Promise.resolve(result).catch(args[args.length - 1] as NextFunction)
+const middlewareToPromise =
+  (middleware: RequestHandler) =>
+  (req: Parameters<RequestHandler>[0], res: Parameters<RequestHandler>[1]) => {
+    return new Promise<ReturnType<RequestHandler>>((resolve, reject) => {
+      const next = (x: unknown) => (x ? reject(x) : resolve())
+      middleware(req, res, next)
+    })
   }
+
+const promiseToHandler =
+  (
+    handler: (
+      req: Parameters<RequestHandler>[0],
+      res: Parameters<RequestHandler>[1]
+    ) => Promise<ReturnType<RequestHandler>>
+  ) =>
+  (...args: Parameters<RequestHandler>) => {
+    const result = handler(args[0], args[1])
+    result.catch(args[2] as NextFunction)
+  }
+
+const jsonBodyParserPromise = middlewareToPromise(bodyParser.json())
 
 const resolveSchemaComponents = (schema: any, schemaComponents: SchemaComponents) => {
   if (typeof schema !== 'object' || schema === null) {
@@ -45,27 +59,36 @@ const resolveSchemaComponents = (schema: any, schemaComponents: SchemaComponents
 
 const addOperation = (
   router: IRouter,
-  operation: OpenAPIGraphQLOperation,
+  operation: BridgeOperation,
   schemaComponents: SchemaComponents,
   executor: GraphQLExecutor,
-  config: CreateMiddlewareConfig
+  config?: CreateMiddlewareConfig
 ) => {
   const route = pathTemplateToExpressRoute(operation.path)
 
   // Resolving `$ref`, at least OpenAPIRequestValidator cannot handle them properly
   const parameters_ = _.cloneDeep(operation.openAPIOperation.parameters || [])
+  const requestBody_ = _.cloneDeep(operation.openAPIOperation.requestBody) as
+    | RequestBodyObject
+    | undefined
+
   resolveSchemaComponents(parameters_, schemaComponents)
 
   const requestCoercer = new OpenAPIRequestCoercer({
     parameters: parameters_,
+    // TODO: For the future to support application/x-www-form-urlencoded
+    // requestBody: requestBody_,
   })
 
   const requestValidator =
-    typeof config.validateRequest !== 'boolean' || config.validateRequest
-      ? new OpenAPIRequestValidator({ parameters: parameters_ })
+    typeof config?.validateRequest !== 'boolean' || config.validateRequest
+      ? new OpenAPIRequestValidator({
+          parameters: parameters_,
+          requestBody: requestBody_,
+        })
       : undefined
 
-  const responseValidator = config.validateResponse
+  const responseValidator = config?.validateResponse
     ? new OpenAPIResponseValidator({
         // Type in `openapi-response-validator` seems wrong
         responses: operation.openAPIOperation.responses as any,
@@ -77,13 +100,18 @@ const addOperation = (
 
   router[operation.httpMethod](
     route,
-    asyncHandler(async (req, res) => {
+    promiseToHandler(async (req, res) => {
+      if (operation.requestBodyVariable) {
+        await jsonBodyParserPromise(req, res)
+      }
+
       const req_ = {
         ...req,
         cookies: { ...req.cookies },
         headers: { ...req.headers },
         params: { ...req.params },
         query: { ...req.query },
+        body: req.body,
       }
 
       // TODO: Cookies not supported
@@ -110,6 +138,9 @@ const addOperation = (
           variables[variableName] = req_.headers[parameter.name]
         }
       }
+      if (operation.requestBodyVariable) {
+        variables[operation.requestBodyVariable] = req_.body
+      }
 
       const request = {
         document: graphqlDocument_,
@@ -121,7 +152,7 @@ const addOperation = (
       let data: string | Buffer | undefined = JSON.stringify(result.data)
       let isTransformed = false
 
-      if (config.responseTransformer) {
+      if (config?.responseTransformer) {
         const response_ = config.responseTransformer({
           result,
           request,
@@ -143,8 +174,21 @@ const addOperation = (
       if (responseValidator && !isTransformed) {
         const responseValidationErrors = responseValidator.validateResponse(statusCode, result.data)
         if (responseValidationErrors) {
-          throw new Error(JSON.stringify(responseValidationErrors))
+          throw new InvalidResponseError(
+            responseValidationErrors.message,
+            responseValidationErrors.errors,
+            result.errors
+          )
         }
+      }
+
+      // Handle GraphQL Errors (in case they were not handled by the default validation)
+      if (!isTransformed && !result.data && result.errors) {
+        res.status(500).json({
+          status: 500,
+          ...result,
+        })
+        return
       }
 
       if (contentType) {
@@ -192,9 +236,9 @@ export type CreateMiddlewareConfig = {
 }
 
 const createExpressMiddleware = (
-  operations: OpenAPIGraphQLOperations,
+  operations: BridgeOperations,
   executor: GraphQLExecutor,
-  config: CreateMiddlewareConfig
+  config?: CreateMiddlewareConfig
 ) => {
   // TODO: Avoid depending on express directly?
   const router = express.Router()
@@ -221,10 +265,10 @@ const getVariableMapFromParameters = (parameters: OpenAPIV3.ParameterObject[]) =
   return variableMap
 }
 
-const getGraphQLOpenAPIOperationsFromOpenAPISchema = (
+const getBridgeOperationsFromOpenAPISchema = (
   schema: OpenAPIV3.Document<OperationCustomProperties>
 ) => {
-  const operations: Array<OpenAPIGraphQLOperation> = []
+  const operations: Array<BridgeOperation> = []
   for (const [path, pathItem] of Object.entries(schema.paths)) {
     if (!pathItem) {
       continue
@@ -233,12 +277,15 @@ const getGraphQLOpenAPIOperationsFromOpenAPISchema = (
       if (!(operation as any)[CustomProperties.Operation]) {
         continue
       }
+      const requestBodyVariable =
+        (operation as any)?.requestBody?.[CustomProperties.VariableName] ?? null
       operations.push({
         openAPIOperation: operation as OpenAPIV3.OperationObject,
         path,
         httpMethod: httpMethod as OpenAPIV3.HttpMethods,
         graphqlDocument: parse((operation as any)[CustomProperties.Operation]),
         variableMap: getVariableMapFromParameters((operation as any).parameters || []),
+        requestBodyVariable,
       })
     }
   }
@@ -256,7 +303,7 @@ export const createExpressMiddlewareFromOpenAPISchema = (
   executor: GraphQLExecutor,
   config: CreateMiddlewareConfig
 ) => {
-  const operations = getGraphQLOpenAPIOperationsFromOpenAPISchema(schema)
+  const operations = getBridgeOperationsFromOpenAPISchema(schema)
   return createExpressMiddleware(operations, executor, config)
 }
 
@@ -287,7 +334,7 @@ export type CreateOpenAPISchemaConfig = {
 }
 
 const createOpenAPISchemaWithValidate = (
-  operations: OpenAPIGraphQLOperations,
+  operations: BridgeOperations,
   config: CreateOpenAPISchemaConfig
 ) => {
   const openAPISchema = createOpenAPISchemaFromOperations(config.baseSchema, operations)
@@ -316,10 +363,10 @@ export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeCon
   const graphqlDocument_ =
     typeof graphqlDocument === 'string' ? parse(graphqlDocument) : graphqlDocument
 
-  const operations = getOpenAPIGraphQLOperations(graphqlSchema_, graphqlDocument_, customScalars)
+  const operations = getBridgeOperations(graphqlSchema_, graphqlDocument_, customScalars)
 
   return {
-    getExpressMiddleware: (executor: GraphQLExecutor, config: CreateMiddlewareConfig) =>
+    getExpressMiddleware: (executor: GraphQLExecutor, config?: CreateMiddlewareConfig) =>
       createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (
       config: CreateOpenAPISchemaConfig

@@ -1,7 +1,10 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["tests"]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -11,15 +14,15 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn qa
+      - run: corepack enable
+      - run: yarn install --immutable
       - run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -68,23 +68,19 @@ query getB ($foo: Boolean!) {
 
 const EXPECTATIONS = {
   getA: {
-    parameters: [
-      {
-        name: 'foo',
-        required: true,
-        schema: {
-          type: 'boolean',
-        },
+    variables: {
+      foo: {
+        type: 'boolean',
       },
-    ],
-    response: {
+    },
+    result: {
       type: 'object',
       properties: {
         a: {
           type: 'object',
           properties: {
             __typename: {
-              $ref: '#/components/schemas/A|__typename',
+              $ref: '#/components/schemas/A.__typename',
             },
             a1: {
               type: 'integer',
@@ -104,7 +100,7 @@ const EXPECTATIONS = {
       required: ['a'],
     },
     schemaComponents: {
-      'A|__typename': {
+      'A.__typename': {
         enum: ['A1', 'A2'],
         type: 'string',
       },
