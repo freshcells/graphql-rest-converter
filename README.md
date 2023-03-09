@@ -347,7 +347,7 @@ async function main() {
     validateRequest: true, // Default is true
     validateResponse: true, // Default is false
     // Optional, can be used for customized status codes for example
-    responseTransformer: ({ result, openAPISchema: { operation } }) => {
+    responseTransformer: async ({ result, openAPISchema: { operation } }) => {
       if (
         operation?.operationId === 'getHeroByEpisode' &&
         result?.status === 200 &&

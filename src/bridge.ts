@@ -152,7 +152,7 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
       const result = await executor(request)
 
       if (config?.responseTransformer) {
-        const response_ = config.responseTransformer({
+        const response_ = await config.responseTransformer({
           result,
           request,
           openAPISchema: {
@@ -163,7 +163,10 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
         })
         if (response_) {
           const { statusCode, contentType, data } = response_
-          res.set('Content-Type', contentType).status(statusCode).send(data).end()
+          if (contentType) {
+            res.contentType(contentType)
+          }
+          res.status(statusCode).send(data).end()
           return
         }
       }
@@ -217,7 +220,7 @@ export type ResponseTransformerResult = {
 
 export type ResponseTransformer = (
   args: ResponseTransformerArgs
-) => ResponseTransformerResult | undefined
+) => Promise<ResponseTransformerResult | void>
 
 export type CreateMiddlewareConfig = {
   responseTransformer?: ResponseTransformer
