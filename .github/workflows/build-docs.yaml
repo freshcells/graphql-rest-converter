@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: '16'
           cache: yarn
+      - run: corepack enable
       - run: yarn install --frozen-lockfile
       - run: yarn typedoc src/index.ts --githubPages false
       - uses: actions/upload-pages-artifact@v1
