@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import express, { RequestHandler, NextFunction, IRouter } from 'express'
+import express, { RequestHandler, NextFunction, IRouter, Request } from 'express'
 import bodyParser from 'body-parser'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema, DocumentNode, GraphQLSchema, print, ExecutionResult } from 'graphql'
@@ -15,6 +15,7 @@ import { CustomProperties, BridgeOperation, BridgeOperations, SchemaComponents }
 import { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'
 import RequestBodyObject = OpenAPIV3.RequestBodyObject
 import { InvalidResponseError } from './errors'
+import type { IncomingMessage } from 'node:http'
 
 const middlewareToPromise =
   (middleware: RequestHandler) =>
@@ -57,11 +58,11 @@ const resolveSchemaComponents = (schema: any, schemaComponents: SchemaComponents
   }
 }
 
-const addOperation = (
+const addOperation = <R extends IncomingMessage = IncomingMessage>(
   router: IRouter,
   operation: BridgeOperation,
   schemaComponents: SchemaComponents,
-  executor: GraphQLExecutor,
+  executor: GraphQLExecutor<R>,
   config?: CreateMiddlewareConfig
 ) => {
   const route = pathTemplateToExpressRoute(operation.path)
@@ -239,7 +240,7 @@ export type CreateMiddlewareConfig = {
 
 const createExpressMiddleware = (
   operations: BridgeOperations,
-  executor: GraphQLExecutor,
+  executor: GraphQLExecutor<Request>,
   config?: CreateMiddlewareConfig
 ) => {
   // TODO: Avoid depending on express directly?
@@ -368,7 +369,7 @@ export const createOpenAPIGraphQLBridge = (config: CreateOpenAPIGraphQLBridgeCon
   const operations = getBridgeOperations(graphqlSchema_, graphqlDocument_, customScalars)
 
   return {
-    getExpressMiddleware: (executor: GraphQLExecutor, config?: CreateMiddlewareConfig) =>
+    getExpressMiddleware: (executor: GraphQLExecutor<Request>, config?: CreateMiddlewareConfig) =>
       createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (
       config: CreateOpenAPISchemaConfig

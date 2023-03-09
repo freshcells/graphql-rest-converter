@@ -1,6 +1,6 @@
 import { execute, parse, GraphQLSchema, ExecutionResult } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
-import { IncomingMessage } from 'node:http'
+import type { IncomingMessage } from 'node:http'
 
 export type GraphQLExecutorArgs<R extends IncomingMessage = IncomingMessage> = {
   document: string
@@ -8,16 +8,18 @@ export type GraphQLExecutorArgs<R extends IncomingMessage = IncomingMessage> = {
   request: R
 }
 
-export type GraphQLExecutor = <R extends IncomingMessage>(
-  args: GraphQLExecutorArgs<R>
+export type GraphQLExecutor<R extends IncomingMessage = IncomingMessage> = <
+  T extends IncomingMessage = R
+>(
+  args: GraphQLExecutorArgs<T>
 ) => Promise<ExecutionResult>
 
 type ExecutorArgs = ConstructorParameters<typeof GraphQLClient>
 
-export const createHttpExecutor = (
+export const createHttpExecutor = <R extends IncomingMessage>(
   url: ExecutorArgs[0],
   requestConfig: ExecutorArgs[1]
-): GraphQLExecutor => {
+): GraphQLExecutor<R> => {
   const client = new GraphQLClient(url, {
     ...requestConfig,
     errorPolicy: 'all',
@@ -30,7 +32,9 @@ export const createHttpExecutor = (
   }
 }
 
-export const createSchemaExecutor = (schema: GraphQLSchema): GraphQLExecutor => {
+export const createSchemaExecutor = <R extends IncomingMessage>(
+  schema: GraphQLSchema
+): GraphQLExecutor<R> => {
   return ({ document, variables }) =>
     Promise.resolve(execute({ schema, document: parse(document), variableValues: variables }))
 }
