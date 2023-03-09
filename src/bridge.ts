@@ -180,8 +180,8 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
         const responseValidationErrors = responseValidator.validateResponse(200, result.data)
         if (responseValidationErrors || result.errors) {
           throw new InvalidResponseError(
-            responseValidationErrors.message || 'GraphQL Error',
-            responseValidationErrors.errors || [],
+            responseValidationErrors?.message || 'GraphQL Error',
+            responseValidationErrors?.errors || [],
             result.errors
           )
         }
