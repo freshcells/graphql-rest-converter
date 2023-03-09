@@ -1,12 +1,16 @@
 import { execute, parse, GraphQLSchema, ExecutionResult } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
+import { IncomingMessage } from 'node:http'
 
-export type GraphQLExecutorArgs = {
+export type GraphQLExecutorArgs<R extends IncomingMessage = IncomingMessage> = {
   document: string
   variables: { [key: string]: unknown }
+  request: R
 }
 
-export type GraphQLExecutor = (args: GraphQLExecutorArgs) => Promise<ExecutionResult>
+export type GraphQLExecutor = <R extends IncomingMessage>(
+  args: GraphQLExecutorArgs<R>
+) => Promise<ExecutionResult>
 
 type ExecutorArgs = ConstructorParameters<typeof GraphQLClient>
 

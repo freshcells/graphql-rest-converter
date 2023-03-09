@@ -146,6 +146,7 @@ const addOperation = (
       const request = {
         document: graphqlDocument_,
         variables,
+        request: req,
       }
       const result = await executor(request)
       let statusCode = 200
