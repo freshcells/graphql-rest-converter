@@ -66,14 +66,14 @@ The function returns an object with two functions:
 
 ### Annotating GraphQL operations
 
-#### `QAQuery`
+#### `OAOperation`
 
-The `OAQuery` GraphQL directive is required on an GraphQL operation to map it to a HTTP request.
+The `OAOperation` GraphQL directive is required on an GraphQL operation to map it to an HTTP request.
 
 The arguments of the directive are described by the TS type:
 
 ```typescript
-interface OAQuery {
+interface OAOperation {
   path: string
   tags?: [string]
   summary?: string
@@ -83,6 +83,7 @@ interface OAQuery {
     description?: string
   }
   deprecated: boolean
+  method: HttpMethod // GET, DELETE, POST, PUT
 }
 ```
 
@@ -95,9 +96,9 @@ The other arguments are mapped directly to the resulting OpenAPI schema for the 
 
 The `OAParam` is optional, every operation's variable declaration results in an API parameter.
 
-If the path defined in the operation's `OAQuery` directive contains a parameter matching the variable name, the variable
-will be mapped from the path parameter.
-Otherwise, the variable will be mapped from a query parameter.
+If the path defined in the operation's `OAOperation` directive contains a parameter matching the variable name, the
+variable will be mapped from the path parameter.
+Otherwise, the variable will be mapped from a `query` or `header` parameter.
 
 The arguments of the directive are described by the TS type:
 
@@ -107,6 +108,7 @@ interface OAParam {
   name: string
   description: string
   deprecated: boolean
+  required: boolean // automatically assumed true if the parameter is in a path
 }
 ```
 
@@ -119,9 +121,20 @@ It is useful, for example, if the desired parameter name is not a valid GraphQL 
 
 The other arguments are mapped directly to the resulting OpenAPI schema for the parameter.
 
+#### `OABody`
+
+Lets you mark a query argument to be extracted from the request `body`.
+Mainly designed for `input` types in combination with a `mutation`.
+
+```typescript
+interface OABody {
+  description: string
+}
+```
+
 #### `OADescription`
 
-You may optionally provide / override descriptions for `fragments` or `field` definitions.
+You may optionally provide / override descriptions for `fragments`, `fields` or `InputField` definitions.
 
 ```typescript
 interface OADescription {
@@ -241,13 +254,13 @@ const BRIDGE_DOCUMENT = gql`
     $episode: String!
     $includeAppearsIn: Boolean! = false
       @OAParam(
-        in: "query"
+        in: QUERY
         name: "include_appears_in"
         description: "Include all episodes the hero appears in"
         deprecated: false
       )
   )
-  @OAQuery(
+  @OAOperation(
     path: "/hero/{episode}"
     tags: ["Star Wars", "Hero"]
     summary: "Retrieve heros"
@@ -261,6 +274,13 @@ const BRIDGE_DOCUMENT = gql`
     hero(episode: $episode) {
       name
       appearsIn @include(if: $includeAppearsIn)
+    }
+  }
+
+  mutation createANewHero($name: String, $hero: HeroInput! @OABody(description: "Our new Hero"))
+  @OAOperation(path: "/hero/{name}", tags: ["Star Wars", "Hero"], method: POST) {
+    createNewHero(name: $name, input: $hero) {
+      name
     }
   }
 `
