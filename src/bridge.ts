@@ -251,6 +251,7 @@ const createExpressMiddleware = <R extends Request>(
 
 type OperationCustomProperties = {
   [CustomProperties.Operation]?: string
+  [CustomProperties.VariableName]?: string
 }
 
 const getVariableMapFromParameters = (parameters: OpenAPIV3.ParameterObject[]) => {
@@ -306,6 +307,12 @@ export const createExpressMiddlewareFromOpenAPISchema = (
   return createExpressMiddleware(operations, executor, config)
 }
 
+type OpWithProps = OpenAPIV3.OperationObject<OperationCustomProperties>
+type ParamsWithVars = ((OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject) &
+  OperationCustomProperties)[]
+type ReqBodyWithVars = (OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBodyObject) &
+  OperationCustomProperties
+
 export const removeCustomProperties = (
   schema: OpenAPIV3.Document<OperationCustomProperties>
 ): OpenAPIV3.Document => {
@@ -318,8 +325,17 @@ export const removeCustomProperties = (
       if (typeof operation !== 'object' || operation === null) {
         continue
       }
-      delete (operation as any)[CustomProperties.Operation]
-      for (const parameter of (operation as any).parameters || []) {
+      delete (operation as OpWithProps)[CustomProperties.Operation]
+
+      // request body
+      if ((operation as OpWithProps).requestBody) {
+        delete ((operation as OpWithProps).requestBody as ReqBodyWithVars)[
+          CustomProperties.VariableName
+        ]
+      }
+
+      // request parameters
+      for (const parameter of ((operation as OpWithProps).parameters as ParamsWithVars) || []) {
         delete parameter[CustomProperties.VariableName]
       }
     }

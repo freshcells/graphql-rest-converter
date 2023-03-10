@@ -16,3 +16,5 @@ export type {
 export { createHttpExecutor, createSchemaExecutor } from './graphQLExecutor'
 
 export type { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'
+
+export { InvalidResponseError } from './errors'

@@ -1,6 +1,6 @@
 import schema from './schema/schema.graphql'
 import { buildASTSchema } from 'graphql'
-import { createOpenAPIGraphQLBridge } from '../bridge'
+import { createOpenAPIGraphQLBridge, removeCustomProperties } from '../bridge'
 import { gql } from 'graphql-tag'
 import { bridgeFixtures } from './fixtures'
 import { getBridgeOperations } from '../graphql'
@@ -77,7 +77,7 @@ describe('OpenAPI Generation', () => {
     })
   })
 
-  it('should create schema from graphql api', () => {
+  describe('should create schema from graphql api', () => {
     const bridge = createOpenAPIGraphQLBridge({
       graphqlDocument: bridgeFixtures,
       graphqlSchema,
@@ -109,6 +109,13 @@ describe('OpenAPI Generation', () => {
         },
       },
     })
-    expect(schema).toMatchSnapshot()
+
+    it('should include custom properties by default', () => {
+      expect(schema).toMatchSnapshot()
+    })
+
+    it('should be able to remove custom properties', () => {
+      expect(removeCustomProperties(schema)).toMatchSnapshot()
+    })
   })
 })
