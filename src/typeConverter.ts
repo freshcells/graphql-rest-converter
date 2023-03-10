@@ -525,7 +525,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       const typeSchema = this.customScalars(type.name)
       if (!typeSchema) {
         throw new Error(
-          `Expected a valid schema for scalar ${type.name}, but got undefined. Check your scalar provider function.`
+          `Expected a valid schema for scalar "${type.name}", but got undefined. Check your scalar provider function.`
         )
       }
       const description = type.description

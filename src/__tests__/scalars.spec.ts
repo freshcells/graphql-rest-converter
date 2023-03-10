@@ -39,7 +39,7 @@ describe('Scalars', () => {
         customScalars: () => undefined,
       })
     ).toThrow(
-      /Expected a valid schema for scalar Date, but got undefined. Check your scalar provider function./
+      `Expected a valid schema for scalar "Date", but got undefined. Check your scalar provider function.`
     )
   })
   it('should allow custom scalars', async () => {

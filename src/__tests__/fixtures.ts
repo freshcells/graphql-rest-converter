@@ -53,7 +53,7 @@ export const bridgeFixtures = gql`
   }
 
   query getSampleWithDefault($id: Int! = 10 @OAParam(in: QUERY))
-  @OAOperation(path: "/sample-default") {
+  @OAOperation(path: "/sample-default", security: [{ schema: "dev" }]) {
     getSample(id: $id) {
       ... on Sample {
         name

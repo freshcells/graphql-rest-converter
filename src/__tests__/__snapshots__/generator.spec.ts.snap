@@ -475,6 +475,11 @@ Object {
             "description": "Internal Server Error",
           },
         },
+        "security": Array [
+          Object {
+            "dev": Array [],
+          },
+        ],
         "x-graphql-operation": "query getSampleWithDefault($id: Int! = 10) {
   getSample(id: $id) {
     ... on Sample {

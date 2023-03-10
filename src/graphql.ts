@@ -105,7 +105,7 @@ const graphqlOperationDirectiveDataToOpenAPIOperation = (
             if (item === null) {
               return {}
             }
-            return { [item.schema]: item.scopes }
+            return { [item.schema]: item.scopes || [] }
           }),
         }
       : {}),
