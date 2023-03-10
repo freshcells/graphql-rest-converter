@@ -18,6 +18,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
+    "@graphql-tools/schema": "^9.0.17",
     "ajv": "^8.11.0",
     "body-parser": "^1.20.2",
     "graphql": "^16.6.0",

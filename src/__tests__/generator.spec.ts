@@ -21,7 +21,9 @@ describe('OpenAPI Generation', () => {
             }
           `
         )
-      }).toThrow(/Subscriptions \(at: mySubscription\) are unsupported at this moment/)
+      }).toThrow(
+        'Schema validation error(s): Directive "@OAOperation" may not be used on SUBSCRIPTION. Source: unknown'
+      )
     })
 
     it('should deny multiple @OABody directives', () => {
@@ -88,6 +90,22 @@ describe('OpenAPI Generation', () => {
           title: 'Sample API',
           version: '1.0.0',
           description: 'My API',
+        },
+        components: {
+          securitySchemes: {
+            OAuth2: {
+              type: 'oauth2',
+              flows: {
+                password: {
+                  scopes: {
+                    'write:admin': 'Grants admin access',
+                  },
+                  tokenUrl: 'http://some-token-url',
+                  refreshUrl: 'http://some-refresh-token-url',
+                },
+              },
+            },
+          },
         },
       },
     })

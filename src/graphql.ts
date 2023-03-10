@@ -10,7 +10,9 @@ import {
   OperationDefinitionNode,
   GraphQLDirective,
   OperationTypeNode,
+  validate,
 } from 'graphql'
+import { mergeSchemas } from '@graphql-tools/schema'
 import { gql } from 'graphql-tag'
 import { OpenAPIV3 } from 'openapi-types'
 import { getVariablesFromPathTemplate } from './pathTemplate'
@@ -26,11 +28,18 @@ import {
 import { CustomProperties, OAType, BridgeOperation } from './types'
 import { getReferenceableFragments, GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
 import { isNullable } from './openApi'
+import { printSourceLocation } from 'graphql/language/printLocation'
 
 const DIRECTIVE_DEFINITION = gql`
   input OAExternalDocsInput {
     url: String!
     description: String
+  }
+
+  # see https://swagger.io/docs/specification/authentication/
+  input SecurityDefinitionInput {
+    schema: String!
+    scopes: [String!]
   }
 
   enum HttpMethod {
@@ -50,6 +59,7 @@ const DIRECTIVE_DEFINITION = gql`
     path: String!
     tags: [String!]
     summary: String
+    security: [SecurityDefinitionInput]
     description: String
     externalDocs: OAExternalDocsInput
     deprecated: Boolean
@@ -82,13 +92,23 @@ export enum OpenAPIDirectives {
 const graphqlOperationDirectiveDataToOpenAPIOperation = (
   requestConfig: OpenAPIOperationDirectiveData
 ) => {
-  const { tags, summary, description, externalDocs, deprecated } = requestConfig
+  const { tags, summary, description, externalDocs, security, deprecated } = requestConfig
   return {
     ...(tags?.length ? { tags } : {}),
     ...(typeof summary === 'string' ? { summary } : {}),
     ...(typeof description === 'string' ? { description } : {}),
     ...(typeof externalDocs?.url === 'string' ? { externalDocs } : {}),
     ...(deprecated ? { deprecated } : {}),
+    ...(security
+      ? {
+          security: security.map((item) => {
+            if (item === null) {
+              return {}
+            }
+            return { [item.schema]: item.scopes }
+          }),
+        }
+      : {}),
   }
 }
 
@@ -191,6 +211,12 @@ type OpenAPIOperationDirectiveData = {
     url: string
     description?: string
   }
+  security?: [
+    {
+      schema: string
+      scopes: string[]
+    } | null
+  ]
   deprecated?: boolean
   method: OpenAPIV3.HttpMethods
 }
@@ -296,6 +322,8 @@ const getVariablesDirectiveData = (
   }
 }
 
+const directiveSchema = buildASTSchema(DIRECTIVE_DEFINITION)
+
 export const getBridgeOperations = (
   schema: GraphQLSchema,
   document: DocumentNode,
@@ -315,8 +343,20 @@ export const getBridgeOperations = (
     fragmentMap,
     referencableFragments
   )
-
-  const directiveSchema = buildASTSchema(DIRECTIVE_DEFINITION)
+  const validationResult = validate(mergeSchemas({ schemas: [directiveSchema, schema] }), document)
+  if (validationResult.length > 0) {
+    const errors = validationResult
+      .map(
+        (error) =>
+          `${error.message} Source: ${
+            error.locations && error.source
+              ? printSourceLocation(error.source, error.locations[0])
+              : 'unknown'
+          }`
+      )
+      .join(', ')
+    throw new Error(`Schema validation error(s): ${errors}`)
+  }
 
   for (const operation of document.definitions) {
     if (!isOperationDefinitionNode(operation)) {

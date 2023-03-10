@@ -8,13 +8,11 @@ import {
   FragmentSpreadNode,
   GraphQLDirective,
   Kind,
-  Location,
   OperationDefinitionNode,
   valueFromAST,
   valueFromASTUntyped,
   visit,
 } from 'graphql'
-import { printLocation } from 'graphql/language/printLocation'
 
 export const hasDirective = (node: ASTNode, directiveName: string | string[]) =>
   (('directives' in node && node.directives) || []).some((directive) =>
@@ -152,8 +150,4 @@ const toInlineFragment = (
     directives: fragmentSpread.directives,
     selectionSet: fragmentDefinition.selectionSet,
   }
-}
-
-export const formatMessageWithLocation = (message: string, loc?: Location) => {
-  return `${message} Location: ${(loc && printLocation(loc)) || 'unknown'}`
 }

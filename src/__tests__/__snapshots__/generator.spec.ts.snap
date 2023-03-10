@@ -36,6 +36,20 @@ Object {
         "type": "string",
       },
     },
+    "securitySchemes": Object {
+      "OAuth2": Object {
+        "flows": Object {
+          "password": Object {
+            "refreshUrl": "http://some-refresh-token-url",
+            "scopes": Object {
+              "write:admin": "Grants admin access",
+            },
+            "tokenUrl": "http://some-token-url",
+          },
+        },
+        "type": "oauth2",
+      },
+    },
   },
   "info": Object {
     "description": "My API",
@@ -849,6 +863,132 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
 fragment MySamples on Sample @OADescription(description: \\"Description for my MySamples fragment\\") {
   myId: id @OADescription(description: \\"my custom description on a field\\")
   myName: name
+}",
+      },
+    },
+    "/secured": Object {
+      "get": Object {
+        "operationId": "securedOperation",
+        "parameters": Array [
+          Object {
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "schema": Object {
+              "format": "int32",
+              "type": "integer",
+            },
+          },
+        ],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "getSample": Object {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": Object {
+                        "name": Object {
+                          "description": "The name",
+                          "type": "string",
+                        },
+                      },
+                      "required": Array [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "getSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Data without errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "getSample": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": Object {
+                            "name": Object {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                          },
+                          "required": Array [
+                            "name",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "getSample",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                    "status": Object {
+                      "format": "int32",
+                      "type": "number",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "security": Array [
+          Object {},
+          Object {
+            "OAuth2": Array [
+              "write:admin",
+            ],
+          },
+        ],
+        "x-graphql-operation": "query securedOperation($id: Int!) {
+  getSample(id: $id) {
+    name
+  }
 }",
       },
     },

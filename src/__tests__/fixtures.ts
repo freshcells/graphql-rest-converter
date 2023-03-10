@@ -60,6 +60,13 @@ export const bridgeFixtures = gql`
       }
     }
   }
+
+  query securedOperation($id: Int!)
+  @OAOperation(path: "/secured", security: [null, { schema: "OAuth2", scopes: ["write:admin"] }]) {
+    getSample(id: $id) {
+      name
+    }
+  }
 `
 
 export const graphqlSchema = buildASTSchema(schema)

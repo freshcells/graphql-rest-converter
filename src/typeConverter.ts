@@ -33,7 +33,6 @@ import {
 } from 'graphql'
 import { OAType, SchemaComponents } from './types'
 import {
-  formatMessageWithLocation,
   getDirective,
   getDirectiveArgumentsUntyped,
   hasDirective,
@@ -241,17 +240,6 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   }
 
   public resultFromOperation(operation: OperationDefinitionNode) {
-    if (operation.operation === OperationTypeNode.SUBSCRIPTION) {
-      throw new Error(
-        formatMessageWithLocation(
-          `Subscriptions (at: ${
-            operation.name?.value || 'unknown'
-          }) are unsupported at this moment.`,
-          operation.loc
-        )
-      )
-    }
-
     return this.fromType(
       operation.operation === OperationTypeNode.MUTATION
         ? this.graphqlSchema.getMutationType()!

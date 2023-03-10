@@ -7,7 +7,7 @@ import { CustomProperties, BridgeOperations, OAType } from './types'
 export const createOpenAPISchemaFromOperations = (
   openAPIBaseSchema: PartialDeep<OpenAPIV3.Document>,
   openAPIGraphqlOperations: BridgeOperations
-) => {
+): OpenAPIV3.Document => {
   const openAPIPaths = openAPIGraphqlOperations.operations.map((x) => ({
     paths: {
       [x.path]: {
