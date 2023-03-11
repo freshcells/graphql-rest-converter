@@ -146,8 +146,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -350,8 +370,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -479,8 +519,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -601,8 +661,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -756,8 +836,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -873,8 +973,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -997,8 +1117,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -1173,8 +1313,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -1381,8 +1541,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -1519,8 +1699,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -1648,8 +1848,28 @@ Object {
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -1814,8 +2034,28 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -1936,8 +2176,28 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",
@@ -2070,8 +2330,28 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                     "errors": Object {
                       "items": Object {
                         "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
                           "message": Object {
                             "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
                           },
                         },
                         "type": "object",

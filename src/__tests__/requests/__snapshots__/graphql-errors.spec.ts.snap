@@ -13,7 +13,6 @@ Object {
       "message": "Variable \\"$id\\" got invalid value \\"not-a-number\\"; Int cannot represent non-integer value: \\"not-a-number\\"",
     },
   ],
-  "status": 500,
 }
 `;
 
@@ -34,6 +33,5 @@ Object {
       ],
     },
   ],
-  "status": 500,
 }
 `;

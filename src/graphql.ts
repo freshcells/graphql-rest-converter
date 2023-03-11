@@ -291,7 +291,18 @@ const createOpenAPIOperation = (
                 items: {
                   type: 'object',
                   properties: {
+                    locations: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          line: { type: 'integer' },
+                          column: { type: 'integer' },
+                        },
+                      },
+                    },
                     message: { type: 'string' },
+                    path: { type: 'array', items: { type: 'string' } },
                   },
                 },
               },

@@ -188,13 +188,7 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
       }
       // 2. If no response validation is enabled, we will return (possibly) both the errors and a (partial) result
       if (result.errors) {
-        res
-          .status(500)
-          .json({
-            status: 500,
-            ...result,
-          })
-          .end()
+        res.status(500).json(result).end()
         return
       }
       res.status(200).json(result.data).end()
