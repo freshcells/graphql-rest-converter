@@ -437,7 +437,12 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       if (selection.kind === Kind.FIELD) {
         const fieldName = selection.name.value
         const fieldAlias = selection.alias?.value || fieldName
-        properties[fieldAlias] = this.fromField(type, fieldName, selection.selectionSet)
+        const maybeDescription = getDescriptionFromNode(selection)
+
+        properties[fieldAlias] = {
+          ...this.fromField(type, fieldName, selection.selectionSet),
+          ...(maybeDescription ? { description: maybeDescription } : {}),
+        }
         const isFieldOptional = isOptional || hasOptionalDirective(selection)
         if (!isFieldOptional) {
           required.push(fieldAlias)

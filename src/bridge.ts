@@ -126,7 +126,7 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
         return
       }
 
-      const variables: Record<string, any> = {}
+      const variables: Record<string, unknown> = {}
       for (const parameter of operation.openAPIOperation
         .parameters as OpenAPIV3.ParameterObject[]) {
         const variableName = operation.variableMap[parameter.name] || parameter.name
@@ -248,16 +248,22 @@ type OperationCustomProperties = {
   [CustomProperties.VariableName]?: string
 }
 
-const getVariableMapFromParameters = (parameters: OpenAPIV3.ParameterObject[]) => {
+const getVariableMapFromParameters = (parameters: ParamsWithVars) => {
   const variableMap: Record<string, string> = {}
   for (const parameter of parameters) {
-    const variableName = (parameter as any)[CustomProperties.VariableName]
+    const variableName = parameter[CustomProperties.VariableName]
     if (variableName) {
-      variableMap[parameter.name] = variableName
+      variableMap[(parameter as OpenAPIV3.ParameterObject).name] = variableName
     }
   }
   return variableMap
 }
+
+type OpWithProps = OpenAPIV3.OperationObject<OperationCustomProperties>
+type ParamsWithVars = ((OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject) &
+  OperationCustomProperties)[]
+type ReqBodyWithVars = (OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBodyObject) &
+  OperationCustomProperties
 
 const getBridgeOperationsFromOpenAPISchema = (
   schema: OpenAPIV3.Document<OperationCustomProperties>
@@ -268,17 +274,28 @@ const getBridgeOperationsFromOpenAPISchema = (
       continue
     }
     for (const [httpMethod, operation] of Object.entries(pathItem)) {
-      if (!(operation as any)[CustomProperties.Operation]) {
+      if (!(operation as OpWithProps)[CustomProperties.Operation]) {
         continue
       }
       const requestBodyVariable =
-        (operation as any)?.requestBody?.[CustomProperties.VariableName] ?? null
+        ((operation as OpWithProps)?.requestBody as ReqBodyWithVars)?.[
+          CustomProperties.VariableName
+        ] ?? null
       operations.push({
         openAPIOperation: operation as OpenAPIV3.OperationObject,
         path,
         httpMethod: httpMethod as OpenAPIV3.HttpMethods,
-        graphqlDocument: parse((operation as any)[CustomProperties.Operation]),
-        variableMap: getVariableMapFromParameters((operation as any).parameters || []),
+        graphqlDocument: parse(
+          (operation as OpenAPIV3.OperationObject<OperationCustomProperties>)[
+            CustomProperties.Operation
+          ] as string
+        ),
+        graphqlDocumentSource: (operation as OpenAPIV3.OperationObject<OperationCustomProperties>)[
+          CustomProperties.Operation
+        ] as string,
+        variableMap: getVariableMapFromParameters(
+          (operation as OpenAPIV3.OperationObject).parameters || []
+        ),
         requestBodyVariable,
       })
     }
@@ -300,12 +317,6 @@ export const createExpressMiddlewareFromOpenAPISchema = (
   const operations = getBridgeOperationsFromOpenAPISchema(schema)
   return createExpressMiddleware(operations, executor, config)
 }
-
-type OpWithProps = OpenAPIV3.OperationObject<OperationCustomProperties>
-type ParamsWithVars = ((OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject) &
-  OperationCustomProperties)[]
-type ReqBodyWithVars = (OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBodyObject) &
-  OperationCustomProperties
 
 export const removeCustomProperties = (
   schema: OpenAPIV3.Document<OperationCustomProperties>
@@ -342,12 +353,12 @@ export type CreateOpenAPISchemaConfig = {
   validate?: boolean
 }
 
-const createOpenAPISchemaWithValidate = (
+export const createOpenAPISchemaWithValidate = (
   operations: BridgeOperations,
-  config: CreateOpenAPISchemaConfig
+  config?: CreateOpenAPISchemaConfig
 ) => {
-  const openAPISchema = createOpenAPISchemaFromOperations(config.baseSchema, operations)
-  if (config.validate) {
+  const openAPISchema = createOpenAPISchemaFromOperations(config?.baseSchema || {}, operations)
+  if (config?.validate) {
     const schemaValidator = new OpenAPISchemaValidator({ version: 3 })
     const schemaValidationErrors = schemaValidator.validate(openAPISchema)
     if (schemaValidationErrors?.errors?.length) {

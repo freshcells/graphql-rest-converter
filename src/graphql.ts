@@ -79,7 +79,7 @@ const DIRECTIVE_DEFINITION = gql`
 
   directive @OADescription(
     description: String
-  ) on FRAGMENT_DEFINITION | FIELD | INPUT_FIELD_DEFINITION
+  ) on FRAGMENT_DEFINITION | FIELD | FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 `
 
 export enum OpenAPIDirectives {
@@ -417,7 +417,7 @@ export const getBridgeOperations = (
 
     // ## Remove custom directives
 
-    const operation_ = removeOpenAPIDirectives(operation)
+    const operation_ = operation
 
     // ## Include dependency fragments
 
@@ -467,7 +467,8 @@ export const getBridgeOperations = (
         )
       : null
 
-    const operationSource = print(singleOperationDocument)
+    const graphqlDocument = removeOpenAPIDirectives(singleOperationDocument)
+    const operationSource = print(graphqlDocument)
 
     // ## Build OpenAPI schema: Operation
 
@@ -495,7 +496,8 @@ export const getBridgeOperations = (
       openAPIOperation,
       path: operationDirectiveData.path,
       httpMethod,
-      graphqlDocument: singleOperationDocument,
+      graphqlDocument,
+      graphqlDocumentSource: operationSource,
       variableMap,
       requestBodyVariable,
     }
@@ -509,7 +511,7 @@ export const getBridgeOperations = (
   }
 }
 
-const removeOpenAPIDirectives = <T extends ASTNode>(node: T): T => {
+export const removeOpenAPIDirectives = <T extends ASTNode>(node: T): T => {
   return visit(node, {
     Directive: {
       enter(node) {

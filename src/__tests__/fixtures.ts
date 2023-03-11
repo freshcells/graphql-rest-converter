@@ -63,7 +63,7 @@ export const bridgeFixtures = gql`
 
   query securedOperation($id: Int!)
   @OAOperation(path: "/secured", security: [null, { schema: "OAuth2", scopes: ["write:admin"] }]) {
-    getSample(id: $id) {
+    getSample(id: $id) @OADescription(description: "fetches a sample") {
       name
     }
   }

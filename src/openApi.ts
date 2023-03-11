@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { PartialDeep } from 'type-fest'
 import { OpenAPIV3 } from 'openapi-types'
-import { print } from 'graphql'
 import { CustomProperties, BridgeOperations, OAType } from './types'
 
 export const createOpenAPISchemaFromOperations = (
@@ -13,7 +12,7 @@ export const createOpenAPISchemaFromOperations = (
       [x.path]: {
         [x.httpMethod]: {
           ...x.openAPIOperation,
-          [CustomProperties.Operation]: print(x.graphqlDocument),
+          [CustomProperties.Operation]: x.graphqlDocumentSource,
         },
       },
     },

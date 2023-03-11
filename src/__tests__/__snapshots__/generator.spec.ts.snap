@@ -9,6 +9,7 @@ Object {
         "nullable": true,
         "properties": Object {
           "myId": Object {
+            "description": "my custom description on a field",
             "format": "int32",
             "type": "integer",
           },
@@ -79,6 +80,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "deleteSample": Object {
+                      "description": "A Description of the \`deleteSample\` mutation",
                       "nullable": true,
                       "type": "boolean",
                     },
@@ -134,6 +136,7 @@ Object {
                       "nullable": true,
                       "properties": Object {
                         "deleteSample": Object {
+                          "description": "A Description of the \`deleteSample\` mutation",
                           "nullable": true,
                           "type": "boolean",
                         },
@@ -1032,7 +1035,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "getSample": Object {
-                      "description": "This is the default \`Sample\` documentation",
+                      "description": "fetches a sample",
                       "properties": Object {
                         "name": Object {
                           "description": "The name",
@@ -1096,7 +1099,7 @@ Object {
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
-                          "description": "This is the default \`Sample\` documentation",
+                          "description": "fetches a sample",
                           "properties": Object {
                             "name": Object {
                               "description": "The name",
@@ -1176,6 +1179,7 @@ Object {
         "nullable": true,
         "properties": Object {
           "myId": Object {
+            "description": "my custom description on a field",
             "format": "int32",
             "type": "integer",
           },
@@ -1246,6 +1250,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "deleteSample": Object {
+                      "description": "A Description of the \`deleteSample\` mutation",
                       "nullable": true,
                       "type": "boolean",
                     },
@@ -1301,6 +1306,7 @@ Object {
                       "nullable": true,
                       "properties": Object {
                         "deleteSample": Object {
+                          "description": "A Description of the \`deleteSample\` mutation",
                           "nullable": true,
                           "type": "boolean",
                         },
@@ -1890,8 +1896,8 @@ Object {
   }
 }
 
-fragment MySamples on Sample @OADescription(description: \\"Description for my MySamples fragment\\") {
-  myId: id @OADescription(description: \\"my custom description on a field\\")
+fragment MySamples on Sample {
+  myId: id
   myName: name
 }",
       },
@@ -2218,8 +2224,8 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
   }
 }
 
-fragment MySamples on Sample @OADescription(description: \\"Description for my MySamples fragment\\") {
-  myId: id @OADescription(description: \\"my custom description on a field\\")
+fragment MySamples on Sample {
+  myId: id
   myName: name
 }",
       },
@@ -2245,7 +2251,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 "schema": Object {
                   "properties": Object {
                     "getSample": Object {
-                      "description": "This is the default \`Sample\` documentation",
+                      "description": "fetches a sample",
                       "properties": Object {
                         "name": Object {
                           "description": "The name",
@@ -2309,7 +2315,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
-                          "description": "This is the default \`Sample\` documentation",
+                          "description": "fetches a sample",
                           "properties": Object {
                             "name": Object {
                               "description": "The name",

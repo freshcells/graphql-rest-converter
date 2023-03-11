@@ -6,6 +6,7 @@ export type BridgeOperation = {
   path: string
   httpMethod: OpenAPIV3.HttpMethods
   graphqlDocument: DocumentNode
+  graphqlDocumentSource: string
   variableMap: Record<string, string>
   requestBodyVariable: string | null
 }

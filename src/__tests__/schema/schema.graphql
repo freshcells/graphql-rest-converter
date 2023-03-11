@@ -41,6 +41,7 @@ input SampleInput {
 type Mutation {
   createSample(input: SampleInput!): Sample!
   updateSample(id: Int!, input: SampleInput!): Sample!
+  "A Description of the `deleteSample` mutation"
   deleteSample(id: Int!): Boolean
 }
 

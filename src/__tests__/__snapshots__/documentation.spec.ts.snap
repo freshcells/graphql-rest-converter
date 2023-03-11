@@ -1,0 +1,317 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Documentation should support overwriting default descriptions 1`] = `
+Object {
+  "components": Object {
+    "schemas": Object {},
+  },
+  "paths": Object {
+    "/heroes": Object {
+      "get": Object {
+        "operationId": "fetchAllMyHeroes",
+        "parameters": Array [],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "fetchAllMyHeroes": Object {
+                      "description": "My Heroes",
+                      "items": Object {
+                        "properties": Object {
+                          "name": Object {
+                            "description": "Name of the hero",
+                            "nullable": true,
+                            "type": "string",
+                          },
+                        },
+                        "required": Array [
+                          "name",
+                        ],
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": Array [
+                    "fetchAllMyHeroes",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "fetchAllMyHeroes": Object {
+                          "description": "My Heroes",
+                          "items": Object {
+                            "properties": Object {
+                              "name": Object {
+                                "description": "Name of the hero",
+                                "nullable": true,
+                                "type": "string",
+                              },
+                            },
+                            "required": Array [
+                              "name",
+                            ],
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": Array [
+                        "fetchAllMyHeroes",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "query fetchAllMyHeroes {
+  fetchAllMyHeroes {
+    name
+  }
+}",
+      },
+    },
+  },
+}
+`;
+
+exports[`Documentation should take default descriptions of the schema 1`] = `
+Object {
+  "components": Object {
+    "schemas": Object {},
+  },
+  "paths": Object {
+    "/heroes": Object {
+      "get": Object {
+        "operationId": "fetchAllMyHeroes",
+        "parameters": Array [],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "fetchAllMyHeroes": Object {
+                      "description": "Default my Heroes",
+                      "items": Object {
+                        "description": "Documentation of the Hero",
+                        "properties": Object {
+                          "name": Object {
+                            "description": "Default name",
+                            "nullable": true,
+                            "type": "string",
+                          },
+                        },
+                        "required": Array [
+                          "name",
+                        ],
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": Array [
+                    "fetchAllMyHeroes",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "fetchAllMyHeroes": Object {
+                          "description": "Default my Heroes",
+                          "items": Object {
+                            "description": "Documentation of the Hero",
+                            "properties": Object {
+                              "name": Object {
+                                "description": "Default name",
+                                "nullable": true,
+                                "type": "string",
+                              },
+                            },
+                            "required": Array [
+                              "name",
+                            ],
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": Array [
+                        "fetchAllMyHeroes",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "query fetchAllMyHeroes {
+  fetchAllMyHeroes {
+    name
+  }
+}",
+      },
+    },
+  },
+}
+`;
