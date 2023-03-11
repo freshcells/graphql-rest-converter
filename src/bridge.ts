@@ -119,10 +119,10 @@ const addOperation = <R extends IncomingMessage = IncomingMessage>(
       // TODO: Cookies not supported
       requestCoercer.coerce(req_)
 
-      const errors = requestValidator ? requestValidator.validateRequest(req_) : null
+      const validationResult = requestValidator ? requestValidator.validateRequest(req_) : null
 
-      if (errors) {
-        res.status(400).json(errors)
+      if (validationResult) {
+        res.status(400).json({ errors: validationResult.errors })
         return
       }
 

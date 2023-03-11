@@ -257,8 +257,18 @@ const createOpenAPIOperation = (
           schema: {
             type: 'object',
             properties: {
-              status: { type: 'number', format: 'int32' },
-              errors: { type: 'array', items: { type: 'object' } },
+              errors: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    errorCode: { type: 'string' },
+                    location: { type: 'string' },
+                    message: { type: 'string' },
+                    path: { type: 'string' },
+                  },
+                },
+              },
             },
           } as OpenAPIV3.SchemaObject,
         },
@@ -271,9 +281,20 @@ const createOpenAPIOperation = (
           schema: {
             type: 'object',
             properties: {
-              status: { type: 'number', format: 'int32' },
-              data: { ...resultSchema, nullable: true, description: 'Data without errors' },
-              errors: { type: 'array', items: { type: 'object' } },
+              data: {
+                ...resultSchema,
+                nullable: true,
+                description: 'Branch of data that does not contain errors',
+              },
+              errors: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    message: { type: 'string' },
+                  },
+                },
+              },
             },
           } as OpenAPIV3.SchemaObject,
         },

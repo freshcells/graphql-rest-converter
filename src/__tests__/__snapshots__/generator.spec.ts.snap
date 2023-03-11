@@ -99,13 +99,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -120,7 +130,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "deleteSample": Object {
@@ -135,13 +145,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -256,13 +267,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -277,7 +298,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "createSample": Object {
@@ -328,13 +349,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -401,13 +423,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -422,7 +454,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
@@ -446,13 +478,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -516,13 +549,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -537,7 +580,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
@@ -557,13 +600,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -656,13 +700,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -677,7 +731,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "updateSample": Object {
@@ -701,13 +755,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -763,13 +818,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -784,7 +849,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "samples": Object {
@@ -807,13 +872,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -875,13 +941,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -896,7 +972,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
@@ -920,13 +996,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1049,13 +1126,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1070,7 +1157,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "deleteSample": Object {
@@ -1085,13 +1172,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1210,13 +1298,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1231,7 +1329,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "createSample": Object {
@@ -1282,13 +1380,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1364,13 +1463,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1385,7 +1494,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
@@ -1409,13 +1518,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1486,13 +1596,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1507,7 +1627,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
@@ -1527,13 +1647,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1637,13 +1758,23 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1658,7 +1789,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "updateSample": Object {
@@ -1682,13 +1813,14 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1749,13 +1881,23 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1770,7 +1912,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "samples": Object {
@@ -1793,13 +1935,14 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1871,13 +2014,23 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -1892,7 +2045,7 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getSample": Object {
@@ -1916,13 +2069,14 @@ fragment MySamples on Sample @OADescription(description: \\"Description for my M
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",

@@ -107,13 +107,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -128,7 +138,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "getData": Object {
@@ -189,13 +199,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -358,13 +369,23 @@ Object {
                   "properties": Object {
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
@@ -379,7 +400,7 @@ Object {
                 "schema": Object {
                   "properties": Object {
                     "data": Object {
-                      "description": "Data without errors",
+                      "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": Object {
                         "storeData": Object {
@@ -429,13 +450,14 @@ Object {
                     },
                     "errors": Object {
                       "items": Object {
+                        "properties": Object {
+                          "message": Object {
+                            "type": "string",
+                          },
+                        },
                         "type": "object",
                       },
                       "type": "array",
-                    },
-                    "status": Object {
-                      "format": "int32",
-                      "type": "number",
                     },
                   },
                   "type": "object",
