@@ -67,6 +67,19 @@ describe('OpenAPI Generation', () => {
       )
     })
 
+    it('should throw for generic gql errors', () => {
+      expect(() => {
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            mutation mutateSomething($test: Int!) @OAOperation(path: "/someOp") {
+              mutationWithoutDefaultArg(id: $id)
+            }
+          `
+        )
+      }).toThrow()
+    })
+
     it('should validate path arguments', () => {
       expect(() =>
         getBridgeOperations(
@@ -79,6 +92,21 @@ describe('OpenAPI Generation', () => {
         )
       ).toThrow(
         `Schema validation error(s): Variable "$id" of type "String" must be defined as "String!", as it is used in a "PATH" argument.". Source: unknown`
+      )
+    })
+
+    it('should validate unmapped attributes', () => {
+      expect(() =>
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            mutation mutateSomething($this: String) @OAOperation(path: "/mutate/{id}") {
+              mutationWithoutDefaultArg(id: $this)
+            }
+          `
+        )
+      ).toThrow(
+        `Schema validation error(s): Not all path variables in "/mutate/{id}" are mapped to variables - Missing mappings are: "id". Source: unknown`
       )
     })
 
@@ -133,7 +161,7 @@ describe('OpenAPI Generation', () => {
           `
         )
       ).toThrow(
-        `Schema validation error(s): Location "path" is invalid for "$id" of type "Int!", because "test" was expected in "/my-query/{id}". Source: unknown`
+        `Schema validation error(s): Not all path variables in "/my-query/{id}" are mapped to variables - Missing mappings are: "id". Source: unknown`
       )
     })
     it('should fail in case a path parameter is used within another parameter type', () => {

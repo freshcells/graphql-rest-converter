@@ -108,7 +108,6 @@ interface OAParam {
   name: string
   description: string
   deprecated: boolean
-  required: boolean // automatically assumed true if the parameter is in a path
 }
 ```
 

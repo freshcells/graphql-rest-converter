@@ -7,6 +7,19 @@ import {
 import _ from 'lodash'
 import { createOpenAPISchemaFromOperations } from './openApi'
 import OpenAPISchemaValidator from 'openapi-schema-validator'
+import { VariableDefinitionNode, VariableNode } from 'graphql/index'
+import { getDirective, getDirectiveArgumentsUntyped } from './graphqlUtils'
+import { OpenAPIDirectives } from './graphql'
+
+export const getParameterName = (node: VariableNode, nodeDef: VariableDefinitionNode) => {
+  const paramDirectiveValue = getDirective(nodeDef, OpenAPIDirectives.Param)
+  if (!paramDirectiveValue) {
+    return node.name.value
+  }
+  const directiveParams = getDirectiveArgumentsUntyped(paramDirectiveValue)
+
+  return (directiveParams['name'] as string) || node.name.value
+}
 
 export const resolveSchemaComponents = (schema: any, schemaComponents: SchemaComponents) => {
   if (typeof schema !== 'object' || schema === null) {
