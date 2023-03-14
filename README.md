@@ -241,11 +241,14 @@ import fetch from 'node-fetch'
 import { buildClientSchema, getIntrospectionQuery } from 'graphql'
 import { gql } from 'graphql-tag'
 import {
-  createOpenAPIGraphQLBridge,
   removeCustomProperties,
-  createExpressMiddlewareFromOpenAPISchema,
+  transform,
   createHttpExecutor,
 } from '@freshcells/graphql-rest-converter'
+import {
+  createOpenAPIGraphQLBridge,
+  createExpressMiddlewareFromOpenAPISchema,
+} from '@freshcells/graphql-rest-converter/express'
 
 const GRAPHQL_ENDPOINT = 'https://example.org/graphql'
 
@@ -339,6 +342,10 @@ async function main() {
   const openAPISchema = openAPIGraphQLBridge.getOpenAPISchema({
     baseSchema: BASE_OPENAPI_SCHEMA,
     validate: true, // Default is false
+    // `removeCustomProperties` can be omitted if the underlying GraphQL operations should be visible as custom properties
+    transform: removeCustomProperties,
+    // or multiple transformers:
+    // transform: transform(removeCustomProperties, yourOwnTransformer)
   })
 
   const httpExecutor = createHttpExecutor(GRAPHQL_ENDPOINT)
@@ -362,21 +369,10 @@ async function main() {
     },
   })
 
-  // Alternatively the middleware can be created from the OpenAPI schema, using the `x-graphql-operation` custom properties that are included when generating the schema
-  // const apiMiddleware = createExpressMiddlewareFromOpenAPISchema(
-  //   openAPISchema,
-  //   httpExecutor,
-  //   {
-  //     validateRequest: true, // Default is true
-  //     validateResponse: true, // Default is false
-  //   }
-  // )
-
   app.use(API_PATH, apiMiddleware)
 
   app.get('/openapi.json', (req, res) => {
-    // `removeCustomProperties` can be omitted if the underlying GraphQL operations should be visible as custom properties
-    res.json(removeCustomProperties(openAPISchema))
+    res.json(openAPISchema)
   })
 
   app.listen(LOCAL_PORT)

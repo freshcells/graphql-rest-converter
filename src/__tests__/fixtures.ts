@@ -3,7 +3,7 @@ import { buildASTSchema } from 'graphql/index'
 import schema from './schema/schema.graphql'
 import scalarSchema from './schema/custom-scalars.schema.graphql'
 import { addMocksToSchema } from '@graphql-tools/mock'
-import { createOpenAPIGraphQLBridge } from '../bridge'
+import { createOpenAPIGraphQLBridge } from '../express'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { OpenAPIV3 } from 'openapi-types'
 

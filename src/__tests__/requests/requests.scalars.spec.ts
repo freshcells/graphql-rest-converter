@@ -4,7 +4,7 @@ import request from 'supertest'
 import { addMocksToSchema } from '@graphql-tools/mock'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { customScalarSchema, Scalars } from '../fixtures'
-import { createOpenAPIGraphQLBridge } from '../../bridge'
+import { createOpenAPIGraphQLBridge } from '../../express'
 import { gql } from 'graphql-tag'
 
 const app = express()

@@ -1,7 +1,7 @@
 import { getBridgeOperations } from '../graphql'
 import { gql } from 'graphql-tag'
 import { buildASTSchema } from 'graphql/index'
-import { createOpenAPISchemaWithValidate } from '../bridge'
+import { createOpenAPISchemaWithValidate } from '../utils'
 
 describe('Documentation', () => {
   it('should take default descriptions of the schema', () => {

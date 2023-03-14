@@ -1,25 +1,40 @@
 import _ from 'lodash'
 import { PartialDeep } from 'type-fest'
 import { OpenAPIV3 } from 'openapi-types'
-import { CustomProperties, BridgeOperations, OAType } from './types'
+import {
+  CustomProperties,
+  BridgeOperations,
+  OAType,
+  BridgeOperation,
+  CustomOperationProps,
+} from './types'
 
-export const createOpenAPISchemaFromOperations = (
+export const createOpenAPISchemaFromOperations = <
+  T extends CustomOperationProps = CustomOperationProps
+>(
   openAPIBaseSchema: PartialDeep<OpenAPIV3.Document>,
-  openAPIGraphqlOperations: BridgeOperations
-): OpenAPIV3.Document => {
-  const openAPIPaths = openAPIGraphqlOperations.operations.map((x) => ({
-    paths: {
-      [x.path]: {
-        [x.httpMethod]: {
-          ...x.openAPIOperation,
-          [CustomProperties.Operation]: x.graphqlDocumentSource,
+  openAPIGraphqlOperations: BridgeOperations<T>,
+  transformSchema?: (
+    bridgeOperation: BridgeOperation<T>,
+    operation: OpenAPIV3.OperationObject<T>
+  ) => OpenAPIV3.OperationObject<T>
+): OpenAPIV3.Document<T> => {
+  const openAPIPaths = openAPIGraphqlOperations.operations.map((bridgeOp) => {
+    const operation = Object.freeze({
+      ...bridgeOp.openAPIOperation,
+      [CustomProperties.Operation]: bridgeOp.graphqlDocumentSource,
+    }) as OpenAPIV3.OperationObject<T>
+    return {
+      paths: {
+        [bridgeOp.path]: {
+          [bridgeOp.httpMethod]: transformSchema ? transformSchema(bridgeOp, operation) : operation,
         },
       },
-    },
-    components: {
-      schemas: openAPIGraphqlOperations.schemaComponents,
-    },
-  }))
+      components: {
+        schemas: openAPIGraphqlOperations.schemaComponents,
+      },
+    }
+  })
 
   return _.merge({}, openAPIBaseSchema, ...openAPIPaths)
 }

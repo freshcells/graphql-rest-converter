@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag'
-import { createOpenAPIGraphQLBridge } from '../bridge'
+import { createOpenAPIGraphQLBridge } from '../express'
 import { Scalars, customScalarSchema as graphqlSchema } from './fixtures'
 
 describe('Scalars', () => {

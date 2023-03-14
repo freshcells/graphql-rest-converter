@@ -3,7 +3,7 @@ import express, { ErrorRequestHandler } from 'express'
 import { createSchemaExecutor } from '../../graphQLExecutor'
 import request from 'supertest'
 import { makeExecutableSchema } from '@graphql-tools/schema'
-import { createOpenAPIGraphQLBridge } from '../../bridge'
+import { createOpenAPIGraphQLBridge } from '../../express'
 
 describe('GraphQL Errors', () => {
   it('should forward any gql error if validation is not configured', async () => {

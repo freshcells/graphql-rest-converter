@@ -33,11 +33,11 @@
     "openapi-types": "^12.1.0",
     "type-fest": "^3.2.0"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "express": "^4"
   },
   "files": [
-    "dist"
+    "dist", "*.d.ts"
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
@@ -50,7 +50,17 @@
     "lint:fix": "yarn lint --fix",
     "prettify": "prettier \"**/*.{ts,tsx,graphql,md}\" --write",
     "qa": "tsc --noEmit && yarn test --coverage && yarn lint && yarn format",
-    "prepack": "yarn build"
+    "prepack": "yarn build && cp ./dist/*.d.ts ."
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./express": {
+      "require": "./dist/express.js",
+      "types": "./dist/express.d.ts"
+    }
   },
   "devDependencies": {
     "@graphql-tools/jest-transform": "^1.2.2",

@@ -25,10 +25,11 @@ import {
   getReferencedFragments,
   isOperationDefinitionNode,
 } from './graphqlUtils'
-import { CustomProperties, OAType, BridgeOperation } from './types'
+import { CustomProperties, OAType, BridgeOperation, CustomOperationProps } from './types'
 import { getReferenceableFragments, GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
 import { isNullable } from './openApi'
 import { printSourceLocation } from 'graphql/language/printLocation'
+import { gqlValidationRules } from './validationRules'
 
 const DIRECTIVE_DEFINITION = gql`
   input OAExternalDocsInput {
@@ -68,10 +69,9 @@ const DIRECTIVE_DEFINITION = gql`
   ) on QUERY | MUTATION
 
   directive @OAParam(
-    in: ParameterSource
+    in: ParameterSource = PATH
     deprecated: Boolean
     description: String
-    required: Boolean
     name: String
   ) on VARIABLE_DEFINITION
 
@@ -130,26 +130,6 @@ const getOpenAPIParameters = (
     }
     const paramDirectiveDataIn = paramDirectiveData.in?.toLowerCase()
 
-    if (paramDirectiveDataIn) {
-      if (pathVariables.has(parameterName) && paramDirectiveDataIn !== 'path') {
-        throw new Error(
-          `Location ${paramDirectiveDataIn} invalid for parameter ${parameterName} because it is part of the path`
-        )
-      }
-      if (!pathVariables.has(parameterName) && paramDirectiveDataIn === 'path') {
-        throw new Error(
-          `Location ${paramDirectiveDataIn} invalid for parameter ${parameterName} because it is not part of the path`
-        )
-      }
-      if (paramDirectiveDataIn === 'cookie') {
-        throw new Error(`Unsupported parameter location cookie for parameter ${parameterName}`)
-      }
-      if (!['path', 'query', 'header'].includes(paramDirectiveDataIn)) {
-        throw new Error(
-          `Unknown parameter location ${paramDirectiveDataIn} for parameter ${parameterName}`
-        )
-      }
-    }
     if (paramDirectiveDataIn && paramDirectiveDataIn === 'header') {
       parameterName = parameterName.toLowerCase()
     }
@@ -159,23 +139,21 @@ const getOpenAPIParameters = (
 
     const in_ = pathVariables.has(parameterName)
       ? 'path'
-      : paramDirectiveDataIn && ['header', 'cookie'].includes(paramDirectiveDataIn)
+      : paramDirectiveDataIn && ['header'].includes(paramDirectiveDataIn)
       ? paramDirectiveDataIn
       : 'query'
     const deprecated = paramDirectiveData.deprecated
     const description = paramDirectiveData.description
-    const required = paramDirectiveData.required
     const schema = variablesSchema[variableName]
+
     parameters.push({
       in: in_,
       name: parameterName,
       schema,
-      ...(isNullable(schema) ? { required: true } : {}),
+      ...(!isNullable(schema) ? { required: true } : {}),
       ...(nameOverride ? { [CustomProperties.VariableName]: variableName } : {}),
       ...(deprecated === true ? { deprecated } : {}),
       ...(description ? { description } : {}),
-      // path parameters are always required (see https://swagger.io/docs/specification/describing-parameters/)
-      ...(in_ === 'path' ? { required: true } : { required: required || false }),
     })
   }
 
@@ -225,7 +203,6 @@ type OpenAPIParamDirectiveData = {
   in?: string
   deprecated?: boolean
   description?: string
-  required?: boolean
   name?: string
 }
 
@@ -233,7 +210,7 @@ type OpenAPIBodyDirectiveData = {
   description?: string
 }
 
-const createOpenAPIOperation = (
+const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperationProps>(
   operationId: string | null,
   operationSource: string,
   parameters: OpenAPIV3.ParameterObject[],
@@ -312,14 +289,14 @@ const createOpenAPIOperation = (
       },
     },
   }
-  return {
+  return Object.freeze({
     ...(operationId !== null ? { operationId } : {}),
     [CustomProperties.Operation]: operationSource,
     ...graphqlOperationDirectiveDataToOpenAPIOperation(operationDirectiveData),
     parameters,
     ...(requestBody !== null ? { requestBody } : {}),
     responses,
-  }
+  }) as OpenAPIV3.OperationObject<CustomOperationProps> as OpenAPIV3.OperationObject<T>
 }
 
 const getVariablesDirectiveData = (
@@ -356,12 +333,12 @@ const getVariablesDirectiveData = (
 
 const directiveSchema = buildASTSchema(DIRECTIVE_DEFINITION)
 
-export const getBridgeOperations = (
+export const getBridgeOperations = <T extends CustomOperationProps = CustomOperationProps>(
   schema: GraphQLSchema,
   document: DocumentNode,
   customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject
 ) => {
-  const bridgeOperations: Array<BridgeOperation> = []
+  const bridgeOperations: Array<BridgeOperation<T>> = []
 
   const fragmentMap = createFragmentMap(document.definitions)
 
@@ -375,7 +352,11 @@ export const getBridgeOperations = (
     fragmentMap,
     referencableFragments
   )
-  const validationResult = validate(mergeSchemas({ schemas: [directiveSchema, schema] }), document)
+  const validationResult = validate(
+    mergeSchemas({ schemas: [directiveSchema, schema] }),
+    document,
+    gqlValidationRules
+  )
   if (validationResult.length > 0) {
     const errors = validationResult
       .map(
@@ -413,34 +394,30 @@ export const getBridgeOperations = (
       operation
     )
 
-    // # Compile stand-alone document
-
     // ## Remove custom directives
 
-    const operation_ = operation
-
-    // ## Include dependency fragments
-
     const operationFragmentDependencies = getDependencyClosure(
-      getReferencedFragments(operation_),
+      getReferencedFragments(operation),
       fragmentDependencies
     )
+
+    // ## Include dependency fragments
     const referencedFragments = Object.values(
       _.pickBy(fragmentMap, (v, k) => operationFragmentDependencies.has(k))
     )
 
     const singleOperationDocument = {
       kind: Kind.DOCUMENT,
-      definitions: [operation_, ...referencedFragments],
+      definitions: [operation, ...referencedFragments],
     } as DocumentNode
 
-    const operationId = operation_.name ? operation_.name.value : null
+    const operationId = operation.name ? operation.name.value : null
 
     // # Extract types from GraphQL operation
 
-    const variablesSchema = typeConverter.variablesFromOperation(operation_)
+    const variablesSchema = typeConverter.variablesFromOperation(operation)
 
-    const resultSchema = typeConverter.resultFromOperation(operation_)
+    const resultSchema = typeConverter.resultFromOperation(operation)
 
     // # Build OpenAPI schema
 
@@ -472,7 +449,7 @@ export const getBridgeOperations = (
 
     // ## Build OpenAPI schema: Operation
 
-    const openAPIOperation = createOpenAPIOperation(
+    const openAPIOperation = createOpenAPIOperation<T>(
       operationId,
       operationSource,
       parameters,
@@ -484,7 +461,7 @@ export const getBridgeOperations = (
     // # Build bridge operation
 
     const defaultHttpMethod =
-      operation_.operation === OperationTypeNode.MUTATION
+      operation.operation === OperationTypeNode.MUTATION
         ? OpenAPIV3.HttpMethods.POST
         : OpenAPIV3.HttpMethods.GET
 
@@ -492,7 +469,7 @@ export const getBridgeOperations = (
       (operationDirectiveData.method?.toLowerCase() as OpenAPIV3.HttpMethods | undefined) ??
       defaultHttpMethod
 
-    const bridgeOperation = {
+    const bridgeOperation = Object.freeze({
       openAPIOperation,
       path: operationDirectiveData.path,
       httpMethod,
@@ -500,7 +477,7 @@ export const getBridgeOperations = (
       graphqlDocumentSource: operationSource,
       variableMap,
       requestBodyVariable,
-    }
+    })
 
     bridgeOperations.push(bridgeOperation)
   }

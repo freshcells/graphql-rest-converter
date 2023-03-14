@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OpenAPI Generation should create schema from graphql api should be able to remove custom properties 1`] = `
+exports[`Schema Transformations should be able to remove custom properties 1`] = `
 Object {
   "components": Object {
     "schemas": Object {
@@ -1170,7 +1170,7 @@ Object {
 }
 `;
 
-exports[`OpenAPI Generation should create schema from graphql api should include custom properties by default 1`] = `
+exports[`Schema Transformations should handle multiple transformations 1`] = `
 Object {
   "components": Object {
     "schemas": Object {
@@ -1296,6 +1296,17 @@ Object {
             },
             "description": "Invalid request",
           },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
           "500": Object {
             "content": Object {
               "application/json": Object {
@@ -1359,9 +1370,6 @@ Object {
         "tags": Array [
           "Sample",
         ],
-        "x-graphql-operation": "mutation removeSample($id: Int!) {
-  deleteSample(id: $id)
-}",
       },
       "post": Object {
         "operationId": "createSample",
@@ -1399,7 +1407,6 @@ Object {
             },
           },
           "description": "A Sample Input",
-          "x-graphql-variable-name": "sample",
         },
         "responses": Object {
           "200": Object {
@@ -1488,6 +1495,17 @@ Object {
               },
             },
             "description": "Invalid request",
+          },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
           },
           "500": Object {
             "content": Object {
@@ -1587,15 +1605,6 @@ Object {
         "tags": Array [
           "Sample",
         ],
-        "x-graphql-operation": "mutation createSample($sample: SampleInput!) {
-  createSample(input: $sample) {
-    id
-    name
-    type
-    sku
-    price
-  }
-}",
       },
     },
     "/sample-default": Object {
@@ -1674,6 +1683,17 @@ Object {
             },
             "description": "Invalid request",
           },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
           "500": Object {
             "content": Object {
               "application/json": Object {
@@ -1746,13 +1766,6 @@ Object {
             "dev": Array [],
           },
         ],
-        "x-graphql-operation": "query getSampleWithDefault($id: Int! = 10) {
-  getSample(id: $id) {
-    ... on Sample {
-      name
-    }
-  }
-}",
       },
     },
     "/sample/{id}": Object {
@@ -1827,6 +1840,17 @@ Object {
             },
             "description": "Invalid request",
           },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
           "500": Object {
             "content": Object {
               "application/json": Object {
@@ -1890,16 +1914,6 @@ Object {
             "description": "Internal Server Error",
           },
         },
-        "x-graphql-operation": "query getSample($id: Int!) {
-  getSample(id: $id) {
-    ...MySamples
-  }
-}
-
-fragment MySamples on Sample {
-  myId: id
-  myName: name
-}",
       },
       "put": Object {
         "operationId": "updateSample",
@@ -1946,7 +1960,6 @@ fragment MySamples on Sample {
               },
             },
           },
-          "x-graphql-variable-name": "sample",
         },
         "responses": Object {
           "200": Object {
@@ -2008,6 +2021,17 @@ fragment MySamples on Sample {
               },
             },
             "description": "Invalid request",
+          },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
           },
           "500": Object {
             "content": Object {
@@ -2080,11 +2104,6 @@ fragment MySamples on Sample {
         "tags": Array [
           "Sample",
         ],
-        "x-graphql-operation": "mutation updateSample($id: Int!, $sample: SampleInput!) {
-  updateSample(id: $id, input: $sample) {
-    name
-  }
-}",
       },
     },
     "/samples": Object {
@@ -2152,6 +2171,17 @@ fragment MySamples on Sample {
             },
             "description": "Invalid request",
           },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
           "500": Object {
             "content": Object {
               "application/json": Object {
@@ -2218,16 +2248,6 @@ fragment MySamples on Sample {
             "description": "Internal Server Error",
           },
         },
-        "x-graphql-operation": "query getSamples {
-  samples: getSamples {
-    ...MySamples
-  }
-}
-
-fragment MySamples on Sample {
-  myId: id
-  myName: name
-}",
       },
     },
     "/secured": Object {
@@ -2305,6 +2325,17 @@ fragment MySamples on Sample {
             },
             "description": "Invalid request",
           },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
           "500": Object {
             "content": Object {
               "application/json": Object {
@@ -2380,11 +2411,6 @@ fragment MySamples on Sample {
             ],
           },
         ],
-        "x-graphql-operation": "query securedOperation($id: Int!) {
-  getSample(id: $id) {
-    name
-  }
-}",
       },
     },
   },
