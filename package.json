@@ -37,7 +37,8 @@
     "express": "^4"
   },
   "files": [
-    "dist", "*.d.ts"
+    "dist",
+    "*.d.ts"
   ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
