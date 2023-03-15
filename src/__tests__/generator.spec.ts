@@ -85,7 +85,7 @@ describe('OpenAPI Generation', () => {
         getBridgeOperations(
           graphqlSchema,
           gql`
-            mutation mutateSomething($id: String @OAParam) @OAOperation(path: "/mutate/{id}") {
+            mutation mutateSomething($id: String) @OAOperation(path: "/mutate/{id}") {
               mutationWithoutDefaultArg(id: $id)
             }
           `

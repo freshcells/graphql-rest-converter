@@ -69,7 +69,7 @@ const DIRECTIVE_DEFINITION = gql`
   ) on QUERY | MUTATION
 
   directive @OAParam(
-    in: ParameterSource = PATH
+    in: ParameterSource
     deprecated: Boolean
     description: String
     name: String

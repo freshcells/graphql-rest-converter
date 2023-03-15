@@ -91,19 +91,18 @@ const openApiOperationValidations: ValidationRule = (context: ValidationContext)
               paramDirectiveValue
             )
             inValue = (paramDirectiveArguments?.in as string | undefined)?.toLowerCase()
-
-            if (inValue === 'path') {
-              if (!(type instanceof GraphQLNonNull)) {
-                context.reportError(
-                  new GraphQLError(
-                    `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used in a "PATH" argument.".`,
-                    {
-                      nodes: [varDef, node, operation],
-                    }
-                  )
+          }
+          if (pathVariables.has(parameterName)) {
+            if (!(type instanceof GraphQLNonNull)) {
+              context.reportError(
+                new GraphQLError(
+                  `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used in a "PATH" argument.".`,
+                  {
+                    nodes: [varDef, node, operation],
+                  }
                 )
-                return
-              }
+              )
+              return
             }
           }
 
