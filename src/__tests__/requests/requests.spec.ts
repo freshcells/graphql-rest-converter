@@ -2,7 +2,6 @@ import { bridge, gqlSchema } from '../fixtures'
 import express from 'express'
 import { createSchemaExecutor } from '../../graphQLExecutor'
 import request from 'supertest'
-import exp from 'constants'
 
 const app = express()
 
