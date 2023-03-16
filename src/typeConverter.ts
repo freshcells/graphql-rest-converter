@@ -37,6 +37,7 @@ import {
   getDirectiveArgumentsUntyped,
   hasDirective,
   isFragmentDefinitionNode,
+  removeDescriptionFromObjectType,
 } from './graphqlUtils'
 import { isNullable } from './openApi'
 import { OpenAPIDirectives } from './graphql'
@@ -242,8 +243,8 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   public resultFromOperation(operation: OperationDefinitionNode) {
     return this.fromType(
       operation.operation === OperationTypeNode.MUTATION
-        ? this.graphqlSchema.getMutationType()!
-        : this.graphqlSchema.getQueryType()!,
+        ? removeDescriptionFromObjectType(this.graphqlSchema.getMutationType()!)
+        : removeDescriptionFromObjectType(this.graphqlSchema.getQueryType()!),
       operation.selectionSet,
       true
     )

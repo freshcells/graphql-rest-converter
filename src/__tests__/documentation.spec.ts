@@ -4,6 +4,35 @@ import { buildASTSchema } from 'graphql/index'
 import { createOpenAPISchemaWithValidate } from '../utils'
 
 describe('Documentation', () => {
+  it('should not take the root description into account', () => {
+    const schema = buildASTSchema(gql`
+      type Hero {
+        name: String
+      }
+      "The root Query description"
+      type Query {
+        "My heros"
+        fetchAllMyHeroes: [Hero!]!
+      }
+      schema {
+        query: Query
+      }
+    `)
+    const operations = getBridgeOperations(
+      schema,
+      gql`
+        query fetchAllMyHeroes @OAOperation(path: "/heroes") {
+          fetchAllMyHeroes {
+            name
+          }
+        }
+      `
+    )
+    const openApiSchema = createOpenAPISchemaWithValidate(operations)
+
+    expect(openApiSchema).toMatchSnapshot()
+  })
+
   it('should take default descriptions of the schema', () => {
     const schema = buildASTSchema(gql`
       "Documentation of the Hero"

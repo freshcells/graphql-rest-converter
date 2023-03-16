@@ -7,6 +7,7 @@ import {
   FragmentDefinitionNode,
   FragmentSpreadNode,
   GraphQLDirective,
+  GraphQLObjectType,
   Kind,
   OperationDefinitionNode,
   valueFromAST,
@@ -26,6 +27,10 @@ export const getDirective = (node: ASTNode, directiveName: string) =>
   (('directives' in node && node.directives) || []).find(
     (directive) => directiveName === directive.name.value
   )
+
+export const removeDescriptionFromObjectType = <T, S>(node: GraphQLObjectType<T, S>) => {
+  return new GraphQLObjectType({ ...node.toConfig(), description: null })
+}
 
 export const getDirectiveArguments = (
   directiveDefinition: GraphQLDirective,
