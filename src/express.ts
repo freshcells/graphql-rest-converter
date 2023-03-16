@@ -133,7 +133,8 @@ const addOperation = <
       }
       for (const requestBodyVariable of allRequestBodyVariables) {
         variables[requestBodyVariable] =
-          req_.body[operation.requestBodyVariableMap[requestBodyVariable]] || req_.body
+          req_.body[operation.requestBodyVariableMap[requestBodyVariable]] ||
+          (operation.requestBodyIsSingleInput ? req_.body : null)
       }
 
       const request = {

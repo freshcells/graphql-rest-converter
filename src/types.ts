@@ -13,6 +13,7 @@ export type BridgeOperation<T extends CustomOperationProps = CustomOperationProp
   graphqlDocumentSource: string
   variableMap: Record<string, string>
   requestBodyVariableMap: Record<string, string>
+  requestBodyIsSingleInput?: boolean
 }
 
 export type OAType = OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject

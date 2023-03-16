@@ -73,9 +73,7 @@ Object {
                     "type": "string",
                   },
                 },
-                "required": Array [
-                  "id",
-                ],
+                "required": Array [],
                 "type": "object",
               },
             },
@@ -1566,9 +1564,7 @@ Object {
                     "type": "string",
                   },
                 },
-                "required": Array [
-                  "id",
-                ],
+                "required": Array [],
                 "type": "object",
               },
             },

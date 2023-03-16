@@ -176,25 +176,26 @@ const getOpenAPIRequestBody = (
   const firstSchema = variablesSchema[variableName]
 
   if (bodyVariables.length > 1 || (firstSchema as OpenAPIV3.SchemaObject).type !== 'object') {
-    const requestBodyVariables = Object.entries(bodyDirectives).map(
-      ([key, directive]) => directive.path || key
+    const requestBodyVariableMap = Object.entries(bodyDirectives).reduce(
+      (next, [variableName, directive]) => {
+        return {
+          ...next,
+          [variableName]: directive.path || variableName,
+        }
+      },
+      {}
     )
     return {
-      requestBodyVariableMap: Object.entries(bodyDirectives).reduce(
-        (next, [variableName, directive]) => {
-          return {
-            ...next,
-            [variableName]: directive.path || variableName,
-          }
-        },
-        {}
-      ),
+      requestBodyVariableMap,
+      requestBodyIsSingleInput: false,
       schema: {
         content: {
           'application/json': {
             schema: {
               type: 'object',
-              required: requestBodyVariables,
+              required: Object.entries(bodyDirectives)
+                .filter(([key]) => !(variablesSchema[key] as OpenAPIV3.SchemaObject).nullable)
+                .map(([key, directive]) => directive.path || key),
               properties: Object.entries(bodyDirectives).reduce((next, [key, directive]) => {
                 return {
                   ...next,
@@ -215,6 +216,7 @@ const getOpenAPIRequestBody = (
 
   return {
     requestBodyVariableMap: { [variableName]: variableName },
+    requestBodyIsSingleInput: true,
     schema: {
       content: {
         'application/json': {
@@ -514,6 +516,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
       graphqlDocumentSource: operationSource,
       variableMap,
       requestBodyVariableMap: requestBody?.requestBodyVariableMap || {},
+      requestBodyIsSingleInput: requestBody?.requestBodyIsSingleInput,
     })
 
     bridgeOperations.push(bridgeOperation)

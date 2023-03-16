@@ -78,6 +78,12 @@ describe('Requests', () => {
       mutationWithoutDefaultArg: expect.any(Boolean),
     })
   })
+  it('should DELETE `/different-sample with empty body`', async () => {
+    const response = await request(app).delete('/different-sample').send({}).expect(200)
+    expect(response.body).toMatchSnapshot({
+      mutationWithoutDefaultArg: expect.any(Boolean),
+    })
+  })
 
   it('should DELETE `/sample`', async () => {
     const response = await request(app).delete('/sample').query({ id: 1 }).expect(200)

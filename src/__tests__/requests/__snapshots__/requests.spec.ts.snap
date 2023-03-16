@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Requests should DELETE \`/different-sample with empty body\` 1`] = `
+Object {
+  "mutationWithoutDefaultArg": Any<Boolean>,
+}
+`;
+
 exports[`Requests should DELETE \`/different-sample\` 1`] = `
 Object {
   "mutationWithoutDefaultArg": Any<Boolean>,
