@@ -226,11 +226,13 @@ const getOpenAPIRequestBody = (
     schema: {
       content: {
         [JSON_CONTENT_TYPE]: {
-          schema: firstSchema,
+          schema: {
+            ...firstSchema,
+            [CustomProperties.VariableName]: variableName,
+          },
         },
       },
       ...(description ? { description } : {}),
-      [CustomProperties.VariableName]: variableName,
     },
   }
 }

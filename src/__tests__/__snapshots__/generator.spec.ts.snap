@@ -2533,11 +2533,11 @@ Object {
                   "moreData",
                 ],
                 "type": "object",
+                "x-graphql-variable-name": "sample",
               },
             },
           },
           "description": "A Sample Input",
-          "x-graphql-variable-name": "sample",
         },
         "responses": Object {
           "200": Object {
@@ -3084,10 +3084,10 @@ fragment MySamples on Sample {
                   "moreData",
                 ],
                 "type": "object",
+                "x-graphql-variable-name": "sample",
               },
             },
           },
-          "x-graphql-variable-name": "sample",
         },
         "responses": Object {
           "200": Object {
