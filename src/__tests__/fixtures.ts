@@ -21,6 +21,16 @@ export const bridgeFixtures = gql`
     }
   }
 
+  mutation createDifferentSample(
+    $id: String!
+    $sample: SampleInput! @OABody
+    $other: String! @OABody(path: "otherThing", description: "The other thing")
+  ) @OAOperation(path: "/different-sample/{id}") {
+    createDifferentSample(id: $id, input: $sample, otherInput: $other) {
+      name
+    }
+  }
+
   mutation updateSample($id: Int! @OAParam(in: PATH), $sample: SampleInput! @OABody)
   @OAOperation(path: "/sample/{id}", method: PUT, tags: ["Sample"], summary: "Updates a sample") {
     updateSample(id: $id, input: $sample) {

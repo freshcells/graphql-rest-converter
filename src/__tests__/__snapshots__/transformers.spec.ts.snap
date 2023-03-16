@@ -59,6 +59,195 @@ Object {
   },
   "openapi": "3.0.3",
   "paths": Object {
+    "/different-sample/{id}": Object {
+      "post": Object {
+        "operationId": "createDifferentSample",
+        "parameters": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": Object {
+              "type": "string",
+            },
+          },
+        ],
+        "requestBody": Object {
+          "content": Object {
+            "application/json": Object {
+              "schema": Object {
+                "properties": Object {
+                  "otherThing": Object {
+                    "description": "The other thing",
+                    "type": "string",
+                  },
+                  "sample": Object {
+                    "description": "This is the default \`SampleInput\` documentation",
+                    "properties": Object {
+                      "moreData": Object {
+                        "items": Object {
+                          "properties": Object {
+                            "anotherProperty": Object {
+                              "format": "int32",
+                              "nullable": true,
+                              "type": "integer",
+                            },
+                          },
+                          "type": "object",
+                        },
+                        "type": "array",
+                      },
+                      "name": Object {
+                        "description": "The name",
+                        "type": "string",
+                      },
+                    },
+                    "required": Array [
+                      "name",
+                      "moreData",
+                    ],
+                    "type": "object",
+                  },
+                },
+                "required": Array [
+                  "sample",
+                  "otherThing",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "createDifferentSample": Object {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": Object {
+                        "name": Object {
+                          "description": "The name",
+                          "type": "string",
+                        },
+                      },
+                      "required": Array [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "createDifferentSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "createDifferentSample": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": Object {
+                            "name": Object {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                          },
+                          "required": Array [
+                            "name",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "createDifferentSample",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+      },
+    },
     "/sample": Object {
       "delete": Object {
         "operationId": "removeSample",
@@ -1229,6 +1418,206 @@ Object {
   },
   "openapi": "3.0.3",
   "paths": Object {
+    "/different-sample/{id}": Object {
+      "post": Object {
+        "operationId": "createDifferentSample",
+        "parameters": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": Object {
+              "type": "string",
+            },
+          },
+        ],
+        "requestBody": Object {
+          "content": Object {
+            "application/json": Object {
+              "schema": Object {
+                "properties": Object {
+                  "otherThing": Object {
+                    "description": "The other thing",
+                    "type": "string",
+                  },
+                  "sample": Object {
+                    "description": "This is the default \`SampleInput\` documentation",
+                    "properties": Object {
+                      "moreData": Object {
+                        "items": Object {
+                          "properties": Object {
+                            "anotherProperty": Object {
+                              "format": "int32",
+                              "nullable": true,
+                              "type": "integer",
+                            },
+                          },
+                          "type": "object",
+                        },
+                        "type": "array",
+                      },
+                      "name": Object {
+                        "description": "The name",
+                        "type": "string",
+                      },
+                    },
+                    "required": Array [
+                      "name",
+                      "moreData",
+                    ],
+                    "type": "object",
+                  },
+                },
+                "required": Array [
+                  "sample",
+                  "otherThing",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "createDifferentSample": Object {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": Object {
+                        "name": Object {
+                          "description": "The name",
+                          "type": "string",
+                        },
+                      },
+                      "required": Array [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": Array [
+                    "createDifferentSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "createDifferentSample": Object {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": Object {
+                            "name": Object {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                          },
+                          "required": Array [
+                            "name",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": Array [
+                        "createDifferentSample",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+      },
+    },
     "/sample": Object {
       "delete": Object {
         "operationId": "removeSample",

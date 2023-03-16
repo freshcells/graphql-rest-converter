@@ -40,6 +40,7 @@ input SampleInput {
 
 type Mutation {
   createSample(input: SampleInput!): Sample!
+  createDifferentSample(id: String!, input: SampleInput!, otherInput: String!): Sample!
   updateSample(id: Int!, input: SampleInput!): Sample!
   "A Description of the `deleteSample` mutation"
   deleteSample(id: Int!): Boolean

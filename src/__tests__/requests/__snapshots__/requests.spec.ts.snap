@@ -30,6 +30,14 @@ Object {
 }
 `;
 
+exports[`Requests should POST \`/different-sample/id\` 1`] = `
+Object {
+  "createDifferentSample": Object {
+    "name": "Hello World",
+  },
+}
+`;
+
 exports[`Requests should POST \`/sample\` 1`] = `
 Object {
   "createSample": Object {
@@ -84,6 +92,25 @@ Object {
       "location": "query",
       "message": "must be integer",
       "path": "id",
+    },
+  ],
+}
+`;
+
+exports[`Requests should fail on POST \`/different-sample/id\` with wrong request body 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "errorCode": "required.openapi.requestValidation",
+      "location": "body",
+      "message": "must have required property 'sample'",
+      "path": "sample",
+    },
+    Object {
+      "errorCode": "required.openapi.requestValidation",
+      "location": "body",
+      "message": "must have required property 'otherThing'",
+      "path": "otherThing",
     },
   ],
 }

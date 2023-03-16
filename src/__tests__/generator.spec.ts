@@ -110,7 +110,7 @@ describe('OpenAPI Generation', () => {
       )
     })
 
-    it('should deny multiple @OABody directives', () => {
+    it('should allow multiple @OABody directives', () => {
       expect(() =>
         getBridgeOperations(
           graphqlSchema,
@@ -128,9 +128,35 @@ describe('OpenAPI Generation', () => {
             }
           `
         )
-      ).toThrow(/Only one "OABody" variable allowed/)
+      ).not.toThrow()
     })
 
+    it('should deny multiple @OABody directives with the same paths', () => {
+      expect(() =>
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            mutation myMutation(
+              $inputFirst: SampleInput! @OABody(path: "test")
+              $inputSecond: SampleInput! @OABody(path: "xyz")
+              $inputThird: SampleInput! @OABody(path: "xyz")
+            ) @OAOperation(path: "/myMutation") {
+              createSampleOne: createSample(input: $inputFirst) {
+                id
+              }
+              createSampleTwo: createSample(input: $inputSecond) {
+                id
+              }
+              createSampleThree: createSample(input: $inputThird) {
+                id
+              }
+            }
+          `
+        )
+      ).toThrow(
+        `Schema validation error(s): Only unique "@OABody" definitions allowed. Source: unknown`
+      )
+    })
     it('should fail in case a `path` parameter is not specified in the path', () => {
       expect(() =>
         getBridgeOperations(

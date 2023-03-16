@@ -12,12 +12,70 @@ import { GraphQLError } from 'graphql/error'
 import { inspect } from 'graphql/jsutils/inspect'
 import { getVariablesFromPathTemplate } from './pathTemplate'
 import { getParameterName } from './utils'
+import { VariableNode } from 'graphql/index'
 
-const openApiOperationValidations: ValidationRule = (context: ValidationContext) => {
-  let varDefMap: Record<string, VariableDefinitionNode> = Object.create(null)
+const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
+  let varDefMap: Record<string, VariableDefinitionNode> = {}
+  const bodyDirective = context.getSchema().getDirective(OpenAPIDirectives.Body)!
+
+  return {
+    OperationDefinition: {
+      enter() {
+        varDefMap = {}
+      },
+      leave(operation) {
+        const usages = context.getRecursiveVariableUsages(operation)
+
+        const allBodyDirectives = usages
+          .map(({ node }) => {
+            const varName = node.name.value
+            const varDef = varDefMap[varName]
+            if (!varDef) {
+              return null
+            }
+            const bodyDirectiveValue = getDirective(varDef, OpenAPIDirectives.Body)
+            return bodyDirectiveValue
+              ? {
+                  varDef,
+                  node,
+                  path: getDirectiveArguments(bodyDirective, bodyDirectiveValue).path || varName,
+                }
+              : null
+          })
+          .filter((v) => v) as {
+          varDef: VariableDefinitionNode
+          node: VariableNode
+          path: string
+        }[]
+
+        const uniques = allBodyDirectives.reduce((next, { path }) => {
+          if (!next.includes(path)) {
+            return [...next, path]
+          }
+          return next
+        }, [] as string[])
+
+        const { node, varDef } = allBodyDirectives?.[0] || {}
+
+        if (allBodyDirectives.length > 0 && uniques.length !== allBodyDirectives.length) {
+          context.reportError(
+            new GraphQLError(`Only unique "@OABody" definitions allowed.`, {
+              nodes: [varDef, node, operation],
+            })
+          )
+        }
+      },
+    },
+    VariableDefinition(node: VariableDefinitionNode) {
+      varDefMap[node.variable.name.value] = node
+    },
+  }
+}
+
+const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
+  let varDefMap: Record<string, VariableDefinitionNode> = {}
   const paramDirective = context.getSchema().getDirective(OpenAPIDirectives.Param)!
   const operationDirective = context.getSchema().getDirective(OpenAPIDirectives.Operation)!
-
   return {
     OperationDefinition: {
       enter() {
@@ -72,7 +130,6 @@ const openApiOperationValidations: ValidationRule = (context: ValidationContext)
             return
           }
         }
-
         for (const { node, type } of usages) {
           const varName = node.name.value
           const varDef = varDefMap[varName]
@@ -137,4 +194,8 @@ const openApiOperationValidations: ValidationRule = (context: ValidationContext)
   }
 }
 
-export const gqlValidationRules: ValidationRule[] = [...specifiedRules, openApiOperationValidations]
+export const gqlValidationRules: ValidationRule[] = [
+  ...specifiedRules,
+  oaBodyValidation,
+  oaOperationValidations,
+]

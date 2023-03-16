@@ -75,7 +75,7 @@ const DIRECTIVE_DEFINITION = gql`
     name: String
   ) on VARIABLE_DEFINITION
 
-  directive @OABody(description: String) on VARIABLE_DEFINITION
+  directive @OABody(description: String, path: String) on VARIABLE_DEFINITION
 
   directive @OADescription(
     description: String
@@ -165,18 +165,63 @@ const getOpenAPIParameters = (
 
 const getOpenAPIRequestBody = (
   variablesSchema: Record<string, OAType>,
-  variableName: string,
-  bodyDirectiveData: OpenAPIBodyDirectiveData
+  bodyDirectives: Record<string, OpenAPIBodyDirectiveData>
 ) => {
-  const description = bodyDirectiveData.description
-  return {
-    content: {
-      'application/json': {
-        schema: variablesSchema[variableName],
+  const bodyVariables = Object.keys(bodyDirectives)
+  if (bodyVariables.length === 0) {
+    return null
+  }
+
+  if (bodyVariables.length > 1) {
+    const requestBodyVariables = Object.entries(bodyDirectives).map(
+      ([key, directive]) => directive.path || key
+    )
+    return {
+      requestBodyVariableMap: Object.entries(bodyDirectives).reduce(
+        (next, [variableName, directive]) => {
+          return {
+            ...next,
+            [variableName]: directive.path || variableName,
+          }
+        },
+        {}
+      ),
+      schema: {
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              required: requestBodyVariables,
+              properties: Object.entries(bodyDirectives).reduce((next, [key, directive]) => {
+                return {
+                  ...next,
+                  [directive.path || key]: {
+                    ...variablesSchema[key],
+                    ...(directive.description ? { description: directive.description } : {}),
+                  },
+                }
+              }, {} as { [key: string]: OAType }),
+            } as OpenAPIV3.NonArraySchemaObject,
+          },
+        },
       },
+    }
+  }
+
+  const variableName = bodyVariables?.[0]
+  const description = bodyDirectives[variableName].description
+
+  return {
+    requestBodyVariableMap: { [variableName]: variableName },
+    schema: {
+      content: {
+        'application/json': {
+          schema: variablesSchema[variableName],
+        },
+      },
+      ...(description ? { description } : {}),
+      [CustomProperties.VariableName]: variableName,
     },
-    ...(description ? { description } : {}),
-    [CustomProperties.VariableName]: variableName,
   }
 }
 
@@ -208,6 +253,7 @@ type OpenAPIParamDirectiveData = {
 
 type OpenAPIBodyDirectiveData = {
   description?: string
+  path?: string
 }
 
 const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperationProps>(
@@ -431,18 +477,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
 
     // ## Build OpenAPI schema: Request body
 
-    const bodyVariables = Object.keys(bodiesDirectiveData)
-    if (bodyVariables.length > 1) {
-      throw new Error('Only one "OABody" variable allowed')
-    }
-    const requestBodyVariable = bodyVariables.length === 1 ? bodyVariables[0] : null
-    const requestBody = requestBodyVariable
-      ? getOpenAPIRequestBody(
-          variablesSchema,
-          requestBodyVariable,
-          bodiesDirectiveData[requestBodyVariable]
-        )
-      : null
+    const requestBody = getOpenAPIRequestBody(variablesSchema, bodiesDirectiveData)
 
     const graphqlDocument = removeOpenAPIDirectives(singleOperationDocument)
     const operationSource = print(graphqlDocument)
@@ -453,7 +488,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
       operationId,
       operationSource,
       parameters,
-      requestBody,
+      requestBody?.schema || null,
       resultSchema,
       operationDirectiveData
     )
@@ -476,7 +511,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
       graphqlDocument,
       graphqlDocumentSource: operationSource,
       variableMap,
-      requestBodyVariable,
+      requestBodyVariableMap: requestBody?.requestBodyVariableMap || {},
     })
 
     bridgeOperations.push(bridgeOperation)

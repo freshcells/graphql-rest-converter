@@ -55,6 +55,21 @@ describe('Requests', () => {
     })
   })
 
+  it('should fail on POST `/different-sample/id` with wrong request body', async () => {
+    const response = await request(app)
+      .post('/different-sample/10')
+      .send({ name: 'Input', moreData: [] })
+      .expect(400)
+    expect(response.body).toMatchSnapshot()
+  })
+
+  it('should POST `/different-sample/id`', async () => {
+    const response = await request(app)
+      .post('/different-sample/10')
+      .send({ otherThing: 'Input', sample: { name: 'Input', moreData: [] } })
+    expect(response.body).toMatchSnapshot()
+  })
+
   it('should DELETE `/sample`', async () => {
     const response = await request(app).delete('/sample').query({ id: 1 }).expect(200)
     expect(response.body).toMatchSnapshot({
