@@ -25,7 +25,13 @@ import {
   getReferencedFragments,
   isOperationDefinitionNode,
 } from './graphqlUtils'
-import { CustomProperties, OAType, BridgeOperation, CustomOperationProps } from './types'
+import {
+  CustomProperties,
+  OAType,
+  BridgeOperation,
+  CustomOperationProps,
+  JSON_CONTENT_TYPE,
+} from './types'
 import { getReferenceableFragments, GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
 import { isNullable } from './openApi'
 import { printSourceLocation } from 'graphql/language/printLocation'
@@ -149,9 +155,9 @@ const getOpenAPIParameters = (
       name: parameterName,
       schema,
       ...(!isNullable(schema) ? { required: true } : {}),
-      ...(nameOverride ? { [CustomProperties.VariableName]: variableName } : {}),
       ...(deprecated === true ? { deprecated } : {}),
       ...(description ? { description } : {}),
+      ...{ [CustomProperties.VariableName]: variableName },
     })
   }
 
@@ -181,14 +187,14 @@ const getOpenAPIRequestBody = (
           [variableName]: directive.path || variableName,
         }
       },
-      {}
+      {} as Record<string, string>
     )
     return {
       requestBodyVariableMap,
       requestBodyIsSingleInput: false,
       schema: {
         content: {
-          'application/json': {
+          [JSON_CONTENT_TYPE]: {
             schema: {
               type: 'object',
               required: Object.entries(bodyDirectives)
@@ -200,6 +206,7 @@ const getOpenAPIRequestBody = (
                   [directive.path || key]: {
                     ...variablesSchema[key],
                     ...(directive.description ? { description: directive.description } : {}),
+                    [CustomProperties.VariableName]: key,
                   },
                 }
               }, {} as { [key: string]: OAType }),
@@ -217,7 +224,7 @@ const getOpenAPIRequestBody = (
     requestBodyIsSingleInput: true,
     schema: {
       content: {
-        'application/json': {
+        [JSON_CONTENT_TYPE]: {
           schema: firstSchema,
         },
       },
@@ -270,7 +277,7 @@ const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperation
     '200': {
       description: 'Success',
       content: {
-        'application/json': {
+        [JSON_CONTENT_TYPE]: {
           schema: resultSchema,
         },
       },
@@ -278,7 +285,7 @@ const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperation
     '400': {
       description: 'Invalid request',
       content: {
-        'application/json': {
+        [JSON_CONTENT_TYPE]: {
           schema: {
             type: 'object',
             properties: {
@@ -302,7 +309,7 @@ const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperation
     '500': {
       description: 'Internal Server Error',
       content: {
-        'application/json': {
+        [JSON_CONTENT_TYPE]: {
           schema: {
             type: 'object',
             properties: {

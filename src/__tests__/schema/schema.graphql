@@ -45,6 +45,7 @@ type Mutation {
   "A Description of the `deleteSample` mutation"
   deleteSample(id: Int!): Boolean
   mutationWithoutDefaultArg(id: String): Boolean
+  mutationWithoutArgs: Boolean!
 }
 
 type Query {

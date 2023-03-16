@@ -5,6 +5,8 @@ import { PartialDeep } from 'type-fest'
 import { GraphQLExecutorArgs } from './graphQLExecutor'
 import { IncomingMessage } from 'node:http'
 
+export const JSON_CONTENT_TYPE = 'application/json'
+
 export type BridgeOperation<T extends CustomOperationProps = CustomOperationProps> = {
   openAPIOperation: OpenAPIV3.OperationObject<T>
   path: string

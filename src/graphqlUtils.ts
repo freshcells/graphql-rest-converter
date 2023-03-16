@@ -13,6 +13,7 @@ import {
   valueFromASTUntyped,
   visit,
 } from 'graphql'
+import { GraphQLSchema, VariableDefinitionNode } from 'graphql/index'
 
 export const hasDirective = (node: ASTNode, directiveName: string | string[]) =>
   (('directives' in node && node.directives) || []).some((directive) =>
@@ -42,6 +43,18 @@ export const getDirectiveArguments = (
     args[argDef.name] = valueFromAST(argsByName[argDef.name].value, argDef.type)
   }
   return args
+}
+
+export const getDirectiveArgumentsWithSchema = (
+  schema: GraphQLSchema,
+  node: VariableDefinitionNode,
+  directive: string
+) => {
+  const thisDirective = schema.getDirective(directive)
+  const directiveValue = getDirective(node, directive)
+  return directiveValue && thisDirective
+    ? getDirectiveArguments(thisDirective, directiveValue)
+    : null
 }
 
 export const getDirectiveArgumentsUntyped = (directive: DirectiveNode) => {

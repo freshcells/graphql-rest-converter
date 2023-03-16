@@ -55,6 +55,13 @@ describe('Requests', () => {
     })
   })
 
+  it('should POST `/call-without-args', async () => {
+    const response = await request(app).post('/call-without-args').send().expect(200)
+    expect(response.body).toMatchSnapshot({
+      mutationWithoutArgs: expect.any(Boolean),
+    })
+  })
+
   it('should fail on POST `/different-sample/id` with wrong request body', async () => {
     const response = await request(app)
       .post('/different-sample/10')
@@ -73,6 +80,19 @@ describe('Requests', () => {
 
   it('should DELETE `/different-sample`', async () => {
     const response = await request(app).delete('/different-sample').send({ id: '200' }).expect(200)
+    expect(response.body).toMatchSnapshot({
+      mutationWithoutDefaultArg: expect.any(Boolean),
+    })
+  })
+  it('should fail to DELETE (without header) `/different-sample-in-header`', async () => {
+    const response = await request(app).delete('/different-sample-in-header').expect(400)
+    expect(response.body).toMatchSnapshot()
+  })
+  it('should DELETE `/different-sample-in-header`', async () => {
+    const response = await request(app)
+      .delete('/different-sample-in-header')
+      .set('id', '5')
+      .expect(200)
     expect(response.body).toMatchSnapshot({
       mutationWithoutDefaultArg: expect.any(Boolean),
     })

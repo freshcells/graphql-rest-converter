@@ -325,6 +325,7 @@ Object {
               ],
               "type": "object",
             },
+            "x-graphql-variable-name": "input",
           },
         ],
         "responses": Object {

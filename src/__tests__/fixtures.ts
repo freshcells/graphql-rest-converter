@@ -31,6 +31,15 @@ export const bridgeFixtures = gql`
     }
   }
 
+  mutation createSomethingWithoutArguments @OAOperation(path: "/call-without-args") {
+    mutationWithoutArgs
+  }
+
+  mutation deleteASampleWithHeader($id: String! @OAParam(in: HEADER))
+  @OAOperation(path: "/different-sample-in-header", method: DELETE) {
+    mutationWithoutDefaultArg(id: $id)
+  }
+
   mutation deleteASampleWithBody($id: String @OABody)
   @OAOperation(path: "/different-sample", method: DELETE) {
     mutationWithoutDefaultArg(id: $id)

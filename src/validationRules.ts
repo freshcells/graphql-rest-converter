@@ -6,25 +6,18 @@ import {
   VariableDefinitionNode,
 } from 'graphql'
 import { ValidationContext } from 'graphql/validation/ValidationContext'
-import { getDirective, getDirectiveArguments, hasDirective } from './graphqlUtils'
+import {
+  getDirective,
+  getDirectiveArguments,
+  getDirectiveArgumentsWithSchema,
+  hasDirective,
+} from './graphqlUtils'
 import { OpenAPIDirectives } from './graphql'
 import { GraphQLError } from 'graphql/error'
 import { inspect } from 'graphql/jsutils/inspect'
 import { getVariablesFromPathTemplate } from './pathTemplate'
 import { getParameterName } from './utils'
-import { GraphQLSchema, VariableNode } from 'graphql/index'
-
-const getDirectiveArgumentsWithSchema = (
-  schema: GraphQLSchema,
-  node: VariableDefinitionNode,
-  directive: string
-) => {
-  const thisDirective = schema.getDirective(directive)
-  const directiveValue = getDirective(node, directive)
-  return directiveValue && thisDirective
-    ? getDirectiveArguments(thisDirective, directiveValue)
-    : null
-}
+import { VariableNode } from 'graphql/index'
 
 const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
   let varDefMap: Record<string, VariableDefinitionNode> = {}

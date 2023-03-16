@@ -59,6 +59,120 @@ Object {
   },
   "openapi": "3.0.3",
   "paths": Object {
+    "/call-without-args": Object {
+      "post": Object {
+        "operationId": "createSomethingWithoutArguments",
+        "parameters": Array [],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "mutationWithoutArgs": Object {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": Array [
+                    "mutationWithoutArgs",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "mutationWithoutArgs": Object {
+                          "type": "boolean",
+                        },
+                      },
+                      "required": Array [
+                        "mutationWithoutArgs",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+      },
+    },
     "/different-sample": Object {
       "delete": Object {
         "operationId": "deleteASampleWithBody",
@@ -79,6 +193,131 @@ Object {
             },
           },
         },
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "mutationWithoutDefaultArg": Object {
+                      "nullable": true,
+                      "type": "boolean",
+                    },
+                  },
+                  "required": Array [
+                    "mutationWithoutDefaultArg",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "mutationWithoutDefaultArg": Object {
+                          "nullable": true,
+                          "type": "boolean",
+                        },
+                      },
+                      "required": Array [
+                        "mutationWithoutDefaultArg",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+      },
+    },
+    "/different-sample-in-header": Object {
+      "delete": Object {
+        "operationId": "deleteASampleWithHeader",
+        "parameters": Array [
+          Object {
+            "in": "header",
+            "name": "id",
+            "required": true,
+            "schema": Object {
+              "type": "string",
+            },
+          },
+        ],
         "responses": Object {
           "200": Object {
             "content": Object {
@@ -1550,6 +1789,131 @@ Object {
   },
   "openapi": "3.0.3",
   "paths": Object {
+    "/call-without-args": Object {
+      "post": Object {
+        "operationId": "createSomethingWithoutArguments",
+        "parameters": Array [],
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "mutationWithoutArgs": Object {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": Array [
+                    "mutationWithoutArgs",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "mutationWithoutArgs": Object {
+                          "type": "boolean",
+                        },
+                      },
+                      "required": Array [
+                        "mutationWithoutArgs",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+      },
+    },
     "/different-sample": Object {
       "delete": Object {
         "operationId": "deleteASampleWithBody",
@@ -1570,6 +1934,142 @@ Object {
             },
           },
         },
+        "responses": Object {
+          "200": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "mutationWithoutDefaultArg": Object {
+                      "nullable": true,
+                      "type": "boolean",
+                    },
+                  },
+                  "required": Array [
+                    "mutationWithoutDefaultArg",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "errorCode": Object {
+                            "type": "string",
+                          },
+                          "location": Object {
+                            "type": "string",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "401": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {},
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unauthorized",
+          },
+          "500": Object {
+            "content": Object {
+              "application/json": Object {
+                "schema": Object {
+                  "properties": Object {
+                    "data": Object {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": Object {
+                        "mutationWithoutDefaultArg": Object {
+                          "nullable": true,
+                          "type": "boolean",
+                        },
+                      },
+                      "required": Array [
+                        "mutationWithoutDefaultArg",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": Object {
+                      "items": Object {
+                        "properties": Object {
+                          "locations": Object {
+                            "items": Object {
+                              "properties": Object {
+                                "column": Object {
+                                  "type": "integer",
+                                },
+                                "line": Object {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": Object {
+                            "type": "string",
+                          },
+                          "path": Object {
+                            "items": Object {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+      },
+    },
+    "/different-sample-in-header": Object {
+      "delete": Object {
+        "operationId": "deleteASampleWithHeader",
+        "parameters": Array [
+          Object {
+            "in": "header",
+            "name": "id",
+            "required": true,
+            "schema": Object {
+              "type": "string",
+            },
+          },
+        ],
         "responses": Object {
           "200": Object {
             "content": Object {

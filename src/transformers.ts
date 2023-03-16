@@ -2,6 +2,7 @@ import {
   BridgeOperation,
   CustomOperationProps,
   CustomProperties,
+  JSON_CONTENT_TYPE,
   OpWithProps,
   ParamsWithVars,
   ReqBodyWithVars,
@@ -27,13 +28,15 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
 
   const baseOp = {
     ...restOperation,
-    ...(restOperation.parameters
-      ? {
-          parameters: ((restOperation as OpWithProps).parameters as ParamsWithVars)?.filter(
-            (p) => !(CustomProperties.VariableName in p)
-          ),
+    ...{
+      parameters: ((restOperation as OpWithProps).parameters as ParamsWithVars)?.map(
+        (parameter) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [CustomProperties.VariableName]: customParam, ...rest } = parameter
+          return rest
         }
-      : {}),
+      ),
+    },
   }
 
   if (restOperation.requestBody) {
@@ -41,9 +44,40 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
     const { [CustomProperties.VariableName]: customReqBody, ...restRequestBody } = (
       restOperation as OpWithProps
     ).requestBody as ReqBodyWithVars
+
+    // remove possible custom attributes in properties
+
+    const media = (restRequestBody as OpenAPIV3.RequestBodyObject).content?.[JSON_CONTENT_TYPE]
+
+    const propertiesWithoutCustomEntries = Object.entries(
+      (media?.schema as OpenAPIV3.NonArraySchemaObject)?.properties || {}
+    )?.reduce((next, [key, entry]) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [CustomProperties.VariableName]: customVar, ...restEntry } = entry as (
+        | OpenAPIV3.SchemaObject
+        | OpenAPIV3.ReferenceObject
+      ) & { [CustomProperties.VariableName]: string }
+      return {
+        ...next,
+        [key]: restEntry,
+      }
+    }, {} as OpenAPIV3.NonArraySchemaObject['properties'])
+
     return {
       ...baseOp,
-      requestBody: restRequestBody,
+      requestBody: {
+        ...restRequestBody,
+        content: {
+          ...(restRequestBody as OpenAPIV3.RequestBodyObject).content,
+          [JSON_CONTENT_TYPE]: {
+            ...media,
+            schema: {
+              ...media?.schema,
+              properties: propertiesWithoutCustomEntries,
+            },
+          },
+        },
+      },
     } as OpenAPIV3.OperationObject<T>
   }
   return baseOp as OpenAPIV3.OperationObject<T>

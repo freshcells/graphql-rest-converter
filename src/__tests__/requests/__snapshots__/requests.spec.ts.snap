@@ -12,6 +12,12 @@ Object {
 }
 `;
 
+exports[`Requests should DELETE \`/different-sample-in-header\` 1`] = `
+Object {
+  "mutationWithoutDefaultArg": Any<Boolean>,
+}
+`;
+
 exports[`Requests should DELETE \`/sample\` 1`] = `
 Object {
   "deleteSample": Any<Boolean>,
@@ -39,6 +45,12 @@ Object {
       "myName": "Hello World",
     },
   ],
+}
+`;
+
+exports[`Requests should POST \`/call-without-args 1`] = `
+Object {
+  "mutationWithoutArgs": Any<Boolean>,
 }
 `;
 
@@ -123,6 +135,19 @@ Object {
       "location": "body",
       "message": "must have required property 'otherThing'",
       "path": "otherThing",
+    },
+  ],
+}
+`;
+
+exports[`Requests should fail to DELETE (without header) \`/different-sample-in-header\` 1`] = `
+Object {
+  "errors": Array [
+    Object {
+      "errorCode": "required.openapi.requestValidation",
+      "location": "headers",
+      "message": "must have required property 'id'",
+      "path": "id",
     },
   ],
 }
