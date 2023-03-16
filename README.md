@@ -226,13 +226,8 @@ The generated OpenAPI schema contains the customer properties `x-graphql-operati
 
 These custom properties contain all necessary information to generate the request handlers.
 
-The
-function [`createExpressMiddlewareFromOpenAPISchema`](https://freshcells.github.io/graphql-rest-converter/modules.html#createExpressMiddlewareFromOpenAPISchema)
-can be used to create the request handlers as an express middleware from an OpenAPI schema containing these custom
-properties.
-
 To remove the custom properties from the OpenAPI schema, for example before serving it publicly, the
-function [`removeCustomProperties`](https://freshcells.github.io/graphql-rest-converter/modules.html#removeCustomProperties)
+transformation function [`removeCustomProperties`](https://freshcells.github.io/graphql-rest-converter/functions/removeCustomProperties.html)
 can be used.
 
 ## Usage example
