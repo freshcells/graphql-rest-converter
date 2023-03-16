@@ -189,6 +189,9 @@ const getOpenAPIRequestBody = (
       },
       {} as Record<string, string>
     )
+    const requiredKeys = Object.entries(bodyDirectives)
+      .filter(([key]) => !(variablesSchema[key] as OpenAPIV3.SchemaObject).nullable)
+      .map(([key, directive]) => directive.path || key)
     return {
       requestBodyVariableMap,
       requestBodyIsSingleInput: false,
@@ -197,9 +200,7 @@ const getOpenAPIRequestBody = (
           [JSON_CONTENT_TYPE]: {
             schema: {
               type: 'object',
-              required: Object.entries(bodyDirectives)
-                .filter(([key]) => !(variablesSchema[key] as OpenAPIV3.SchemaObject).nullable)
-                .map(([key, directive]) => directive.path || key),
+              ...(requiredKeys.length > 0 ? { required: requiredKeys } : {}),
               properties: Object.entries(bodyDirectives).reduce((next, [key, directive]) => {
                 return {
                   ...next,
