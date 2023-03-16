@@ -31,6 +31,11 @@ export const bridgeFixtures = gql`
     }
   }
 
+  mutation deleteASampleWithBody($id: String @OABody)
+  @OAOperation(path: "/different-sample", method: DELETE) {
+    mutationWithoutDefaultArg(id: $id)
+  }
+
   mutation updateSample($id: Int! @OAParam(in: PATH), $sample: SampleInput! @OABody)
   @OAOperation(path: "/sample/{id}", method: PUT, tags: ["Sample"], summary: "Updates a sample") {
     updateSample(id: $id, input: $sample) {

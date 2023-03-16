@@ -2,6 +2,7 @@ import { bridge, gqlSchema } from '../fixtures'
 import express from 'express'
 import { createSchemaExecutor } from '../../graphQLExecutor'
 import request from 'supertest'
+import exp from 'constants'
 
 const app = express()
 
@@ -67,7 +68,15 @@ describe('Requests', () => {
     const response = await request(app)
       .post('/different-sample/10')
       .send({ otherThing: 'Input', sample: { name: 'Input', moreData: [] } })
+      .expect(200)
     expect(response.body).toMatchSnapshot()
+  })
+
+  it('should DELETE `/different-sample`', async () => {
+    const response = await request(app).delete('/different-sample').send({ id: '200' }).expect(200)
+    expect(response.body).toMatchSnapshot({
+      mutationWithoutDefaultArg: expect.any(Boolean),
+    })
   })
 
   it('should DELETE `/sample`', async () => {

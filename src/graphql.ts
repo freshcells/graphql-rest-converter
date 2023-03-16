@@ -172,7 +172,10 @@ const getOpenAPIRequestBody = (
     return null
   }
 
-  if (bodyVariables.length > 1) {
+  const variableName = bodyVariables?.[0]
+  const firstSchema = variablesSchema[variableName]
+
+  if (bodyVariables.length > 1 || (firstSchema as OpenAPIV3.SchemaObject).type !== 'object') {
     const requestBodyVariables = Object.entries(bodyDirectives).map(
       ([key, directive]) => directive.path || key
     )
@@ -208,7 +211,6 @@ const getOpenAPIRequestBody = (
     }
   }
 
-  const variableName = bodyVariables?.[0]
   const description = bodyDirectives[variableName].description
 
   return {
@@ -216,7 +218,7 @@ const getOpenAPIRequestBody = (
     schema: {
       content: {
         'application/json': {
-          schema: variablesSchema[variableName],
+          schema: firstSchema,
         },
       },
       ...(description ? { description } : {}),

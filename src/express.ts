@@ -131,16 +131,9 @@ const addOperation = <
           variables[variableName] = req_.headers[parameter.name]
         }
       }
-      if (allRequestBodyVariables.length > 0) {
-        if (allRequestBodyVariables.length === 1) {
-          const requestBodyVariable = allRequestBodyVariables?.[0]
-          variables[requestBodyVariable] = req_.body
-        } else {
-          for (const requestBodyVariable of allRequestBodyVariables) {
-            variables[requestBodyVariable] =
-              req_.body[operation.requestBodyVariableMap[requestBodyVariable]] || null
-          }
-        }
+      for (const requestBodyVariable of allRequestBodyVariables) {
+        variables[requestBodyVariable] =
+          req_.body[operation.requestBodyVariableMap[requestBodyVariable]] || req_.body
       }
 
       const request = {
