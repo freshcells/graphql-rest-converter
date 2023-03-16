@@ -6,17 +6,28 @@ import {
   VariableDefinitionNode,
 } from 'graphql'
 import { ValidationContext } from 'graphql/validation/ValidationContext'
-import { getDirective, getDirectiveArguments } from './graphqlUtils'
+import { getDirective, getDirectiveArguments, hasDirective } from './graphqlUtils'
 import { OpenAPIDirectives } from './graphql'
 import { GraphQLError } from 'graphql/error'
 import { inspect } from 'graphql/jsutils/inspect'
 import { getVariablesFromPathTemplate } from './pathTemplate'
 import { getParameterName } from './utils'
-import { VariableNode } from 'graphql/index'
+import { GraphQLSchema, VariableNode } from 'graphql/index'
+
+const getDirectiveArgumentsWithSchema = (
+  schema: GraphQLSchema,
+  node: VariableDefinitionNode,
+  directive: string
+) => {
+  const thisDirective = schema.getDirective(directive)
+  const directiveValue = getDirective(node, directive)
+  return directiveValue && thisDirective
+    ? getDirectiveArguments(thisDirective, directiveValue)
+    : null
+}
 
 const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
   let varDefMap: Record<string, VariableDefinitionNode> = {}
-  const bodyDirective = context.getSchema().getDirective(OpenAPIDirectives.Body)!
 
   return {
     OperationDefinition: {
@@ -33,12 +44,16 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
             if (!varDef) {
               return null
             }
-            const bodyDirectiveValue = getDirective(varDef, OpenAPIDirectives.Body)
-            return bodyDirectiveValue
+            const directiveArguments = getDirectiveArgumentsWithSchema(
+              context.getSchema(),
+              varDef,
+              OpenAPIDirectives.Body
+            )
+            return directiveArguments
               ? {
                   varDef,
                   node,
-                  path: getDirectiveArguments(bodyDirective, bodyDirectiveValue).path || varName,
+                  path: directiveArguments.path || varName,
                 }
               : null
           })
@@ -74,7 +89,6 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
 
 const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
   let varDefMap: Record<string, VariableDefinitionNode> = {}
-  const paramDirective = context.getSchema().getDirective(OpenAPIDirectives.Param)!
   const operationDirective = context.getSchema().getDirective(OpenAPIDirectives.Operation)!
   return {
     OperationDefinition: {
@@ -139,21 +153,30 @@ const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
           const varType = typeFromAST(context.getSchema(), varDef.type)
           const varTypeStr = inspect(varType)
 
-          let inValue
-          const paramDirectiveValue = getDirective(varDef, OpenAPIDirectives.Param)
           const parameterName = getParameterName(node, varDef)
-          if (paramDirectiveValue) {
-            const paramDirectiveArguments = getDirectiveArguments(
-              paramDirective,
-              paramDirectiveValue
-            )
-            inValue = (paramDirectiveArguments?.in as string | undefined)?.toLowerCase()
-          }
+          const paramDirectiveArguments = getDirectiveArgumentsWithSchema(
+            context.getSchema(),
+            varDef,
+            OpenAPIDirectives.Param
+          )
+          const inValue = (paramDirectiveArguments?.in as string | undefined)?.toLowerCase()
           if (pathVariables.has(parameterName)) {
+            if (hasDirective(varDef, OpenAPIDirectives.Body)) {
+              context.reportError(
+                new GraphQLError(
+                  `Variable "$${varName}" of type "${varTypeStr}" cannot be used with "@OABody", as it is used within "${pathDefinition}".`,
+                  {
+                    nodes: [varDef, node, operation],
+                  }
+                )
+              )
+              return
+            }
+
             if (!(type instanceof GraphQLNonNull)) {
               context.reportError(
                 new GraphQLError(
-                  `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used in a "PATH" argument.".`,
+                  `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used within "${pathDefinition}".`,
                   {
                     nodes: [varDef, node, operation],
                   }

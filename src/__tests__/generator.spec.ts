@@ -91,7 +91,7 @@ describe('OpenAPI Generation', () => {
           `
         )
       ).toThrow(
-        `Schema validation error(s): Variable "$id" of type "String" must be defined as "String!", as it is used in a "PATH" argument.". Source: unknown`
+        `Schema validation error(s): Variable "$id" of type "String" must be defined as "String!", as it is used within "/mutate/{id}". Source: unknown`
       )
     })
 
@@ -155,6 +155,22 @@ describe('OpenAPI Generation', () => {
         )
       ).toThrow(
         `Schema validation error(s): Only unique "@OABody" definitions allowed. Source: unknown`
+      )
+    })
+    it('should fail in case a `path` parameter is used with @OABody', () => {
+      expect(() =>
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            query myQuery($id: Int! @OABody) @OAOperation(path: "/my-query/{id}") {
+              getSample(id: $id) {
+                id
+              }
+            }
+          `
+        )
+      ).toThrow(
+        `Schema validation error(s): Variable "$id" of type "Int!" cannot be used with "@OABody", as it is used within "/my-query/{id}". Source: unknown`
       )
     })
     it('should fail in case a `path` parameter is not specified in the path', () => {
