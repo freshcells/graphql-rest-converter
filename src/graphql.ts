@@ -77,9 +77,7 @@ const DIRECTIVE_DEFINITION = gql`
 
   directive @OABody(description: String, path: String) on VARIABLE_DEFINITION
 
-  directive @OADescription(
-    description: String
-  ) on FRAGMENT_DEFINITION | FIELD | FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+  directive @OADescription(description: String) on FRAGMENT_DEFINITION | FIELD
 `
 
 export enum OpenAPIDirectives {

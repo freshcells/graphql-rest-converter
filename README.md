@@ -104,10 +104,10 @@ The arguments of the directive are described by the TS type:
 
 ```typescript
 interface OAParam {
-  in: 'path' | 'query' | 'header'
-  name: string
-  description: string
-  deprecated: boolean
+  in?: 'path' | 'query' | 'header'
+  name?: string
+  description?: string
+  deprecated?: boolean
 }
 ```
 
@@ -127,13 +127,19 @@ Mainly designed for `input` types in combination with a `mutation`.
 
 ```typescript
 interface OABody {
-  description: string
+  description?: string
+  path?: string
 }
 ```
 
+You can have multiple arguments annotated with `OABody`, the variable name (or the `path` overwrite) will then be
+expected as `key` in the request
+body. If you annotate only a single `InputType`, which is an object, there is no additional hierarchy introduced,
+the `InputType` object is expected in the root.
+
 #### `OADescription`
 
-You may optionally provide / override descriptions for `fragments`, `fields` or `InputField` definitions.
+You may optionally provide / override descriptions for `fragment` and `field` definitions.
 
 ```typescript
 interface OADescription {
@@ -382,8 +388,6 @@ main()
 
 ## Upcoming features
 
-- Support for mutations
 - OpenAPI 3.1 support
 - Direct support for more HTTP servers than express
 - Support for cookie parameters
-- ...
