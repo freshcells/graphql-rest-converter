@@ -179,6 +179,7 @@ const getOpenAPIRequestBody = (
   const variableName = bodyVariables?.[0]
   const firstSchema = variablesSchema[variableName]
 
+  // if our only body argument is a scalar type, we wrap it into an object
   if (bodyVariables.length > 1 || (firstSchema as OpenAPIV3.SchemaObject).type !== 'object') {
     const requestBodyVariableMap = Object.entries(bodyDirectives).reduce(
       (next, [variableName, directive]) => {

@@ -1,23 +1,18 @@
-import {
-  GraphQLNonNull,
-  specifiedRules,
-  typeFromAST,
-  ValidationRule,
-  VariableDefinitionNode,
-} from 'graphql'
+import { specifiedRules, ValidationRule, VariableDefinitionNode } from 'graphql'
 import { ValidationContext } from 'graphql/validation/ValidationContext'
-import {
-  getDirective,
-  getDirectiveArguments,
-  getDirectiveArgumentsWithSchema,
-  hasDirective,
-} from './graphqlUtils'
+import { getDirective, getDirectiveArguments } from './graphqlUtils'
 import { OpenAPIDirectives } from './graphql'
 import { GraphQLError } from 'graphql/error'
-import { inspect } from 'graphql/jsutils/inspect'
 import { getVariablesFromPathTemplate } from './pathTemplate'
 import { getParameterName } from './utils'
-import { VariableNode } from 'graphql/index'
+import type { VariableNode } from 'graphql'
+import { getBodyDirectiveInfo, validateVariable } from './validations/utils'
+
+type BodyDirectiveInfo = {
+  varDef: VariableDefinitionNode
+  node: VariableNode
+  path: string
+}[]
 
 const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
   let varDefMap: Record<string, VariableDefinitionNode> = {}
@@ -31,30 +26,8 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
         const usages = context.getRecursiveVariableUsages(operation)
 
         const allBodyDirectives = usages
-          .map(({ node }) => {
-            const varName = node.name.value
-            const varDef = varDefMap[varName]
-            if (!varDef) {
-              return null
-            }
-            const directiveArguments = getDirectiveArgumentsWithSchema(
-              context.getSchema(),
-              varDef,
-              OpenAPIDirectives.Body
-            )
-            return directiveArguments
-              ? {
-                  varDef,
-                  node,
-                  path: directiveArguments.path || varName,
-                }
-              : null
-          })
-          .filter((v) => v) as {
-          varDef: VariableDefinitionNode
-          node: VariableNode
-          path: string
-        }[]
+          .map(({ node }) => getBodyDirectiveInfo(varDefMap, node, context.getSchema()))
+          .filter((v) => v) as BodyDirectiveInfo
 
         const uniques = allBodyDirectives.reduce((next, { path }) => {
           if (!next.includes(path)) {
@@ -65,7 +38,7 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
 
         const { node, varDef } = allBodyDirectives?.[0] || {}
 
-        if (allBodyDirectives.length > 0 && uniques.length !== allBodyDirectives.length) {
+        if (uniques.length !== allBodyDirectives.length) {
           context.reportError(
             new GraphQLError(`Only unique "@OABody" definitions allowed.`, {
               nodes: [varDef, node, operation],
@@ -80,7 +53,7 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
   }
 }
 
-const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
+const oaOperationValidation: ValidationRule = (context: ValidationContext) => {
   let varDefMap: Record<string, VariableDefinitionNode> = {}
   const operationDirective = context.getSchema().getDirective(OpenAPIDirectives.Operation)!
   return {
@@ -109,7 +82,7 @@ const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
           operationDirective,
           operationDirectiveValue
         )
-        const pathDefinition = directiveArguments['path']
+        const pathDefinition = directiveArguments.path as string
 
         const pathVariables = new Set(getVariablesFromPathTemplate(pathDefinition as string))
 
@@ -138,69 +111,7 @@ const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
           }
         }
         for (const { node, type } of usages) {
-          const varName = node.name.value
-          const varDef = varDefMap[varName]
-          if (!varDef) {
-            continue
-          }
-          const varType = typeFromAST(context.getSchema(), varDef.type)
-          const varTypeStr = inspect(varType)
-
-          const parameterName = getParameterName(node, varDef)
-          const paramDirectiveArguments = getDirectiveArgumentsWithSchema(
-            context.getSchema(),
-            varDef,
-            OpenAPIDirectives.Param
-          )
-          const inValue = (paramDirectiveArguments?.in as string | undefined)?.toLowerCase()
-          if (pathVariables.has(parameterName)) {
-            if (hasDirective(varDef, OpenAPIDirectives.Body)) {
-              context.reportError(
-                new GraphQLError(
-                  `Variable "$${varName}" of type "${varTypeStr}" cannot be used with "@OABody", as it is used within "${pathDefinition}".`,
-                  {
-                    nodes: [varDef, node, operation],
-                  }
-                )
-              )
-              return
-            }
-
-            if (!(type instanceof GraphQLNonNull)) {
-              context.reportError(
-                new GraphQLError(
-                  `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used within "${pathDefinition}".`,
-                  {
-                    nodes: [varDef, node, operation],
-                  }
-                )
-              )
-              return
-            }
-          }
-
-          if (inValue) {
-            if (pathVariables.has(parameterName) && inValue !== 'path') {
-              context.reportError(
-                new GraphQLError(
-                  `Location "${inValue}" is invalid for "$${varName}" of type "${varTypeStr}", because "${parameterName}" is part of the path "${pathDefinition}".`,
-                  {
-                    nodes: [varDef, node, operation],
-                  }
-                )
-              )
-            }
-            if (!pathVariables.has(parameterName) && inValue === 'path') {
-              context.reportError(
-                new GraphQLError(
-                  `Location "${inValue}" is invalid for "$${varName}" of type "${varTypeStr}", because "${parameterName}" was expected in "${pathDefinition}".`,
-                  {
-                    nodes: [varDef, node, operation],
-                  }
-                )
-              )
-            }
-          }
+          validateVariable(varDefMap, context, pathVariables, node, type, operation, pathDefinition)
         }
       },
     },
@@ -213,5 +124,5 @@ const oaOperationValidations: ValidationRule = (context: ValidationContext) => {
 export const gqlValidationRules: ValidationRule[] = [
   ...specifiedRules,
   oaBodyValidation,
-  oaOperationValidations,
+  oaOperationValidation,
 ]
