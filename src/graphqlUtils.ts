@@ -77,17 +77,6 @@ export const isOperationDefinitionNode = (node: DefinitionNode): node is Operati
 export const isFragmentDefinitionNode = (node: DefinitionNode): node is FragmentDefinitionNode =>
   node.kind === Kind.FRAGMENT_DEFINITION
 
-export const inlineFragmentsDocument = (document: DocumentNode): DocumentNode => {
-  const fragmentMap = createFragmentMap(document.definitions)
-  const newDocument: any = inlineFragments(document, fragmentMap)
-
-  newDocument.definitions = newDocument.definitions.filter(
-    (node: DefinitionNode) => !isFragmentDefinitionNode(node)
-  )
-
-  return newDocument
-}
-
 export const createFragmentMap = (input: readonly DefinitionNode[]) =>
   _.keyBy(input.filter(isFragmentDefinitionNode), (node) => node.name.value)
 
@@ -124,48 +113,4 @@ export const getDependencyClosure = (
     }
   }
   return seen
-}
-
-export const inlineFragments = <T extends ASTNode>(
-  ast: T,
-  fragmentMap: Record<string, FragmentDefinitionNode>
-): T => {
-  let currentOperation: OperationDefinitionNode | null = null
-  return visit(ast, {
-    OperationDefinition: {
-      enter(node) {
-        currentOperation = node
-      },
-      leave() {
-        currentOperation = null
-      },
-    },
-    SelectionSet: {
-      enter(node) {
-        if (currentOperation) {
-          return {
-            ...node,
-            selections: node.selections.map((selection) =>
-              selection.kind === Kind.FRAGMENT_SPREAD
-                ? toInlineFragment(selection, fragmentMap[selection.name.value])
-                : selection
-            ),
-          }
-        }
-      },
-    },
-  })
-}
-
-const toInlineFragment = (
-  fragmentSpread: FragmentSpreadNode,
-  fragmentDefinition: FragmentDefinitionNode
-) => {
-  return {
-    kind: Kind.INLINE_FRAGMENT,
-    loc: fragmentSpread.loc,
-    typeCondition: fragmentDefinition.typeCondition,
-    directives: fragmentSpread.directives,
-    selectionSet: fragmentDefinition.selectionSet,
-  }
 }
