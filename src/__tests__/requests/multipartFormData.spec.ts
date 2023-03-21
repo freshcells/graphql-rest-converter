@@ -122,28 +122,24 @@ app.use(
   bridge.getExpressMiddleware(async ({ request, response, document, variables }) => {
     // handle non-multipart (default) graphql requests
     if (!request.is('multipart/form-data')) {
-      return Promise.resolve(
-        execute({
-          schema: gqlSchema,
-          document: parse(document),
-          variableValues: variables,
-        })
-      )
+      return execute({
+        schema: gqlSchema,
+        document: parse(document),
+        variableValues: variables,
+      })
     }
     // Process our multipart request and make sure files resolve
     const uploadRequest = await processRequest(request, response)
     // we do not support batching requests, so we can safely assume a single request
     assert(!Array.isArray(uploadRequest))
-    return Promise.resolve(
-      execute({
-        schema: gqlSchema,
-        document: parse(uploadRequest.query),
-        variableValues: {
-          ...variables,
-          ...(uploadRequest.variables as Record<string, unknown>),
-        },
-      })
-    )
+    return execute({
+      schema: gqlSchema,
+      document: parse(uploadRequest.query),
+      variableValues: {
+        ...variables,
+        ...(uploadRequest.variables as Record<string, unknown>),
+      },
+    })
   })
 )
 
@@ -167,6 +163,7 @@ describe('FormData', () => {
     const result = await request(app)
       .post('/upload-file/10')
       .attach('file', buffer, 'custom_file_name.txt')
+      .expect(200)
     expect(result.body).toMatchSnapshot()
   })
 
@@ -178,12 +175,12 @@ describe('FormData', () => {
       .post('/upload-multiple-images/10')
       .attach('primaryImage', buffer1, 'custom_file_name.txt')
       .attach('secondary', buffer2, 'custom_file_name.txt')
-
+      .expect(200)
     expect(result.body).toMatchSnapshot()
   })
 
   it('should allow single optional files', async () => {
-    const result = await request(app).post('/optional-file/5').send({})
+    const result = await request(app).post('/optional-file/5').send({}).expect(200)
     expect(result.body).toMatchSnapshot({
       uploadAMaybeFile: expect.any(Boolean),
     })
@@ -203,6 +200,7 @@ describe('FormData', () => {
     const result = await request(app)
       .post('/mixed-optional-file/5')
       .attach('requiredFile', buffer, 'required_file.txt')
+      .expect(200)
     expect(result.body).toMatchSnapshot()
   })
 

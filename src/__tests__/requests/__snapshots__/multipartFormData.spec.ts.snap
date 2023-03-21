@@ -2,10 +2,8 @@
 
 exports[`FormData should allow mixed optional files 1`] = `
 {
-  "errors": [
-    {
-      "message": "Only "multipart/form-data" supported",
-    },
+  "uploadMixedFiles": [
+    "the required file",
   ],
 }
 `;
@@ -784,20 +782,15 @@ exports[`FormData should create the correct schema 1`] = `
 
 exports[`FormData should support multipart form data requests with a single file 1`] = `
 {
-  "errors": [
-    {
-      "message": "Only "multipart/form-data" supported",
-    },
-  ],
+  "uploadAFile": "some data",
 }
 `;
 
 exports[`FormData should support uploading multiple files 1`] = `
 {
-  "errors": [
-    {
-      "message": "Only "multipart/form-data" supported",
-    },
+  "uploadMultipleFiles": [
+    "firstImage",
+    "secondImage",
   ],
 }
 `;

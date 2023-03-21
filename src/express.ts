@@ -111,7 +111,7 @@ const addOperation = <
       if (
         ['POST', 'PUT', 'PATCH'].includes(req.method) &&
         supportedContentTypes.length > 0 &&
-        !supportedContentTypes.includes(req.headers['content-type'] || '')
+        !supportedContentTypes.some((ct) => req.is(ct))
       ) {
         res.status(415).json({
           errors: [
