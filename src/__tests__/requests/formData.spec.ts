@@ -6,7 +6,6 @@ import { makeExecutableSchema } from '@graphql-tools/schema'
 import { createOpenAPIGraphQLBridge } from '../../express.js'
 import request from 'supertest'
 import { createSchemaExecutor } from '../../graphQLExecutor.js'
-import { URLSearchParams } from 'node:url'
 
 const app = express()
 
@@ -66,14 +65,7 @@ describe('FormData', () => {
     expect(result.body).toMatchSnapshot()
   })
   it('should POST `/fetch` successful', async () => {
-    const form = new FormData()
-    form.append('someParameter', 'nice')
-    const result = await request(app)
-      .post('/fetch?id=5')
-      .type('form')
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .send(new URLSearchParams(form).toString())
+    const result = await request(app).post('/fetch?id=5').type('form').send('someParameter=nice')
     expect(result.body).toMatchSnapshot()
   })
 })

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter, Request, Response } from 'express'
-import bodyParser from 'body-parser'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema, print } from 'graphql'
 import OpenAPIRequestCoercer from 'openapi-request-coercer'
@@ -45,8 +44,8 @@ const promiseToHandler =
     result.catch(args[2] as NextFunction)
   }
 
-const jsonBodyParserPromise = middlewareToPromise(bodyParser.json())
-const formBodyParserPromise = middlewareToPromise(bodyParser.urlencoded())
+const jsonBodyParserPromise = middlewareToPromise(express.json())
+const formBodyParserPromise = middlewareToPromise(express.urlencoded({ extended: true }))
 
 const addOperation = <
   T extends CustomOperationProps = CustomOperationProps,
