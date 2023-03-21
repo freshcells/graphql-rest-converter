@@ -74,6 +74,16 @@ exports[`Requests should POST \`/sample\` 1`] = `
 }
 `;
 
+exports[`Requests should POST allow only json 1`] = `
+{
+  "errors": [
+    {
+      "message": "Only "application/json" supported",
+    },
+  ],
+}
+`;
+
 exports[`Requests should PUT \`/sample\` 1`] = `
 {
   "updateSample": {

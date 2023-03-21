@@ -40,7 +40,8 @@ describe('Requests', () => {
     expect(response.body).toMatchSnapshot()
   })
   it('should POST allow only json', async () => {
-    await request(app).post('/sample').expect(415)
+    const result = await request(app).post('/sample').expect(415)
+    expect(result.body).toMatchSnapshot()
   })
   it('should POST `/sample`', async () => {
     const response = await request(app).post('/sample').send({ name: 'Input', moreData: [] })
