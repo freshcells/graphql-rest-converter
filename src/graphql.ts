@@ -1,21 +1,21 @@
 import _ from 'lodash'
 import {
-  DocumentNode,
-  GraphQLSchema,
-  visit,
-  print,
-  Kind,
   ASTNode,
   buildASTSchema,
-  OperationDefinitionNode,
+  DocumentNode,
   GraphQLDirective,
+  GraphQLSchema,
+  Kind,
+  OperationDefinitionNode,
   OperationTypeNode,
+  print,
   validate,
+  visit,
 } from 'graphql'
 import { mergeSchemas } from '@graphql-tools/schema'
 import { gql } from 'graphql-tag'
 import { OpenAPIV3 } from 'openapi-types'
-import { getVariablesFromPathTemplate } from './pathTemplate'
+import { getVariablesFromPathTemplate } from './pathTemplate.js'
 import {
   createFragmentMap,
   getDependencyClosure,
@@ -24,18 +24,22 @@ import {
   getFragmentDependencies,
   getReferencedFragments,
   isOperationDefinitionNode,
-} from './graphqlUtils'
+} from './graphqlUtils.js'
 import {
-  CustomProperties,
-  OAType,
   BridgeOperation,
   CustomOperationProps,
+  CustomProperties,
   JSON_CONTENT_TYPE,
-} from './types'
-import { getReferenceableFragments, GraphQLTypeToOpenAPITypeSchemaConverter } from './typeConverter'
-import { isNullable } from './openApi'
-import { printSourceLocation } from 'graphql/language/printLocation'
-import { gqlValidationRules } from './validationRules'
+  OAType,
+  MediaTypeMap,
+} from './types.js'
+import {
+  getReferenceableFragments,
+  GraphQLTypeToOpenAPITypeSchemaConverter,
+} from './typeConverter.js'
+import { isNullable } from './openApi.js'
+import { printSourceLocation } from 'graphql/language/printLocation.js'
+import { gqlValidationRules } from './validationRules.js'
 
 const DIRECTIVE_DEFINITION = gql`
   input OAExternalDocsInput {
@@ -62,6 +66,12 @@ const DIRECTIVE_DEFINITION = gql`
     HEADER
   }
 
+  enum BodyContentType {
+    JSON
+    FORM_DATA
+    MULTIPART_FORM_DATA
+  }
+
   directive @OAOperation(
     path: String!
     tags: [String!]
@@ -70,7 +80,6 @@ const DIRECTIVE_DEFINITION = gql`
     description: String
     externalDocs: OAExternalDocsInput
     deprecated: Boolean
-    "defaults to GET"
     method: HttpMethod
   ) on QUERY | MUTATION
 
@@ -81,7 +90,11 @@ const DIRECTIVE_DEFINITION = gql`
     name: String
   ) on VARIABLE_DEFINITION
 
-  directive @OABody(description: String, path: String) on VARIABLE_DEFINITION
+  directive @OABody(
+    description: String
+    path: String
+    contentType: BodyContentType = JSON
+  ) on VARIABLE_DEFINITION
 
   directive @OADescription(description: String) on FRAGMENT_DEFINITION | FIELD
 `
@@ -179,6 +192,26 @@ const getOpenAPIRequestBody = (
   const variableName = bodyVariables?.[0]
   const firstSchema = variablesSchema[variableName]
 
+  const contentType = MediaTypeMap[bodyDirectives[variableName]?.contentType || 'JSON']
+  const requestBodyFormData = bodyDirectives[variableName]?.contentType || 'JSON'
+
+  let additionalMedia = {}
+  if (contentType === 'multipart/form-data') {
+    const onlyNullable = Object.values(variablesSchema).filter((type) => {
+      return (type as OpenAPIV3.BaseSchemaObject).nullable
+    })
+    // in case we only have nullable bodies, we support also posting only json
+    if (bodyVariables.length > 0 && onlyNullable.length === bodyVariables.length) {
+      additionalMedia = {
+        [MediaTypeMap.JSON]: {
+          schema: {
+            type: 'object',
+            nullable: true,
+          },
+        },
+      }
+    }
+  }
   // if our only body argument is a scalar type, we wrap it into an object
   if (bodyVariables.length > 1 || (firstSchema as OpenAPIV3.SchemaObject).type !== 'object') {
     const requestBodyVariableMap = Object.entries(bodyDirectives).reduce(
@@ -193,12 +226,14 @@ const getOpenAPIRequestBody = (
     const requiredKeys = Object.entries(bodyDirectives)
       .filter(([key]) => !(variablesSchema[key] as OpenAPIV3.SchemaObject).nullable)
       .map(([key, directive]) => directive.path || key)
+
     return {
       requestBodyVariableMap,
+      requestBodyFormData,
       requestBodyIsSingleInput: false,
       schema: {
         content: {
-          [JSON_CONTENT_TYPE]: {
+          [contentType]: {
             schema: {
               type: 'object',
               ...(requiredKeys.length > 0 ? { required: requiredKeys } : {}),
@@ -214,6 +249,7 @@ const getOpenAPIRequestBody = (
               }, {} as { [key: string]: OAType }),
             } as OpenAPIV3.NonArraySchemaObject,
           },
+          ...additionalMedia,
         },
       },
     }
@@ -224,14 +260,16 @@ const getOpenAPIRequestBody = (
   return {
     requestBodyVariableMap: { [variableName]: variableName },
     requestBodyIsSingleInput: true,
+    requestBodyFormData,
     schema: {
       content: {
-        [JSON_CONTENT_TYPE]: {
+        [contentType]: {
           schema: {
             ...firstSchema,
             [CustomProperties.VariableName]: variableName,
           },
         },
+        ...additionalMedia,
       },
       ...(description ? { description } : {}),
     },
@@ -267,6 +305,7 @@ type OpenAPIParamDirectiveData = {
 type OpenAPIBodyDirectiveData = {
   description?: string
   path?: string
+  contentType: 'JSON' | 'FORM_DATA' | 'MULTIPART_FORM_DATA'
 }
 
 const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperationProps>(
@@ -347,6 +386,27 @@ const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperation
         },
       },
     },
+    '415': {
+      description: 'Unsupported Media Type',
+      content: {
+        [JSON_CONTENT_TYPE]: {
+          schema: {
+            type: 'object',
+            properties: {
+              errors: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    message: { type: 'string' },
+                  },
+                },
+              },
+            },
+          } as OpenAPIV3.SchemaObject,
+        },
+      },
+    },
   }
   return Object.freeze({
     ...(operationId !== null ? { operationId } : {}),
@@ -364,7 +424,7 @@ const getVariablesDirectiveData = (
   operation: OperationDefinitionNode
 ) => {
   const paramsDirectiveData: Record<string, OpenAPIParamDirectiveData> = {}
-  const bodiesDirectiveData: Record<string, OpenAPIParamDirectiveData> = {}
+  const bodiesDirectiveData: Record<string, OpenAPIBodyDirectiveData> = {}
 
   for (const variableDefinition of operation.variableDefinitions || []) {
     const bodyDirective = getDirective(variableDefinition, OpenAPIDirectives.Body)
@@ -526,6 +586,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
       variableMap,
       requestBodyVariableMap: requestBody?.requestBodyVariableMap || {},
       requestBodyIsSingleInput: requestBody?.requestBodyIsSingleInput,
+      requestBodyFormData: requestBody?.requestBodyFormData,
     })
 
     bridgeOperations.push(bridgeOperation)

@@ -1,40 +1,104 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Documentation should not take the root description into account 1`] = `
+exports[`FormData should allow mixed optional files 1`] = `
+{
+  "errors": [
+    {
+      "message": "Only "multipart/form-data" supported",
+    },
+  ],
+}
+`;
+
+exports[`FormData should allow single optional files 1`] = `
+{
+  "uploadAMaybeFile": Any<Boolean>,
+}
+`;
+
+exports[`FormData should create the correct schema 1`] = `
 {
   "components": {
-    "schemas": {},
+    "schemas": {
+      "Upload": {
+        "description": "The \`Upload\` scalar type represents a file upload.",
+        "format": "binary",
+        "nullable": true,
+        "type": "string",
+      },
+    },
   },
+  "info": {
+    "description": "Description",
+    "title": "The API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
   "paths": {
-    "/heroes": {
-      "get": {
-        "operationId": "fetchAllMyHeroes",
-        "parameters": [],
+    "/mixed-optional-file/{id}": {
+      "post": {
+        "operationId": "uploadMixedOptionalFile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "optionalFile": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": true,
+                    "type": "string",
+                    "x-graphql-variable-name": "optionalFile",
+                  },
+                  "requiredFile": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "string",
+                    "x-graphql-variable-name": "requiredFile",
+                  },
+                },
+                "required": [
+                  "requiredFile",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
                   "properties": {
-                    "fetchAllMyHeroes": {
-                      "description": "My heros",
+                    "uploadMixedFiles": {
                       "items": {
-                        "properties": {
-                          "name": {
-                            "nullable": true,
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "name",
-                        ],
-                        "type": "object",
+                        "type": "string",
                       },
                       "type": "array",
                     },
                   },
                   "required": [
-                    "fetchAllMyHeroes",
+                    "uploadMixedFiles",
                   ],
                   "type": "object",
                 },
@@ -106,25 +170,15 @@ exports[`Documentation should not take the root description into account 1`] = `
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
                       "properties": {
-                        "fetchAllMyHeroes": {
-                          "description": "My heros",
+                        "uploadMixedFiles": {
                           "items": {
-                            "properties": {
-                              "name": {
-                                "nullable": true,
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "name",
-                            ],
-                            "type": "object",
+                            "type": "string",
                           },
                           "type": "array",
                         },
                       },
                       "required": [
-                        "fetchAllMyHeroes",
+                        "uploadMixedFiles",
                       ],
                       "type": "object",
                     },
@@ -167,10 +221,560 @@ exports[`Documentation should not take the root description into account 1`] = `
             "description": "Internal Server Error",
           },
         },
-        "x-graphql-operation": "query fetchAllMyHeroes {
-  fetchAllMyHeroes {
-    name
-  }
+        "x-graphql-operation": "mutation uploadMixedOptionalFile($id: Int!, $requiredFile: Upload!, $optionalFile: Upload) {
+  uploadMixedFiles(
+    id: $id
+    requiredFile: $requiredFile
+    optionalFile: $optionalFile
+  )
+}",
+      },
+    },
+    "/optional-file/{id}": {
+      "post": {
+        "operationId": "uploadSingleOptionalFile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "nullable": true,
+                "type": "object",
+              },
+            },
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "optionalFile": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": true,
+                    "type": "string",
+                    "x-graphql-variable-name": "optionalFile",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "uploadAMaybeFile": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "uploadAMaybeFile",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "uploadAMaybeFile": {
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [
+                        "uploadAMaybeFile",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation uploadSingleOptionalFile($id: Int!, $optionalFile: Upload) {
+  uploadAMaybeFile(id: $id, optionalFile: $optionalFile)
+}",
+      },
+    },
+    "/upload-file/{id}": {
+      "post": {
+        "operationId": "uploadFile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "string",
+                    "x-graphql-variable-name": "file",
+                  },
+                },
+                "required": [
+                  "file",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "uploadAFile": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "uploadAFile",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "uploadAFile": {
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "uploadAFile",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation uploadFile($id: Int!, $file: Upload!) {
+  uploadAFile(id: $id, file: $file)
+}",
+      },
+    },
+    "/upload-multiple-images/{id}": {
+      "post": {
+        "operationId": "uploadMultipleFiles",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "primaryImage": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "string",
+                    "x-graphql-variable-name": "primaryImage",
+                  },
+                  "secondary": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "string",
+                    "x-graphql-variable-name": "secondaryImage",
+                  },
+                },
+                "required": [
+                  "primaryImage",
+                  "secondary",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "uploadMultipleFiles": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": [
+                    "uploadMultipleFiles",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "uploadMultipleFiles": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "uploadMultipleFiles",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation uploadMultipleFiles($id: String!, $primaryImage: Upload!, $secondaryImage: Upload!) {
+  uploadMultipleFiles(
+    id: $id
+    primaryImage: $primaryImage
+    secondaryImage: $secondaryImage
+  )
 }",
       },
     },
@@ -178,364 +782,22 @@ exports[`Documentation should not take the root description into account 1`] = `
 }
 `;
 
-exports[`Documentation should support overwriting default descriptions 1`] = `
+exports[`FormData should support multipart form data requests with a single file 1`] = `
 {
-  "components": {
-    "schemas": {},
-  },
-  "paths": {
-    "/heroes": {
-      "get": {
-        "operationId": "fetchAllMyHeroes",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "fetchAllMyHeroes": {
-                      "description": "My Heroes",
-                      "items": {
-                        "properties": {
-                          "name": {
-                            "description": "Name of the hero",
-                            "nullable": true,
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "name",
-                        ],
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "required": [
-                    "fetchAllMyHeroes",
-                  ],
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Success",
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "errors": {
-                      "items": {
-                        "properties": {
-                          "errorCode": {
-                            "type": "string",
-                          },
-                          "location": {
-                            "type": "string",
-                          },
-                          "message": {
-                            "type": "string",
-                          },
-                          "path": {
-                            "type": "string",
-                          },
-                        },
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Invalid request",
-          },
-          "415": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "errors": {
-                      "items": {
-                        "properties": {
-                          "message": {
-                            "type": "string",
-                          },
-                        },
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Unsupported Media Type",
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "description": "Branch of data that does not contain errors",
-                      "nullable": true,
-                      "properties": {
-                        "fetchAllMyHeroes": {
-                          "description": "My Heroes",
-                          "items": {
-                            "properties": {
-                              "name": {
-                                "description": "Name of the hero",
-                                "nullable": true,
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "name",
-                            ],
-                            "type": "object",
-                          },
-                          "type": "array",
-                        },
-                      },
-                      "required": [
-                        "fetchAllMyHeroes",
-                      ],
-                      "type": "object",
-                    },
-                    "errors": {
-                      "items": {
-                        "properties": {
-                          "locations": {
-                            "items": {
-                              "properties": {
-                                "column": {
-                                  "type": "integer",
-                                },
-                                "line": {
-                                  "type": "integer",
-                                },
-                              },
-                              "type": "object",
-                            },
-                            "type": "array",
-                          },
-                          "message": {
-                            "type": "string",
-                          },
-                          "path": {
-                            "items": {
-                              "type": "string",
-                            },
-                            "type": "array",
-                          },
-                        },
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Internal Server Error",
-          },
-        },
-        "x-graphql-operation": "query fetchAllMyHeroes {
-  fetchAllMyHeroes {
-    name
-  }
-}",
-      },
+  "errors": [
+    {
+      "message": "Only "multipart/form-data" supported",
     },
-  },
+  ],
 }
 `;
 
-exports[`Documentation should take default descriptions of the schema 1`] = `
+exports[`FormData should support uploading multiple files 1`] = `
 {
-  "components": {
-    "schemas": {},
-  },
-  "paths": {
-    "/heroes": {
-      "get": {
-        "operationId": "fetchAllMyHeroes",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "fetchAllMyHeroes": {
-                      "description": "Default my Heroes",
-                      "items": {
-                        "description": "Documentation of the Hero",
-                        "properties": {
-                          "name": {
-                            "description": "Default name",
-                            "nullable": true,
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "name",
-                        ],
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "required": [
-                    "fetchAllMyHeroes",
-                  ],
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Success",
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "errors": {
-                      "items": {
-                        "properties": {
-                          "errorCode": {
-                            "type": "string",
-                          },
-                          "location": {
-                            "type": "string",
-                          },
-                          "message": {
-                            "type": "string",
-                          },
-                          "path": {
-                            "type": "string",
-                          },
-                        },
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Invalid request",
-          },
-          "415": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "errors": {
-                      "items": {
-                        "properties": {
-                          "message": {
-                            "type": "string",
-                          },
-                        },
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Unsupported Media Type",
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "description": "Branch of data that does not contain errors",
-                      "nullable": true,
-                      "properties": {
-                        "fetchAllMyHeroes": {
-                          "description": "Default my Heroes",
-                          "items": {
-                            "description": "Documentation of the Hero",
-                            "properties": {
-                              "name": {
-                                "description": "Default name",
-                                "nullable": true,
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "name",
-                            ],
-                            "type": "object",
-                          },
-                          "type": "array",
-                        },
-                      },
-                      "required": [
-                        "fetchAllMyHeroes",
-                      ],
-                      "type": "object",
-                    },
-                    "errors": {
-                      "items": {
-                        "properties": {
-                          "locations": {
-                            "items": {
-                              "properties": {
-                                "column": {
-                                  "type": "integer",
-                                },
-                                "line": {
-                                  "type": "integer",
-                                },
-                              },
-                              "type": "object",
-                            },
-                            "type": "array",
-                          },
-                          "message": {
-                            "type": "string",
-                          },
-                          "path": {
-                            "items": {
-                              "type": "string",
-                            },
-                            "type": "array",
-                          },
-                        },
-                        "type": "object",
-                      },
-                      "type": "array",
-                    },
-                  },
-                  "type": "object",
-                },
-              },
-            },
-            "description": "Internal Server Error",
-          },
-        },
-        "x-graphql-operation": "query fetchAllMyHeroes {
-  fetchAllMyHeroes {
-    name
-  }
-}",
-      },
+  "errors": [
+    {
+      "message": "Only "multipart/form-data" supported",
     },
-  },
+  ],
 }
 `;

@@ -1,10 +1,10 @@
 import express from 'express'
-import { createSchemaExecutor } from '../../graphQLExecutor'
+import { createSchemaExecutor } from '../../graphQLExecutor.js'
 import request from 'supertest'
 import { addMocksToSchema } from '@graphql-tools/mock'
 import { makeExecutableSchema } from '@graphql-tools/schema'
-import { customScalarSchema, Scalars } from '../fixtures'
-import { createOpenAPIGraphQLBridge } from '../../express'
+import { customScalarSchema, Scalars } from '../fixtures.js'
+import { createOpenAPIGraphQLBridge } from '../../express.js'
 import { gql } from 'graphql-tag'
 
 const app = express()

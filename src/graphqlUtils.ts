@@ -12,7 +12,7 @@ import {
   valueFromASTUntyped,
   visit,
 } from 'graphql'
-import { GraphQLSchema, VariableDefinitionNode } from 'graphql/index'
+import { GraphQLSchema, VariableDefinitionNode } from 'graphql'
 
 export const hasDirective = (node: ASTNode, directiveName: string | string[]) =>
   (('directives' in node && node.directives) || []).some((directive) =>

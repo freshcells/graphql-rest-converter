@@ -1,16 +1,17 @@
 import { specifiedRules, ValidationRule, VariableDefinitionNode } from 'graphql'
-import { ValidationContext } from 'graphql/validation/ValidationContext'
-import { getDirective, getDirectiveArguments } from './graphqlUtils'
-import { OpenAPIDirectives } from './graphql'
+import { ValidationContext } from 'graphql/validation/ValidationContext.js'
+import { getDirective, getDirectiveArguments } from './graphqlUtils.js'
+import { OpenAPIDirectives } from './graphql.js'
 import { GraphQLError } from 'graphql/error'
-import { getVariablesFromPathTemplate } from './pathTemplate'
-import { getParameterName } from './utils'
+import { getVariablesFromPathTemplate } from './pathTemplate.js'
+import { getParameterName } from './utils.js'
 import type { VariableNode } from 'graphql'
-import { getBodyDirectiveInfo, validateVariable } from './validations/utils'
+import { getBodyDirectiveInfo, validateVariable } from './validations/utils.js'
 
 type BodyDirectiveInfo = {
   varDef: VariableDefinitionNode
   node: VariableNode
+  contentType: string
   path: string
 }[]
 
@@ -29,7 +30,7 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
           .map(({ node }) => getBodyDirectiveInfo(varDefMap, node, context.getSchema()))
           .filter((v) => v) as BodyDirectiveInfo
 
-        const uniques = allBodyDirectives.reduce((next, { path }) => {
+        const uniquePaths = allBodyDirectives.reduce((next, { path }) => {
           if (!next.includes(path)) {
             return [...next, path]
           }
@@ -38,11 +39,31 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
 
         const { node, varDef } = allBodyDirectives?.[0] || {}
 
-        if (uniques.length !== allBodyDirectives.length) {
+        if (uniquePaths.length !== allBodyDirectives.length) {
           context.reportError(
-            new GraphQLError(`Only unique "@OABody" definitions allowed.`, {
+            new GraphQLError(`Only unique "@OABody(path:...)" definitions allowed.`, {
               nodes: [varDef, node, operation],
             })
+          )
+        }
+
+        const allContentTypes = allBodyDirectives.reduce((next, { contentType }) => {
+          if (!next.includes(contentType)) {
+            return [...next, contentType]
+          }
+          return next
+        }, [] as string[])
+
+        if (allBodyDirectives.length > 0 && allContentTypes.length > 1) {
+          context.reportError(
+            new GraphQLError(
+              `Cannot mix different contentType(s) with "@OABody" (found: ${allContentTypes.join(
+                ', '
+              )}).`,
+              {
+                nodes: [varDef, node, operation],
+              }
+            )
           )
         }
       },

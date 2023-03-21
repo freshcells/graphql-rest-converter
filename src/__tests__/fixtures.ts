@@ -1,9 +1,9 @@
 import { gql } from 'graphql-tag'
-import { buildASTSchema } from 'graphql/index'
+import { buildASTSchema } from 'graphql'
 import schema from './schema/schema.graphql'
 import scalarSchema from './schema/custom-scalars.schema.graphql'
 import { addMocksToSchema } from '@graphql-tools/mock'
-import { createOpenAPIGraphQLBridge } from '../express'
+import { createOpenAPIGraphQLBridge } from '../express.js'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { OpenAPIV3 } from 'openapi-types'
 
@@ -77,7 +77,7 @@ export const bridgeFixtures = gql`
   }
 
   query getSampleWithDefault($id: Int! = 10 @OAParam(in: QUERY))
-  @OAOperation(path: "/sample-default", security: [{ schema: "dev" }]) {
+  @OAOperation(path: "/sample-default", security: [{ schema: "OAuth2", scopes: ["write:admin"] }]) {
     getSample(id: $id) {
       ... on Sample {
         name

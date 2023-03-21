@@ -1,6 +1,6 @@
-import { bridge, gqlSchema } from '../fixtures'
+import { bridge, gqlSchema } from '../fixtures.js'
 import express from 'express'
-import { createSchemaExecutor } from '../../graphQLExecutor'
+import { createSchemaExecutor } from '../../graphQLExecutor.js'
 import request from 'supertest'
 
 const app = express()
@@ -39,12 +39,11 @@ describe('Requests', () => {
     const response = await request(app).get('/sample/not-a-number').expect(400)
     expect(response.body).toMatchSnapshot()
   })
-
+  it('should POST allow only json', async () => {
+    await request(app).post('/sample').expect(415)
+  })
   it('should POST `/sample`', async () => {
-    const response = await request(app)
-      .post('/sample')
-      .send({ name: 'Input', moreData: [] })
-      .expect(200)
+    const response = await request(app).post('/sample').send({ name: 'Input', moreData: [] })
     expect(response.body).toMatchSnapshot({
       createSample: {
         id: expect.any(Number),

@@ -1,10 +1,10 @@
 import schema from './schema/schema.graphql'
 import { buildASTSchema } from 'graphql'
-import { createOpenAPIGraphQLBridge } from '../express'
+import { createOpenAPIGraphQLBridge } from '../express.js'
 import { gql } from 'graphql-tag'
-import { bridgeFixtures } from './fixtures'
-import { getBridgeOperations } from '../graphql'
-import { removeCustomProperties } from '../transformers'
+import { bridgeFixtures } from './fixtures.js'
+import { getBridgeOperations } from '../graphql.js'
+import { removeCustomProperties } from '../transformers.js'
 import { OpenAPIV3 } from 'openapi-types'
 
 const graphqlSchema = buildASTSchema(schema)
@@ -154,7 +154,29 @@ describe('OpenAPI Generation', () => {
           `
         )
       ).toThrow(
-        `Schema validation error(s): Only unique "@OABody" definitions allowed. Source: unknown`
+        `Schema validation error(s): Only unique "@OABody(path:...)" definitions allowed. Source: unknown`
+      )
+    })
+    it('should deny multiple @OABody directives with different contentTypes', () => {
+      expect(() =>
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            mutation myMutation(
+              $inputFirst: SampleInput! @OABody(contentType: JSON)
+              $inputSecond: SampleInput! @OABody(contentType: MULTIPART_FORM_DATA)
+            ) @OAOperation(path: "/myMutation") {
+              createSampleOne: createSample(input: $inputFirst) {
+                id
+              }
+              createSampleTwo: createSample(input: $inputSecond) {
+                id
+              }
+            }
+          `
+        )
+      ).toThrow(
+        `Schema validation error(s): Cannot mix different contentType(s) with "@OABody" (found: JSON, MULTIPART_FORM_DATA). Source: unknown`
       )
     })
     it('should fail in case a `path` parameter is used with @OABody', () => {

@@ -31,16 +31,16 @@ import {
   typeFromAST,
   valueFromAST,
 } from 'graphql'
-import { OAType, SchemaComponents } from './types'
+import { OAType, SchemaComponents } from './types.js'
 import {
   getDirective,
   getDirectiveArgumentsUntyped,
   hasDirective,
   isFragmentDefinitionNode,
   removeDescriptionFromObjectType,
-} from './graphqlUtils'
-import { isNullable } from './openApi'
-import { OpenAPIDirectives } from './graphql'
+} from './graphqlUtils.js'
+import { isNullable } from './openApi.js'
+import { OpenAPIDirectives } from './graphql.js'
 
 const hasOptionalDirective = (node: ASTNode) => hasDirective(node, ['include', 'skip'])
 

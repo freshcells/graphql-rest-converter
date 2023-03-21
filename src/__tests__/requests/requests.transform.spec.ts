@@ -1,6 +1,6 @@
-import { bridge, gqlSchema } from '../fixtures'
+import { bridge, gqlSchema } from '../fixtures.js'
 import express from 'express'
-import { createSchemaExecutor } from '../../graphQLExecutor'
+import { createSchemaExecutor } from '../../graphQLExecutor.js'
 import request from 'supertest'
 
 const app = express()

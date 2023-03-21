@@ -1,9 +1,9 @@
-export * from './transformers'
-export * from './types'
-export * from './utils'
+export * from './transformers.js'
+export * from './types.js'
+export * from './utils.js'
 
-export { createHttpExecutor, createSchemaExecutor } from './graphQLExecutor'
+export { createHttpExecutor, createSchemaExecutor } from './graphQLExecutor.js'
 
-export type { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor'
-export { getBridgeOperations } from './graphql'
-export { InvalidResponseError } from './errors'
+export type { GraphQLExecutor, GraphQLExecutorArgs } from './graphQLExecutor.js'
+export { getBridgeOperations } from './graphql.js'
+export { InvalidResponseError } from './errors.js'

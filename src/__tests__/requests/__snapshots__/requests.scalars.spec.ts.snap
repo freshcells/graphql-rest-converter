@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Requests with custom scalars should GET \`/data\` 1`] = `
-Object {
-  "getData": Array [
-    Object {
+{
+  "getData": [
+    {
       "created": "10-10-1985",
       "data": "{}",
       "id": Any<Number>,
       "modified": "10-10-1985:10:00:00",
     },
-    Object {
+    {
       "created": "10-10-1985",
       "data": "{}",
       "id": Any<Number>,

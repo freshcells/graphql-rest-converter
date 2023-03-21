@@ -1,6 +1,7 @@
 {
   "name": "@freshcells/graphql-rest-converter",
   "version": "1.0.0",
+  "type": "module",
   "description": "Create an OpenAPI-compatible HTTP API based on annotated GraphQL operations",
   "license": "MIT",
   "keywords": [
@@ -41,33 +42,37 @@
     "*.d.ts"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "test": "jest --ci",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "build": "tsc --project tsconfig.build.json && tsc --project tsconfig.cjs.build.json && sh ./esm-postbuild.sh",
+    "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --ci",
+    "test:watch": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --watch",
+    "test:coverage": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --coverage",
     "format": "prettier --loglevel warn --check src",
     "format:fix": "prettier --write src",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "lint:fix": "yarn lint --fix",
     "prettify": "prettier \"**/*.{ts,tsx,graphql,md}\" --write",
     "qa": "tsc --noEmit && yarn test --coverage && yarn lint && yarn format",
-    "prepack": "yarn build && cp ./dist/*.d.ts ."
+    "prepack": "yarn build && cp ./dist/mjs/*.d.ts ."
   },
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/mjs/index.d.ts"
     },
     "./express": {
-      "require": "./dist/express.js",
-      "types": "./dist/express.d.ts"
+      "import": "./dist/mjs/express.js",
+      "require": "./dist/cjs/express.js",
+      "types": "./dist/mjs/express.d.ts"
     }
   },
   "devDependencies": {
     "@graphql-tools/jest-transform": "^1.2.2",
     "@graphql-tools/mock": "^8.7.19",
     "@graphql-tools/schema": "^9.0.17",
+    "@types/content-disposition": "^0.5.5",
     "@types/express": "^4.17.13",
+    "@types/graphql-upload": "^16.0.0",
     "@types/jest": "^28.1.1",
     "@types/lodash": "^4.14.177",
     "@types/node": "^18.11.9",
@@ -76,37 +81,14 @@
     "@typescript-eslint/parser": "^5.48.2",
     "eslint": "^8.17.0",
     "express": "^4.18.2",
-    "jest": "^28.1.1",
+    "graphql-upload": "^16.0.2",
+    "jest": "^29.5.0",
     "prettier": "^2.8.4",
     "semantic-release": "^20.1.1",
     "supertest": "^6.3.3",
-    "ts-jest": "^28.0.4",
+    "ts-jest": "^29.0.5",
     "typedoc": "^0.23.24",
     "typescript": "^4.9.4"
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/dist/",
-      "<rootDir>/node_modules/"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "testMatch": [
-      "**/__tests__/**/*.spec.[jt]s"
-    ],
-    "transform": {
-      "\\.ts$": "ts-jest",
-      "\\.(gql|graphql)$": "@graphql-tools/jest-transform"
-    },
-    "coverageReporters": [
-      "clover",
-      "text"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,ts}"
-    ]
   },
   "packageManager": "yarn@3.4.1"
 }

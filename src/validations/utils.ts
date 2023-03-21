@@ -6,13 +6,13 @@ import {
   typeFromAST,
   VariableDefinitionNode,
   VariableNode,
-} from 'graphql/index'
-import { ValidationContext } from 'graphql/validation/ValidationContext'
-import { Maybe } from 'graphql/jsutils/Maybe'
-import { inspect } from 'graphql/jsutils/inspect'
-import { getParameterName } from '../utils'
-import { getDirectiveArgumentsWithSchema, hasDirective } from '../graphqlUtils'
-import { OpenAPIDirectives } from '../graphql'
+} from 'graphql'
+import { ValidationContext } from 'graphql/validation/ValidationContext.js'
+import { Maybe } from 'graphql/jsutils/Maybe.js'
+import { inspect } from 'graphql/jsutils/inspect.js'
+import { getParameterName } from '../utils.js'
+import { getDirectiveArgumentsWithSchema, hasDirective } from '../graphqlUtils.js'
+import { OpenAPIDirectives } from '../graphql.js'
 import { GraphQLError } from 'graphql/error'
 
 export const validateVariable = (
@@ -103,6 +103,7 @@ export const getBodyDirectiveInfo = (
         varDef,
         node,
         path: directiveArguments.path || varName,
+        contentType: directiveArguments.contentType,
       }
     : null
 }

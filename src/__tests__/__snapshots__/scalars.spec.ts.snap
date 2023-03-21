@@ -1,52 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Scalars should allow custom scalars 1`] = `
-Object {
-  "components": Object {
-    "schemas": Object {
-      "Date": Object {
+{
+  "components": {
+    "schemas": {
+      "Date": {
         "description": "A Date",
         "format": "date",
         "nullable": true,
         "type": "string",
       },
-      "Datetime": Object {
+      "Datetime": {
         "description": "A Datetime",
         "format": "date-time",
         "nullable": true,
         "type": "string",
       },
-      "JSON": Object {
+      "JSON": {
         "description": "A JSON Scalar",
         "nullable": true,
         "type": "object",
       },
     },
   },
-  "info": Object {
+  "info": {
     "description": "My API",
     "title": "Sample API",
     "version": "1.0.0",
   },
   "openapi": "3.0.3",
-  "paths": Object {
-    "/data": Object {
-      "get": Object {
+  "paths": {
+    "/data": {
+      "get": {
         "operationId": "getData",
-        "parameters": Array [],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getData": Object {
-                      "items": Object {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getData": {
+                      "items": {
                         "description": "A Complex type",
-                        "properties": Object {
-                          "created": Object {
-                            "allOf": Array [
-                              Object {
+                        "properties": {
+                          "created": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/Date",
                               },
                             ],
@@ -54,9 +54,9 @@ Object {
                             "nullable": false,
                             "type": "string",
                           },
-                          "data": Object {
-                            "allOf": Array [
-                              Object {
+                          "data": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/JSON",
                               },
                             ],
@@ -64,14 +64,14 @@ Object {
                             "nullable": false,
                             "type": "object",
                           },
-                          "id": Object {
+                          "id": {
                             "description": "Our ID",
                             "format": "int32",
                             "type": "integer",
                           },
-                          "modified": Object {
-                            "allOf": Array [
-                              Object {
+                          "modified": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/Datetime",
                               },
                             ],
@@ -80,7 +80,7 @@ Object {
                             "type": "string",
                           },
                         },
-                        "required": Array [
+                        "required": [
                           "id",
                           "created",
                           "data",
@@ -91,7 +91,7 @@ Object {
                       "type": "array",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getData",
                   ],
                   "type": "object",
@@ -100,24 +100,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -132,22 +132,45 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getData": Object {
-                          "items": Object {
+                      "properties": {
+                        "getData": {
+                          "items": {
                             "description": "A Complex type",
-                            "properties": Object {
-                              "created": Object {
-                                "allOf": Array [
-                                  Object {
+                            "properties": {
+                              "created": {
+                                "allOf": [
+                                  {
                                     "$ref": "#/components/schemas/Date",
                                   },
                                 ],
@@ -155,9 +178,9 @@ Object {
                                 "nullable": false,
                                 "type": "string",
                               },
-                              "data": Object {
-                                "allOf": Array [
-                                  Object {
+                              "data": {
+                                "allOf": [
+                                  {
                                     "$ref": "#/components/schemas/JSON",
                                   },
                                 ],
@@ -165,14 +188,14 @@ Object {
                                 "nullable": false,
                                 "type": "object",
                               },
-                              "id": Object {
+                              "id": {
                                 "description": "Our ID",
                                 "format": "int32",
                                 "type": "integer",
                               },
-                              "modified": Object {
-                                "allOf": Array [
-                                  Object {
+                              "modified": {
+                                "allOf": [
+                                  {
                                     "$ref": "#/components/schemas/Datetime",
                                   },
                                 ],
@@ -181,7 +204,7 @@ Object {
                                 "type": "string",
                               },
                             },
-                            "required": Array [
+                            "required": [
                               "id",
                               "created",
                               "data",
@@ -192,21 +215,21 @@ Object {
                           "type": "array",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getData",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -214,11 +237,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -245,21 +268,21 @@ Object {
   }
 }",
       },
-      "post": Object {
+      "post": {
         "operationId": "storeData",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "input",
             "required": true,
-            "schema": Object {
+            "schema": {
               "description": "Input type to create new data",
-              "properties": Object {
-                "anotherChild": Object {
-                  "properties": Object {
-                    "created": Object {
-                      "allOf": Array [
-                        Object {
+              "properties": {
+                "anotherChild": {
+                  "properties": {
+                    "created": {
+                      "allOf": [
+                        {
                           "$ref": "#/components/schemas/Date",
                         },
                       ],
@@ -267,9 +290,9 @@ Object {
                       "nullable": false,
                       "type": "string",
                     },
-                    "modified": Object {
-                      "allOf": Array [
-                        Object {
+                    "modified": {
+                      "allOf": [
+                        {
                           "$ref": "#/components/schemas/Datetime",
                         },
                       ],
@@ -278,17 +301,17 @@ Object {
                       "type": "string",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "created",
                     "modified",
                   ],
                   "type": "object",
                 },
-                "child": Object {
-                  "properties": Object {
-                    "created": Object {
-                      "allOf": Array [
-                        Object {
+                "child": {
+                  "properties": {
+                    "created": {
+                      "allOf": [
+                        {
                           "$ref": "#/components/schemas/Date",
                         },
                       ],
@@ -296,9 +319,9 @@ Object {
                       "nullable": false,
                       "type": "string",
                     },
-                    "modified": Object {
-                      "allOf": Array [
-                        Object {
+                    "modified": {
+                      "allOf": [
+                        {
                           "$ref": "#/components/schemas/Datetime",
                         },
                       ],
@@ -307,18 +330,18 @@ Object {
                       "type": "string",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "created",
                     "modified",
                   ],
                   "type": "object",
                 },
-                "id": Object {
+                "id": {
                   "format": "int32",
                   "type": "integer",
                 },
               },
-              "required": Array [
+              "required": [
                 "id",
                 "anotherChild",
                 "child",
@@ -328,19 +351,19 @@ Object {
             "x-graphql-variable-name": "input",
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "storeData": Object {
-                      "items": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "storeData": {
+                      "items": {
                         "description": "A Complex type",
-                        "properties": Object {
-                          "created": Object {
-                            "allOf": Array [
-                              Object {
+                        "properties": {
+                          "created": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/Date",
                               },
                             ],
@@ -348,14 +371,14 @@ Object {
                             "nullable": false,
                             "type": "string",
                           },
-                          "id": Object {
+                          "id": {
                             "description": "Our ID",
                             "format": "int32",
                             "type": "integer",
                           },
-                          "modified": Object {
-                            "allOf": Array [
-                              Object {
+                          "modified": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/Datetime",
                               },
                             ],
@@ -364,7 +387,7 @@ Object {
                             "type": "string",
                           },
                         },
-                        "required": Array [
+                        "required": [
                           "id",
                           "created",
                           "modified",
@@ -374,7 +397,7 @@ Object {
                       "type": "array",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "storeData",
                   ],
                   "type": "object",
@@ -383,24 +406,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -415,22 +438,45 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "storeData": Object {
-                          "items": Object {
+                      "properties": {
+                        "storeData": {
+                          "items": {
                             "description": "A Complex type",
-                            "properties": Object {
-                              "created": Object {
-                                "allOf": Array [
-                                  Object {
+                            "properties": {
+                              "created": {
+                                "allOf": [
+                                  {
                                     "$ref": "#/components/schemas/Date",
                                   },
                                 ],
@@ -438,14 +484,14 @@ Object {
                                 "nullable": false,
                                 "type": "string",
                               },
-                              "id": Object {
+                              "id": {
                                 "description": "Our ID",
                                 "format": "int32",
                                 "type": "integer",
                               },
-                              "modified": Object {
-                                "allOf": Array [
-                                  Object {
+                              "modified": {
+                                "allOf": [
+                                  {
                                     "$ref": "#/components/schemas/Datetime",
                                   },
                                 ],
@@ -454,7 +500,7 @@ Object {
                                 "type": "string",
                               },
                             },
-                            "required": Array [
+                            "required": [
                               "id",
                               "created",
                               "modified",
@@ -464,21 +510,21 @@ Object {
                           "type": "array",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "storeData",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -486,11 +532,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",

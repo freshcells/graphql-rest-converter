@@ -1,7 +1,7 @@
-import { getBridgeOperations } from '../graphql'
+import { getBridgeOperations } from '../graphql.js'
 import { gql } from 'graphql-tag'
-import { buildASTSchema } from 'graphql/index'
-import { createOpenAPISchemaWithValidate } from '../utils'
+import { buildASTSchema } from 'graphql'
+import { createOpenAPISchemaWithValidate } from '../utils.js'
 
 describe('Documentation', () => {
   it('should not take the root description into account', () => {

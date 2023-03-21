@@ -2,12 +2,11 @@ import {
   BridgeOperation,
   CustomOperationProps,
   CustomProperties,
-  JSON_CONTENT_TYPE,
   OpWithProps,
   ParamsWithVars,
   ReqBodyWithVars,
   SchemaTransformer,
-} from './types'
+} from './types.js'
 import { OpenAPIV3 } from 'openapi-types'
 
 export const transform = <T extends CustomOperationProps = CustomOperationProps>(
@@ -46,9 +45,10 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
   if (restOperation.requestBody) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const requestBody = restOperation.requestBody as ReqBodyWithVars
+    const contentType = Object.keys((requestBody as OpenAPIV3.RequestBodyObject).content)[0]
 
     // remove possible custom attributes in properties
-    const media = (requestBody as OpenAPIV3.RequestBodyObject).content?.[JSON_CONTENT_TYPE]
+    const media = (requestBody as OpenAPIV3.RequestBodyObject).content?.[contentType]
 
     const propertiesWithoutCustomEntries = Object.entries(
       (media?.schema as OpenAPIV3.NonArraySchemaObject)?.properties || {}
@@ -71,7 +71,7 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
         ...requestBody,
         content: {
           ...(requestBody as OpenAPIV3.RequestBodyObject).content,
-          [JSON_CONTENT_TYPE]: {
+          [contentType]: {
             ...media,
             schema: {
               ...restSchema,

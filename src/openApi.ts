@@ -7,7 +7,7 @@ import {
   OAType,
   BridgeOperation,
   CustomOperationProps,
-} from './types'
+} from './types.js'
 
 export const createOpenAPISchemaFromOperations = <
   T extends CustomOperationProps = CustomOperationProps

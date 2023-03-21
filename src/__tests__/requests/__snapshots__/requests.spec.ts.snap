@@ -1,32 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Requests should DELETE \`/different-sample with empty body\` 1`] = `
-Object {
+{
   "mutationWithoutDefaultArg": Any<Boolean>,
 }
 `;
 
 exports[`Requests should DELETE \`/different-sample\` 1`] = `
-Object {
+{
   "mutationWithoutDefaultArg": Any<Boolean>,
 }
 `;
 
 exports[`Requests should DELETE \`/different-sample-in-header\` 1`] = `
-Object {
+{
   "mutationWithoutDefaultArg": Any<Boolean>,
 }
 `;
 
 exports[`Requests should DELETE \`/sample\` 1`] = `
-Object {
+{
   "deleteSample": Any<Boolean>,
 }
 `;
 
 exports[`Requests should GET \`/sample/id\` 1`] = `
-Object {
-  "getSample": Object {
+{
+  "getSample": {
     "myId": Any<Number>,
     "myName": "Hello World",
   },
@@ -34,13 +34,13 @@ Object {
 `;
 
 exports[`Requests should GET \`/samples\` 1`] = `
-Object {
-  "samples": Array [
-    Object {
+{
+  "samples": [
+    {
       "myId": Any<Number>,
       "myName": "Hello World",
     },
-    Object {
+    {
       "myId": Any<Number>,
       "myName": "Hello World",
     },
@@ -49,22 +49,22 @@ Object {
 `;
 
 exports[`Requests should POST \`/call-without-args 1`] = `
-Object {
+{
   "mutationWithoutArgs": Any<Boolean>,
 }
 `;
 
 exports[`Requests should POST \`/different-sample/id\` 1`] = `
-Object {
-  "createDifferentSample": Object {
+{
+  "createDifferentSample": {
     "name": "Hello World",
   },
 }
 `;
 
 exports[`Requests should POST \`/sample\` 1`] = `
-Object {
-  "createSample": Object {
+{
+  "createSample": {
     "id": Any<Number>,
     "name": "Hello World",
     "price": Any<Number>,
@@ -75,17 +75,17 @@ Object {
 `;
 
 exports[`Requests should PUT \`/sample\` 1`] = `
-Object {
-  "updateSample": Object {
+{
+  "updateSample": {
     "name": "Hello World",
   },
 }
 `;
 
 exports[`Requests should fail GET \`/sample/id\`, if id is not a number 1`] = `
-Object {
-  "errors": Array [
-    Object {
+{
+  "errors": [
+    {
       "errorCode": "type.openapi.requestValidation",
       "location": "path",
       "message": "must be integer",
@@ -96,9 +96,9 @@ Object {
 `;
 
 exports[`Requests should fail POST \`/sample\` if invalid body 1`] = `
-Object {
-  "errors": Array [
-    Object {
+{
+  "errors": [
+    {
       "errorCode": "required.openapi.requestValidation",
       "location": "body",
       "message": "must have required property 'name'",
@@ -109,9 +109,9 @@ Object {
 `;
 
 exports[`Requests should fail on DELETE \`/sample\` 1`] = `
-Object {
-  "errors": Array [
-    Object {
+{
+  "errors": [
+    {
       "errorCode": "type.openapi.requestValidation",
       "location": "query",
       "message": "must be integer",
@@ -122,15 +122,15 @@ Object {
 `;
 
 exports[`Requests should fail on POST \`/different-sample/id\` with wrong request body 1`] = `
-Object {
-  "errors": Array [
-    Object {
+{
+  "errors": [
+    {
       "errorCode": "required.openapi.requestValidation",
       "location": "body",
       "message": "must have required property 'sample'",
       "path": "sample",
     },
-    Object {
+    {
       "errorCode": "required.openapi.requestValidation",
       "location": "body",
       "message": "must have required property 'otherThing'",
@@ -141,9 +141,9 @@ Object {
 `;
 
 exports[`Requests should fail to DELETE (without header) \`/different-sample-in-header\` 1`] = `
-Object {
-  "errors": Array [
-    Object {
+{
+  "errors": [
+    {
       "errorCode": "required.openapi.requestValidation",
       "location": "headers",
       "message": "must have required property 'id'",
@@ -154,8 +154,8 @@ Object {
 `;
 
 exports[`Requests should handle default values 1`] = `
-Object {
-  "getSample": Object {
+{
+  "getSample": {
     "name": "Hello World",
   },
 }

@@ -1,32 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Schema Transformations should be able to remove custom properties 1`] = `
-Object {
-  "components": Object {
-    "schemas": Object {
-      "Sample.MySamples": Object {
+{
+  "components": {
+    "schemas": {
+      "Sample.MySamples": {
         "description": "Description for my MySamples fragment",
         "nullable": true,
-        "properties": Object {
-          "myId": Object {
+        "properties": {
+          "myId": {
             "description": "my custom description on a field",
             "format": "int32",
             "type": "integer",
           },
-          "myName": Object {
+          "myName": {
             "description": "The name",
             "type": "string",
           },
         },
-        "required": Array [
+        "required": [
           "myId",
           "myName",
         ],
         "type": "object",
       },
-      "SampleEnum": Object {
+      "SampleEnum": {
         "description": "This is the enum description",
-        "enum": Array [
+        "enum": [
           "A",
           "B",
           "C",
@@ -37,12 +37,12 @@ Object {
         "type": "string",
       },
     },
-    "securitySchemes": Object {
-      "OAuth2": Object {
-        "flows": Object {
-          "password": Object {
+    "securitySchemes": {
+      "OAuth2": {
+        "flows": {
+          "password": {
             "refreshUrl": "http://some-refresh-token-url",
-            "scopes": Object {
+            "scopes": {
               "write:admin": "Grants admin access",
             },
             "tokenUrl": "http://some-token-url",
@@ -52,28 +52,28 @@ Object {
       },
     },
   },
-  "info": Object {
+  "info": {
     "description": "My API",
     "title": "Sample API",
     "version": "1.0.0",
   },
   "openapi": "3.0.3",
-  "paths": Object {
-    "/call-without-args": Object {
-      "post": Object {
+  "paths": {
+    "/call-without-args": {
+      "post": {
         "operationId": "createSomethingWithoutArguments",
-        "parameters": Array [],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "mutationWithoutArgs": Object {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "mutationWithoutArgs": {
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "mutationWithoutArgs",
                   ],
                   "type": "object",
@@ -82,24 +82,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -114,34 +114,57 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "mutationWithoutArgs": Object {
+                      "properties": {
+                        "mutationWithoutArgs": {
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "mutationWithoutArgs",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -149,11 +172,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -173,16 +196,16 @@ Object {
         },
       },
     },
-    "/different-sample": Object {
-      "delete": Object {
+    "/different-sample": {
+      "delete": {
         "operationId": "deleteASampleWithBody",
-        "parameters": Array [],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
-                "properties": Object {
-                  "id": Object {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "id": {
                     "nullable": true,
                     "type": "string",
                   },
@@ -192,18 +215,18 @@ Object {
             },
           },
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "mutationWithoutDefaultArg": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "mutationWithoutDefaultArg": {
                       "nullable": true,
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "mutationWithoutDefaultArg",
                   ],
                   "type": "object",
@@ -212,24 +235,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -244,35 +267,58 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "mutationWithoutDefaultArg": Object {
+                      "properties": {
+                        "mutationWithoutDefaultArg": {
                           "nullable": true,
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "mutationWithoutDefaultArg",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -280,11 +326,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -304,31 +350,31 @@ Object {
         },
       },
     },
-    "/different-sample-in-header": Object {
-      "delete": Object {
+    "/different-sample-in-header": {
+      "delete": {
         "operationId": "deleteASampleWithHeader",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "header",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "type": "string",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "mutationWithoutDefaultArg": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "mutationWithoutDefaultArg": {
                       "nullable": true,
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "mutationWithoutDefaultArg",
                   ],
                   "type": "object",
@@ -337,24 +383,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -369,35 +415,58 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "mutationWithoutDefaultArg": Object {
+                      "properties": {
+                        "mutationWithoutDefaultArg": {
                           "nullable": true,
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "mutationWithoutDefaultArg",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -405,11 +474,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -429,35 +498,35 @@ Object {
         },
       },
     },
-    "/different-sample/{id}": Object {
-      "post": Object {
+    "/different-sample/{id}": {
+      "post": {
         "operationId": "createDifferentSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "type": "string",
             },
           },
         ],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
-                "properties": Object {
-                  "otherThing": Object {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "otherThing": {
                     "description": "The other thing",
                     "type": "string",
                   },
-                  "sample": Object {
+                  "sample": {
                     "description": "This is the default \`SampleInput\` documentation",
-                    "properties": Object {
-                      "moreData": Object {
-                        "items": Object {
-                          "properties": Object {
-                            "anotherProperty": Object {
+                    "properties": {
+                      "moreData": {
+                        "items": {
+                          "properties": {
+                            "anotherProperty": {
                               "format": "int32",
                               "nullable": true,
                               "type": "integer",
@@ -467,19 +536,19 @@ Object {
                         },
                         "type": "array",
                       },
-                      "name": Object {
+                      "name": {
                         "description": "The name",
                         "type": "string",
                       },
                     },
-                    "required": Array [
+                    "required": [
                       "name",
                       "moreData",
                     ],
                     "type": "object",
                   },
                 },
-                "required": Array [
+                "required": [
                   "sample",
                   "otherThing",
                 ],
@@ -488,27 +557,27 @@ Object {
             },
           },
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "createDifferentSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createDifferentSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "createDifferentSample",
                   ],
                   "type": "object",
@@ -517,24 +586,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -549,44 +618,67 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "createDifferentSample": Object {
+                      "properties": {
+                        "createDifferentSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "createDifferentSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -594,11 +686,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -618,33 +710,33 @@ Object {
         },
       },
     },
-    "/sample": Object {
-      "delete": Object {
+    "/sample": {
+      "delete": {
         "operationId": "removeSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "deleteSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleteSample": {
                       "description": "A Description of the \`deleteSample\` mutation",
                       "nullable": true,
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "deleteSample",
                   ],
                   "type": "object",
@@ -653,24 +745,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -685,36 +777,59 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "deleteSample": Object {
+                      "properties": {
+                        "deleteSample": {
                           "description": "A Description of the \`deleteSample\` mutation",
                           "nullable": true,
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "deleteSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -722,11 +837,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -745,23 +860,23 @@ Object {
           },
         },
         "summary": "Updates a sample",
-        "tags": Array [
+        "tags": [
           "Sample",
         ],
       },
-      "post": Object {
+      "post": {
         "operationId": "createSample",
-        "parameters": Array [],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
                 "description": "This is the default \`SampleInput\` documentation",
-                "properties": Object {
-                  "moreData": Object {
-                    "items": Object {
-                      "properties": Object {
-                        "anotherProperty": Object {
+                "properties": {
+                  "moreData": {
+                    "items": {
+                      "properties": {
+                        "anotherProperty": {
                           "format": "int32",
                           "nullable": true,
                           "type": "integer",
@@ -771,12 +886,12 @@ Object {
                     },
                     "type": "array",
                   },
-                  "name": Object {
+                  "name": {
                     "description": "The name",
                     "type": "string",
                   },
                 },
-                "required": Array [
+                "required": [
                   "name",
                   "moreData",
                 ],
@@ -786,35 +901,35 @@ Object {
           },
           "description": "A Sample Input",
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "createSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "id": Object {
+                      "properties": {
+                        "id": {
                           "format": "int32",
                           "type": "integer",
                         },
-                        "name": Object {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
-                        "price": Object {
+                        "price": {
                           "description": "Price of the sample",
                           "format": "double",
                           "type": "number",
                         },
-                        "sku": Object {
+                        "sku": {
                           "description": "Article number",
                           "type": "string",
                         },
-                        "type": Object {
-                          "allOf": Array [
-                            Object {
+                        "type": {
+                          "allOf": [
+                            {
                               "$ref": "#/components/schemas/SampleEnum",
                             },
                           ],
@@ -823,7 +938,7 @@ Object {
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "id",
                         "name",
                         "type",
@@ -833,7 +948,7 @@ Object {
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "createSample",
                   ],
                   "type": "object",
@@ -842,24 +957,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -874,38 +989,61 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "createSample": Object {
+                      "properties": {
+                        "createSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "id": Object {
+                          "properties": {
+                            "id": {
                               "format": "int32",
                               "type": "integer",
                             },
-                            "name": Object {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
-                            "price": Object {
+                            "price": {
                               "description": "Price of the sample",
                               "format": "double",
                               "type": "number",
                             },
-                            "sku": Object {
+                            "sku": {
                               "description": "Article number",
                               "type": "string",
                             },
-                            "type": Object {
-                              "allOf": Array [
-                                Object {
+                            "type": {
+                              "allOf": [
+                                {
                                   "$ref": "#/components/schemas/SampleEnum",
                                 },
                               ],
@@ -914,7 +1052,7 @@ Object {
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "id",
                             "name",
                             "type",
@@ -924,21 +1062,21 @@ Object {
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "createSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -946,11 +1084,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -969,47 +1107,47 @@ Object {
           },
         },
         "summary": "Creates a new sample",
-        "tags": Array [
+        "tags": [
           "Sample",
         ],
       },
     },
-    "/sample-default": Object {
-      "get": Object {
+    "/sample-default": {
+      "get": {
         "operationId": "getSampleWithDefault",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "default": 10,
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getSample",
                   ],
                   "type": "object",
@@ -1018,24 +1156,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1050,44 +1188,67 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getSample": Object {
+                      "properties": {
+                        "getSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -1095,11 +1256,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -1117,37 +1278,39 @@ Object {
             "description": "Internal Server Error",
           },
         },
-        "security": Array [
-          Object {
-            "dev": Array [],
+        "security": [
+          {
+            "OAuth2": [
+              "write:admin",
+            ],
           },
         ],
       },
     },
-    "/sample/{id}": Object {
-      "get": Object {
+    "/sample/{id}": {
+      "get": {
         "description": "Get a specific sample",
         "operationId": "getSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getSample": Object {
-                      "allOf": Array [
-                        Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
+                      "allOf": [
+                        {
                           "$ref": "#/components/schemas/Sample.MySamples",
                         },
                       ],
@@ -1155,7 +1318,7 @@ Object {
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getSample",
                   ],
                   "type": "object",
@@ -1164,24 +1327,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1196,18 +1359,41 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getSample": Object {
-                          "allOf": Array [
-                            Object {
+                      "properties": {
+                        "getSample": {
+                          "allOf": [
+                            {
                               "$ref": "#/components/schemas/Sample.MySamples",
                             },
                           ],
@@ -1215,21 +1401,21 @@ Object {
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -1237,11 +1423,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -1260,29 +1446,29 @@ Object {
           },
         },
       },
-      "put": Object {
+      "put": {
         "operationId": "updateSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
                 "description": "This is the default \`SampleInput\` documentation",
-                "properties": Object {
-                  "moreData": Object {
-                    "items": Object {
-                      "properties": Object {
-                        "anotherProperty": Object {
+                "properties": {
+                  "moreData": {
+                    "items": {
+                      "properties": {
+                        "anotherProperty": {
                           "format": "int32",
                           "nullable": true,
                           "type": "integer",
@@ -1292,12 +1478,12 @@ Object {
                     },
                     "type": "array",
                   },
-                  "name": Object {
+                  "name": {
                     "description": "The name",
                     "type": "string",
                   },
                 },
-                "required": Array [
+                "required": [
                   "name",
                   "moreData",
                 ],
@@ -1306,27 +1492,27 @@ Object {
             },
           },
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "updateSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "updateSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "updateSample",
                   ],
                   "type": "object",
@@ -1335,24 +1521,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1367,44 +1553,67 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "updateSample": Object {
+                      "properties": {
+                        "updateSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "updateSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -1412,11 +1621,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -1435,26 +1644,26 @@ Object {
           },
         },
         "summary": "Updates a sample",
-        "tags": Array [
+        "tags": [
           "Sample",
         ],
       },
     },
-    "/samples": Object {
-      "get": Object {
+    "/samples": {
+      "get": {
         "description": "Get all samples",
         "operationId": "getSamples",
-        "parameters": Array [],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "samples": Object {
-                      "items": Object {
-                        "allOf": Array [
-                          Object {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "samples": {
+                      "items": {
+                        "allOf": [
+                          {
                             "$ref": "#/components/schemas/Sample.MySamples",
                           },
                         ],
@@ -1464,7 +1673,7 @@ Object {
                       "type": "array",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "samples",
                   ],
                   "type": "object",
@@ -1473,24 +1682,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1505,19 +1714,42 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "samples": Object {
-                          "items": Object {
-                            "allOf": Array [
-                              Object {
+                      "properties": {
+                        "samples": {
+                          "items": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/Sample.MySamples",
                               },
                             ],
@@ -1527,21 +1759,21 @@ Object {
                           "type": "array",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "samples",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -1549,11 +1781,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -1573,41 +1805,41 @@ Object {
         },
       },
     },
-    "/secured": Object {
-      "get": Object {
+    "/secured": {
+      "get": {
         "operationId": "securedOperation",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
                       "description": "fetches a sample",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getSample",
                   ],
                   "type": "object",
@@ -1616,24 +1848,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1648,44 +1880,67 @@ Object {
             },
             "description": "Invalid request",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getSample": Object {
+                      "properties": {
+                        "getSample": {
                           "description": "fetches a sample",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -1693,11 +1948,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -1715,10 +1970,10 @@ Object {
             "description": "Internal Server Error",
           },
         },
-        "security": Array [
-          Object {},
-          Object {
-            "OAuth2": Array [
+        "security": [
+          {},
+          {
+            "OAuth2": [
               "write:admin",
             ],
           },
@@ -1730,32 +1985,32 @@ Object {
 `;
 
 exports[`Schema Transformations should handle multiple transformations 1`] = `
-Object {
-  "components": Object {
-    "schemas": Object {
-      "Sample.MySamples": Object {
+{
+  "components": {
+    "schemas": {
+      "Sample.MySamples": {
         "description": "Description for my MySamples fragment",
         "nullable": true,
-        "properties": Object {
-          "myId": Object {
+        "properties": {
+          "myId": {
             "description": "my custom description on a field",
             "format": "int32",
             "type": "integer",
           },
-          "myName": Object {
+          "myName": {
             "description": "The name",
             "type": "string",
           },
         },
-        "required": Array [
+        "required": [
           "myId",
           "myName",
         ],
         "type": "object",
       },
-      "SampleEnum": Object {
+      "SampleEnum": {
         "description": "This is the enum description",
-        "enum": Array [
+        "enum": [
           "A",
           "B",
           "C",
@@ -1766,12 +2021,12 @@ Object {
         "type": "string",
       },
     },
-    "securitySchemes": Object {
-      "OAuth2": Object {
-        "flows": Object {
-          "password": Object {
+    "securitySchemes": {
+      "OAuth2": {
+        "flows": {
+          "password": {
             "refreshUrl": "http://some-refresh-token-url",
-            "scopes": Object {
+            "scopes": {
               "write:admin": "Grants admin access",
             },
             "tokenUrl": "http://some-token-url",
@@ -1781,28 +2036,28 @@ Object {
       },
     },
   },
-  "info": Object {
+  "info": {
     "description": "My API",
     "title": "Sample API",
     "version": "1.0.0",
   },
   "openapi": "3.0.3",
-  "paths": Object {
-    "/call-without-args": Object {
-      "post": Object {
+  "paths": {
+    "/call-without-args": {
+      "post": {
         "operationId": "createSomethingWithoutArguments",
-        "parameters": Array [],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "mutationWithoutArgs": Object {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "mutationWithoutArgs": {
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "mutationWithoutArgs",
                   ],
                   "type": "object",
@@ -1811,24 +2066,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1843,45 +2098,68 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "mutationWithoutArgs": Object {
+                      "properties": {
+                        "mutationWithoutArgs": {
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "mutationWithoutArgs",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -1889,11 +2167,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -1913,16 +2191,16 @@ Object {
         },
       },
     },
-    "/different-sample": Object {
-      "delete": Object {
+    "/different-sample": {
+      "delete": {
         "operationId": "deleteASampleWithBody",
-        "parameters": Array [],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
-                "properties": Object {
-                  "id": Object {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "id": {
                     "nullable": true,
                     "type": "string",
                   },
@@ -1932,18 +2210,18 @@ Object {
             },
           },
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "mutationWithoutDefaultArg": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "mutationWithoutDefaultArg": {
                       "nullable": true,
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "mutationWithoutDefaultArg",
                   ],
                   "type": "object",
@@ -1952,24 +2230,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -1984,46 +2262,69 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "mutationWithoutDefaultArg": Object {
+                      "properties": {
+                        "mutationWithoutDefaultArg": {
                           "nullable": true,
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "mutationWithoutDefaultArg",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -2031,11 +2332,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -2055,31 +2356,31 @@ Object {
         },
       },
     },
-    "/different-sample-in-header": Object {
-      "delete": Object {
+    "/different-sample-in-header": {
+      "delete": {
         "operationId": "deleteASampleWithHeader",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "header",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "type": "string",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "mutationWithoutDefaultArg": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "mutationWithoutDefaultArg": {
                       "nullable": true,
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "mutationWithoutDefaultArg",
                   ],
                   "type": "object",
@@ -2088,24 +2389,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -2120,46 +2421,69 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "mutationWithoutDefaultArg": Object {
+                      "properties": {
+                        "mutationWithoutDefaultArg": {
                           "nullable": true,
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "mutationWithoutDefaultArg",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -2167,11 +2491,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -2191,35 +2515,35 @@ Object {
         },
       },
     },
-    "/different-sample/{id}": Object {
-      "post": Object {
+    "/different-sample/{id}": {
+      "post": {
         "operationId": "createDifferentSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "type": "string",
             },
           },
         ],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
-                "properties": Object {
-                  "otherThing": Object {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "otherThing": {
                     "description": "The other thing",
                     "type": "string",
                   },
-                  "sample": Object {
+                  "sample": {
                     "description": "This is the default \`SampleInput\` documentation",
-                    "properties": Object {
-                      "moreData": Object {
-                        "items": Object {
-                          "properties": Object {
-                            "anotherProperty": Object {
+                    "properties": {
+                      "moreData": {
+                        "items": {
+                          "properties": {
+                            "anotherProperty": {
                               "format": "int32",
                               "nullable": true,
                               "type": "integer",
@@ -2229,19 +2553,19 @@ Object {
                         },
                         "type": "array",
                       },
-                      "name": Object {
+                      "name": {
                         "description": "The name",
                         "type": "string",
                       },
                     },
-                    "required": Array [
+                    "required": [
                       "name",
                       "moreData",
                     ],
                     "type": "object",
                   },
                 },
-                "required": Array [
+                "required": [
                   "sample",
                   "otherThing",
                 ],
@@ -2250,27 +2574,27 @@ Object {
             },
           },
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "createDifferentSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createDifferentSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "createDifferentSample",
                   ],
                   "type": "object",
@@ -2279,24 +2603,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -2311,55 +2635,78 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "createDifferentSample": Object {
+                      "properties": {
+                        "createDifferentSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "createDifferentSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -2367,11 +2714,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -2391,33 +2738,33 @@ Object {
         },
       },
     },
-    "/sample": Object {
-      "delete": Object {
+    "/sample": {
+      "delete": {
         "operationId": "removeSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "deleteSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleteSample": {
                       "description": "A Description of the \`deleteSample\` mutation",
                       "nullable": true,
                       "type": "boolean",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "deleteSample",
                   ],
                   "type": "object",
@@ -2426,24 +2773,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -2458,47 +2805,70 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "deleteSample": Object {
+                      "properties": {
+                        "deleteSample": {
                           "description": "A Description of the \`deleteSample\` mutation",
                           "nullable": true,
                           "type": "boolean",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "deleteSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -2506,11 +2876,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -2529,23 +2899,23 @@ Object {
           },
         },
         "summary": "Updates a sample",
-        "tags": Array [
+        "tags": [
           "Sample",
         ],
       },
-      "post": Object {
+      "post": {
         "operationId": "createSample",
-        "parameters": Array [],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
                 "description": "This is the default \`SampleInput\` documentation",
-                "properties": Object {
-                  "moreData": Object {
-                    "items": Object {
-                      "properties": Object {
-                        "anotherProperty": Object {
+                "properties": {
+                  "moreData": {
+                    "items": {
+                      "properties": {
+                        "anotherProperty": {
                           "format": "int32",
                           "nullable": true,
                           "type": "integer",
@@ -2555,12 +2925,12 @@ Object {
                     },
                     "type": "array",
                   },
-                  "name": Object {
+                  "name": {
                     "description": "The name",
                     "type": "string",
                   },
                 },
-                "required": Array [
+                "required": [
                   "name",
                   "moreData",
                 ],
@@ -2570,35 +2940,35 @@ Object {
           },
           "description": "A Sample Input",
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "createSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "id": Object {
+                      "properties": {
+                        "id": {
                           "format": "int32",
                           "type": "integer",
                         },
-                        "name": Object {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
-                        "price": Object {
+                        "price": {
                           "description": "Price of the sample",
                           "format": "double",
                           "type": "number",
                         },
-                        "sku": Object {
+                        "sku": {
                           "description": "Article number",
                           "type": "string",
                         },
-                        "type": Object {
-                          "allOf": Array [
-                            Object {
+                        "type": {
+                          "allOf": [
+                            {
                               "$ref": "#/components/schemas/SampleEnum",
                             },
                           ],
@@ -2607,7 +2977,7 @@ Object {
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "id",
                         "name",
                         "type",
@@ -2617,7 +2987,7 @@ Object {
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "createSample",
                   ],
                   "type": "object",
@@ -2626,24 +2996,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -2658,49 +3028,72 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "createSample": Object {
+                      "properties": {
+                        "createSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "id": Object {
+                          "properties": {
+                            "id": {
                               "format": "int32",
                               "type": "integer",
                             },
-                            "name": Object {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
-                            "price": Object {
+                            "price": {
                               "description": "Price of the sample",
                               "format": "double",
                               "type": "number",
                             },
-                            "sku": Object {
+                            "sku": {
                               "description": "Article number",
                               "type": "string",
                             },
-                            "type": Object {
-                              "allOf": Array [
-                                Object {
+                            "type": {
+                              "allOf": [
+                                {
                                   "$ref": "#/components/schemas/SampleEnum",
                                 },
                               ],
@@ -2709,7 +3102,7 @@ Object {
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "id",
                             "name",
                             "type",
@@ -2719,21 +3112,21 @@ Object {
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "createSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -2741,11 +3134,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -2764,47 +3157,47 @@ Object {
           },
         },
         "summary": "Creates a new sample",
-        "tags": Array [
+        "tags": [
           "Sample",
         ],
       },
     },
-    "/sample-default": Object {
-      "get": Object {
+    "/sample-default": {
+      "get": {
         "operationId": "getSampleWithDefault",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "default": 10,
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getSample",
                   ],
                   "type": "object",
@@ -2813,24 +3206,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -2845,55 +3238,78 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getSample": Object {
+                      "properties": {
+                        "getSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -2901,11 +3317,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -2923,37 +3339,39 @@ Object {
             "description": "Internal Server Error",
           },
         },
-        "security": Array [
-          Object {
-            "dev": Array [],
+        "security": [
+          {
+            "OAuth2": [
+              "write:admin",
+            ],
           },
         ],
       },
     },
-    "/sample/{id}": Object {
-      "get": Object {
+    "/sample/{id}": {
+      "get": {
         "description": "Get a specific sample",
         "operationId": "getSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getSample": Object {
-                      "allOf": Array [
-                        Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
+                      "allOf": [
+                        {
                           "$ref": "#/components/schemas/Sample.MySamples",
                         },
                       ],
@@ -2961,7 +3379,7 @@ Object {
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getSample",
                   ],
                   "type": "object",
@@ -2970,24 +3388,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -3002,29 +3420,52 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getSample": Object {
-                          "allOf": Array [
-                            Object {
+                      "properties": {
+                        "getSample": {
+                          "allOf": [
+                            {
                               "$ref": "#/components/schemas/Sample.MySamples",
                             },
                           ],
@@ -3032,21 +3473,21 @@ Object {
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -3054,11 +3495,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -3077,29 +3518,29 @@ Object {
           },
         },
       },
-      "put": Object {
+      "put": {
         "operationId": "updateSample",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "requestBody": Object {
-          "content": Object {
-            "application/json": Object {
-              "schema": Object {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
                 "description": "This is the default \`SampleInput\` documentation",
-                "properties": Object {
-                  "moreData": Object {
-                    "items": Object {
-                      "properties": Object {
-                        "anotherProperty": Object {
+                "properties": {
+                  "moreData": {
+                    "items": {
+                      "properties": {
+                        "anotherProperty": {
                           "format": "int32",
                           "nullable": true,
                           "type": "integer",
@@ -3109,12 +3550,12 @@ Object {
                     },
                     "type": "array",
                   },
-                  "name": Object {
+                  "name": {
                     "description": "The name",
                     "type": "string",
                   },
                 },
-                "required": Array [
+                "required": [
                   "name",
                   "moreData",
                 ],
@@ -3123,27 +3564,27 @@ Object {
             },
           },
         },
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "updateSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "updateSample": {
                       "description": "This is the default \`Sample\` documentation",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "updateSample",
                   ],
                   "type": "object",
@@ -3152,24 +3593,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -3184,55 +3625,78 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "updateSample": Object {
+                      "properties": {
+                        "updateSample": {
                           "description": "This is the default \`Sample\` documentation",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "updateSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -3240,11 +3704,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -3263,26 +3727,26 @@ Object {
           },
         },
         "summary": "Updates a sample",
-        "tags": Array [
+        "tags": [
           "Sample",
         ],
       },
     },
-    "/samples": Object {
-      "get": Object {
+    "/samples": {
+      "get": {
         "description": "Get all samples",
         "operationId": "getSamples",
-        "parameters": Array [],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "samples": Object {
-                      "items": Object {
-                        "allOf": Array [
-                          Object {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "samples": {
+                      "items": {
+                        "allOf": [
+                          {
                             "$ref": "#/components/schemas/Sample.MySamples",
                           },
                         ],
@@ -3292,7 +3756,7 @@ Object {
                       "type": "array",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "samples",
                   ],
                   "type": "object",
@@ -3301,24 +3765,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -3333,30 +3797,53 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "samples": Object {
-                          "items": Object {
-                            "allOf": Array [
-                              Object {
+                      "properties": {
+                        "samples": {
+                          "items": {
+                            "allOf": [
+                              {
                                 "$ref": "#/components/schemas/Sample.MySamples",
                               },
                             ],
@@ -3366,21 +3853,21 @@ Object {
                           "type": "array",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "samples",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -3388,11 +3875,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -3412,41 +3899,41 @@ Object {
         },
       },
     },
-    "/secured": Object {
-      "get": Object {
+    "/secured": {
+      "get": {
         "operationId": "securedOperation",
-        "parameters": Array [
-          Object {
+        "parameters": [
+          {
             "in": "query",
             "name": "id",
             "required": true,
-            "schema": Object {
+            "schema": {
               "format": "int32",
               "type": "integer",
             },
           },
         ],
-        "responses": Object {
-          "200": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "getSample": Object {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
                       "description": "fetches a sample",
-                      "properties": Object {
-                        "name": Object {
+                      "properties": {
+                        "name": {
                           "description": "The name",
                           "type": "string",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "name",
                       ],
                       "type": "object",
                     },
                   },
-                  "required": Array [
+                  "required": [
                     "getSample",
                   ],
                   "type": "object",
@@ -3455,24 +3942,24 @@ Object {
             },
             "description": "Success",
           },
-          "400": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "errorCode": Object {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
                             "type": "string",
                           },
-                          "location": Object {
+                          "location": {
                             "type": "string",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
+                          "path": {
                             "type": "string",
                           },
                         },
@@ -3487,55 +3974,78 @@ Object {
             },
             "description": "Invalid request",
           },
-          "401": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {},
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
                   "type": "object",
                 },
               },
             },
             "description": "Unauthorized",
           },
-          "500": Object {
-            "content": Object {
-              "application/json": Object {
-                "schema": Object {
-                  "properties": Object {
-                    "data": Object {
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
                       "description": "Branch of data that does not contain errors",
                       "nullable": true,
-                      "properties": Object {
-                        "getSample": Object {
+                      "properties": {
+                        "getSample": {
                           "description": "fetches a sample",
-                          "properties": Object {
-                            "name": Object {
+                          "properties": {
+                            "name": {
                               "description": "The name",
                               "type": "string",
                             },
                           },
-                          "required": Array [
+                          "required": [
                             "name",
                           ],
                           "type": "object",
                         },
                       },
-                      "required": Array [
+                      "required": [
                         "getSample",
                       ],
                       "type": "object",
                     },
-                    "errors": Object {
-                      "items": Object {
-                        "properties": Object {
-                          "locations": Object {
-                            "items": Object {
-                              "properties": Object {
-                                "column": Object {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
                                   "type": "integer",
                                 },
-                                "line": Object {
+                                "line": {
                                   "type": "integer",
                                 },
                               },
@@ -3543,11 +4053,11 @@ Object {
                             },
                             "type": "array",
                           },
-                          "message": Object {
+                          "message": {
                             "type": "string",
                           },
-                          "path": Object {
-                            "items": Object {
+                          "path": {
+                            "items": {
                               "type": "string",
                             },
                             "type": "array",
@@ -3565,10 +4075,10 @@ Object {
             "description": "Internal Server Error",
           },
         },
-        "security": Array [
-          Object {},
-          Object {
-            "OAuth2": Array [
+        "security": [
+          {},
+          {
+            "OAuth2": [
               "write:admin",
             ],
           },

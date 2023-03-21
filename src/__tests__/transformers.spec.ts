@@ -1,8 +1,8 @@
 import schema from './schema/schema.graphql'
 import { buildASTSchema } from 'graphql'
-import { createOpenAPIGraphQLBridge } from '../express'
-import { bridgeFixtures } from './fixtures'
-import { removeCustomProperties, transform } from '../index'
+import { createOpenAPIGraphQLBridge } from '../express.js'
+import { bridgeFixtures } from './fixtures.js'
+import { removeCustomProperties, transform } from '../index.js'
 import { OpenAPIV3 } from 'openapi-types'
 
 const graphqlSchema = buildASTSchema(schema)

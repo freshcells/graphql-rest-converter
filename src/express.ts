@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import _ from 'lodash'
-import express, { RequestHandler, NextFunction, IRouter, Request } from 'express'
+import express, { RequestHandler, NextFunction, IRouter, Request, Response } from 'express'
 import bodyParser from 'body-parser'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema, print } from 'graphql'
 import OpenAPIRequestCoercer from 'openapi-request-coercer'
 import OpenAPIRequestValidator from 'openapi-request-validator'
 import OpenAPIResponseValidator from 'openapi-response-validator'
-import { getBridgeOperations } from './graphql'
-import { pathTemplateToExpressRoute } from './pathTemplate'
+import { getBridgeOperations } from './graphql.js'
+import { pathTemplateToExpressRoute } from './pathTemplate.js'
 import {
   BridgeOperation,
   BridgeOperations,
@@ -16,11 +17,12 @@ import {
   CreateOpenAPIGraphQLBridgeConfig,
   CreateOpenAPISchemaConfig,
   CreateMiddlewareConfig,
-} from './types'
-import { GraphQLExecutor } from './graphQLExecutor'
+} from './types.js'
+import { GraphQLExecutor } from './graphQLExecutor.js'
 import RequestBodyObject = OpenAPIV3.RequestBodyObject
-import { InvalidResponseError } from './errors'
-import { createOpenAPISchemaWithValidate, resolveSchemaComponents } from './utils'
+import { InvalidResponseError } from './errors.js'
+import { createOpenAPISchemaWithValidate, resolveSchemaComponents } from './utils.js'
+import { transformRequest } from './multipart.js'
 
 const middlewareToPromise =
   (middleware: RequestHandler) =>
@@ -44,16 +46,18 @@ const promiseToHandler =
   }
 
 const jsonBodyParserPromise = middlewareToPromise(bodyParser.json())
+const formBodyParserPromise = middlewareToPromise(bodyParser.urlencoded())
 
 const addOperation = <
   T extends CustomOperationProps = CustomOperationProps,
-  R extends Request = Request
+  Req extends Request = Request,
+  Res extends Response = Response
 >(
   router: IRouter,
   operation: BridgeOperation<T>,
   schemaComponents: SchemaComponents,
-  executor: GraphQLExecutor<R>,
-  config?: CreateMiddlewareConfig<R>
+  executor: GraphQLExecutor<Req, Res>,
+  config?: CreateMiddlewareConfig<Req, Res>
 ) => {
   const route = pathTemplateToExpressRoute(operation.path)
 
@@ -66,22 +70,21 @@ const addOperation = <
   resolveSchemaComponents(parameters_, schemaComponents)
   resolveSchemaComponents(requestBody_, schemaComponents)
 
-  const requestCoercer = new OpenAPIRequestCoercer({
+  const requestCoercer = new OpenAPIRequestCoercer.default({
     parameters: parameters_,
-    // TODO: For the future to support application/x-www-form-urlencoded
-    // requestBody: requestBody_,
+    requestBody: operation.requestBodyFormData === 'FORM_DATA' ? requestBody_ : undefined,
   })
 
   const requestValidator =
     typeof config?.validateRequest !== 'boolean' || config.validateRequest
-      ? new OpenAPIRequestValidator({
+      ? new OpenAPIRequestValidator.default({
           parameters: parameters_,
           requestBody: requestBody_,
         })
       : undefined
 
   const responseValidator = config?.validateResponse
-    ? new OpenAPIResponseValidator({
+    ? new OpenAPIResponseValidator.default({
         // Type in `openapi-response-validator` seems wrong
         responses: operation.openAPIOperation.responses as any,
         components: { schemas: schemaComponents },
@@ -94,10 +97,32 @@ const addOperation = <
     route,
     promiseToHandler(async (req, res) => {
       const allRequestBodyVariables = Object.keys(operation.requestBodyVariableMap)
-      if (allRequestBodyVariables.length > 0) {
+
+      if (operation.requestBodyFormData === 'JSON') {
         await jsonBodyParserPromise(req, res)
       }
 
+      if (operation.requestBodyFormData === 'FORM_DATA') {
+        await formBodyParserPromise(req, res)
+      }
+
+      const supportedContentTypes = Object.keys(
+        (operation.openAPIOperation.requestBody as OpenAPIV3.RequestBodyObject)?.content || {}
+      )
+      if (
+        ['POST', 'PUT', 'PATCH'].includes(req.method) &&
+        supportedContentTypes.length > 0 &&
+        !supportedContentTypes.includes(req.headers['content-type'] || '')
+      ) {
+        res.status(415).json({
+          errors: [
+            {
+              message: `Only "${supportedContentTypes.join(', ')}" supported`,
+            },
+          ],
+        })
+        return
+      }
       const req_ = {
         ...req,
         cookies: { ...req.cookies },
@@ -117,7 +142,7 @@ const addOperation = <
         return
       }
 
-      const variables: Record<string, unknown> = {}
+      let variables: Record<string, unknown> = {}
       for (const parameter of operation.openAPIOperation
         .parameters as OpenAPIV3.ParameterObject[]) {
         const variableName = operation.variableMap[parameter.name] || parameter.name
@@ -131,16 +156,38 @@ const addOperation = <
           variables[variableName] = req_.headers[parameter.name]
         }
       }
-      for (const requestBodyVariable of allRequestBodyVariables) {
-        variables[requestBodyVariable] =
-          req_.body[operation.requestBodyVariableMap[requestBodyVariable]] ||
-          (operation.requestBodyIsSingleInput ? req_.body : null)
+      if (operation.requestBodyFormData === 'JSON') {
+        for (const requestBodyVariable of allRequestBodyVariables) {
+          variables[requestBodyVariable] =
+            req_.body[operation.requestBodyVariableMap[requestBodyVariable]] ||
+            (operation.requestBodyIsSingleInput ? req_.body : null)
+        }
+      }
+
+      if (operation.requestBodyFormData === 'FORM_DATA') {
+        for (const requestBodyVariable of allRequestBodyVariables) {
+          variables[requestBodyVariable] =
+            req_.body[operation.requestBodyVariableMap[requestBodyVariable]] || null
+        }
+      }
+
+      if (operation.requestBodyFormData === 'MULTIPART_FORM_DATA') {
+        variables = {
+          ...variables,
+          ...transformRequest(
+            req,
+            graphqlDocument_,
+            allRequestBodyVariables,
+            operation.requestBodyVariableMap
+          ),
+        }
       }
 
       const request = {
         document: graphqlDocument_,
         variables,
-        request: req as R,
+        request: req as Req,
+        response: res as Res,
       }
       const result = await executor(request)
 
@@ -191,11 +238,12 @@ const addOperation = <
 
 const createExpressMiddleware = <
   T extends CustomOperationProps = CustomOperationProps,
-  R extends Request = Request
+  ThisRequest extends Request = Request,
+  ThisResponse extends Response = Response
 >(
   operations: BridgeOperations<T>,
-  executor: GraphQLExecutor<R>,
-  config?: CreateMiddlewareConfig<R>
+  executor: GraphQLExecutor<ThisRequest, ThisResponse>,
+  config?: CreateMiddlewareConfig<ThisRequest, ThisResponse>
 ) => {
   // TODO: Avoid depending on express directly?
   const router = express.Router()
@@ -208,7 +256,8 @@ const createExpressMiddleware = <
 }
 
 export const createOpenAPIGraphQLBridge = <
-  R extends Request = Request,
+  ThisRequest extends Request = Request,
+  ThisResponse extends Response = Response,
   T extends CustomOperationProps = CustomOperationProps
 >(
   config: CreateOpenAPIGraphQLBridgeConfig
@@ -224,8 +273,10 @@ export const createOpenAPIGraphQLBridge = <
   const operations = getBridgeOperations<T>(graphqlSchema_, graphqlDocument_, customScalars)
 
   return {
-    getExpressMiddleware: (executor: GraphQLExecutor<R>, config?: CreateMiddlewareConfig) =>
-      createExpressMiddleware(operations, executor, config),
+    getExpressMiddleware: (
+      executor: GraphQLExecutor<ThisRequest, ThisResponse>,
+      config?: CreateMiddlewareConfig
+    ) => createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (config: CreateOpenAPISchemaConfig<T>): OpenAPIV3.Document<T> =>
       createOpenAPISchemaWithValidate<T>(operations, config),
   }

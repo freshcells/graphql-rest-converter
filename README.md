@@ -16,6 +16,9 @@ The package creates an HTTP API and a corresponding OpenAPI schema based on anno
 - Arbitrary GraphQL queries supported
 - Accurate OpenAPI type schemas for response and parameters derived from GraphQL schema
 - Support OpenAPI 3.0 for maximum compatibility with the OpenAPI ecosystem
+- Supports `application/x-www-form-urlencoded` requests
+- Supports `multipart/form-data` requests with file uploads as specified in
+  the [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec) specification.
 
 ## Installation
 
@@ -129,6 +132,7 @@ Mainly designed for `input` types in combination with a `mutation`.
 interface OABody {
   description?: string
   path?: string
+  contentType?: 'JSON' | 'FORM_DATA' | 'MULTIPART_FORM_DATA'
 }
 ```
 
@@ -227,7 +231,8 @@ The generated OpenAPI schema contains the customer properties `x-graphql-operati
 These custom properties contain all necessary information to generate the request handlers.
 
 To remove the custom properties from the OpenAPI schema, for example before serving it publicly, the
-transformation function [`removeCustomProperties`](https://freshcells.github.io/graphql-rest-converter/functions/removeCustomProperties.html)
+transformation
+function [`removeCustomProperties`](https://freshcells.github.io/graphql-rest-converter/functions/removeCustomProperties.html)
 can be used.
 
 ## Usage example

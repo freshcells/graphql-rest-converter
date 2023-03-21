@@ -1,9 +1,9 @@
-import { bridgeFixtures, bridge, gqlSchema, graphqlSchema } from '../fixtures'
+import { bridgeFixtures, bridge, gqlSchema, graphqlSchema } from '../fixtures.js'
 import express, { ErrorRequestHandler } from 'express'
-import { createSchemaExecutor } from '../../graphQLExecutor'
+import { createSchemaExecutor } from '../../graphQLExecutor.js'
 import request from 'supertest'
 import { makeExecutableSchema } from '@graphql-tools/schema'
-import { createOpenAPIGraphQLBridge } from '../../express'
+import { createOpenAPIGraphQLBridge } from '../../express.js'
 
 describe('GraphQL Errors', () => {
   it('should forward any gql error if validation is not configured', async () => {
