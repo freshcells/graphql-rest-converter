@@ -3,9 +3,9 @@ import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter, Request, Response } from 'express'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema, print } from 'graphql'
-import OpenAPIRequestCoercer from 'openapi-request-coercer'
-import OpenAPIRequestValidator from 'openapi-request-validator'
-import OpenAPIResponseValidator from 'openapi-response-validator'
+import OpenAPIRequestCoercerImport from 'openapi-request-coercer'
+import OpenAPIRequestValidatorImport from 'openapi-request-validator'
+import OpenAPIResponseValidatorImport from 'openapi-response-validator'
 import { getBridgeOperations } from './graphql.js'
 import { pathTemplateToExpressRoute } from './pathTemplate.js'
 import {
@@ -22,6 +22,12 @@ import RequestBodyObject = OpenAPIV3.RequestBodyObject
 import { InvalidResponseError } from './errors.js'
 import { createOpenAPISchemaWithValidate, resolveSchemaComponents } from './utils.js'
 import { transformRequest } from './multipart.js'
+
+const OpenAPIRequestCoercer = OpenAPIRequestCoercerImport.default || OpenAPIRequestCoercerImport
+const OpenAPIRequestValidator =
+  OpenAPIRequestValidatorImport.default || OpenAPIRequestValidatorImport
+const OpenAPIResponseValidator =
+  OpenAPIResponseValidatorImport.default || OpenAPIResponseValidatorImport
 
 const middlewareToPromise =
   (middleware: RequestHandler) =>
@@ -69,21 +75,21 @@ const addOperation = <
   resolveSchemaComponents(parameters_, schemaComponents)
   resolveSchemaComponents(requestBody_, schemaComponents)
 
-  const requestCoercer = new OpenAPIRequestCoercer.default({
+  const requestCoercer = new OpenAPIRequestCoercer({
     parameters: parameters_,
     requestBody: operation.requestBodyFormData === 'FORM_DATA' ? requestBody_ : undefined,
   })
 
   const requestValidator =
     typeof config?.validateRequest !== 'boolean' || config.validateRequest
-      ? new OpenAPIRequestValidator.default({
+      ? new OpenAPIRequestValidator({
           parameters: parameters_,
           requestBody: requestBody_,
         })
       : undefined
 
   const responseValidator = config?.validateResponse
-    ? new OpenAPIResponseValidator.default({
+    ? new OpenAPIResponseValidator({
         // Type in `openapi-response-validator` seems wrong
         responses: operation.openAPIOperation.responses as any,
         components: { schemas: schemaComponents },

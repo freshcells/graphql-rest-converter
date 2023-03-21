@@ -6,10 +6,12 @@ import {
 } from './types.js'
 import _ from 'lodash'
 import { createOpenAPISchemaFromOperations } from './openApi.js'
-import OpenAPISchemaValidator from 'openapi-schema-validator'
+import OpenAPISchemaValidatorImport from 'openapi-schema-validator'
 import { VariableDefinitionNode, VariableNode } from 'graphql'
 import { getDirective, getDirectiveArgumentsUntyped } from './graphqlUtils.js'
 import { OpenAPIDirectives } from './graphql.js'
+
+const OpenAPISchemaValidator = OpenAPISchemaValidatorImport.default || OpenAPISchemaValidatorImport
 
 export const getParameterName = (node: VariableNode, nodeDef: VariableDefinitionNode) => {
   const paramDirectiveValue = getDirective(nodeDef, OpenAPIDirectives.Param)
@@ -51,7 +53,7 @@ export const createOpenAPISchemaWithValidate = <
     config?.transform
   )
   if (config?.validate) {
-    const schemaValidator = new OpenAPISchemaValidator.default({ version: 3 })
+    const schemaValidator = new OpenAPISchemaValidator({ version: 3 })
     const schemaValidationErrors = schemaValidator.validate(openAPISchema)
     if (schemaValidationErrors?.errors?.length) {
       throw new Error(JSON.stringify(schemaValidationErrors))
