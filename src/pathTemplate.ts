@@ -18,3 +18,9 @@ export const pathTemplateToExpressRoute = (pathTemplate: string) => {
   }
   return expressRoute
 }
+
+export const createUniquePathString = (pathTemplate: string, variables: string[]) => {
+  return variables.reduce((next, variable) => {
+    return next.replace(variable, 'parameter')
+  }, pathTemplate)
+}

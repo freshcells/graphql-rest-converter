@@ -95,6 +95,39 @@ describe('OpenAPI Generation', () => {
       )
     })
 
+    it('should fail on overlapping definitions', () => {
+      expect(() =>
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            mutation mutateSomething($id: String!) @OAOperation(path: "/mutate/{id}") {
+              mutationWithoutDefaultArg(id: $id)
+            }
+
+            mutation mutateSomethingElse($firstId: String!)
+            @OAOperation(path: "/mutate/{firstId}") {
+              mutationWithoutDefaultArg(id: $firstId)
+            }
+          `
+        )
+      ).toThrow(
+        `Schema validation error(s): "@OAOperation" POST /mutate/{parameter} has already been defined". Source: unknown`
+      )
+    })
+
+    it('should fail on unused variables', () => {
+      expect(() =>
+        getBridgeOperations(
+          graphqlSchema,
+          gql`
+            mutation mutateSomething($id: String!) @OAOperation(path: "/mutate/{id}") {
+              mutationWithoutDefaultArg(id: $incorrect)
+            }
+          `
+        )
+      ).toThrow()
+    })
+
     it('should validate unmapped attributes', () => {
       expect(() =>
         getBridgeOperations(

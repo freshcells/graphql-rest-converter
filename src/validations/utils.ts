@@ -52,7 +52,7 @@ export const validateVariable = (
       return
     }
 
-    if (!(type instanceof GraphQLNonNull)) {
+    if (!(varType instanceof GraphQLNonNull)) {
       context.reportError(
         new GraphQLError(
           `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used within "${pathDefinition}".`,
