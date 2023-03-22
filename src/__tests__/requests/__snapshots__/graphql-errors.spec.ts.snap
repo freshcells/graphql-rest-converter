@@ -35,3 +35,13 @@ exports[`GraphQL Errors should forward graphql server errors by default 1`] = `
   ],
 }
 `;
+
+exports[`GraphQL Errors should handle malformed request bodies should handle malformed JSON bodies 1`] = `
+{
+  "errors": [
+    {
+      "message": "SyntaxError: Unable to parse JSON body",
+    },
+  ],
+}
+`;

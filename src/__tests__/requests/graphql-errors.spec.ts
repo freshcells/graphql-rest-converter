@@ -58,4 +58,23 @@ describe('GraphQL Errors', () => {
     const response = await request(app).get('/sample/1').expect(500)
     expect(response.body).toMatchSnapshot()
   })
+
+  describe('should handle malformed request bodies', () => {
+    const app = express()
+
+    app.use(
+      bridge.getExpressMiddleware(createSchemaExecutor(gqlSchema), {
+        validateResponse: false,
+        validateRequest: false,
+      })
+    )
+    it('should handle malformed JSON bodies', async () => {
+      const response = await request(app)
+        .post('/sample')
+        .set('content-type', 'application/json')
+        .send(`{"}`)
+        .expect(400)
+      expect(response.body).toMatchSnapshot()
+    })
+  })
 })

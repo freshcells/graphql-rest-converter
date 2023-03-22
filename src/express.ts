@@ -104,7 +104,16 @@ const addOperation = <
       const allRequestBodyVariables = Object.keys(operation.requestBodyVariableMap)
 
       if (operation.requestBodyFormData === 'JSON') {
-        await jsonBodyParserPromise(req, res)
+        try {
+          await jsonBodyParserPromise(req, res)
+        } catch (e) {
+          if ((e as Error).name === 'SyntaxError') {
+            res.status(400).json({
+              errors: [{ message: `SyntaxError: Unable to parse JSON body` }],
+            })
+            return
+          }
+        }
       }
 
       if (operation.requestBodyFormData === 'FORM_DATA') {
