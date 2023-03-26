@@ -90,5 +90,8 @@
     "typedoc": "^0.23.24",
     "typescript": "^5.0.2"
   },
+  "engines": {
+    "node": ">=17"
+  },
   "packageManager": "yarn@3.4.1"
 }

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import _ from 'lodash'
 import express, { RequestHandler, NextFunction, IRouter, Request, Response } from 'express'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema, print } from 'graphql'
@@ -67,8 +66,8 @@ const addOperation = <
   const route = pathTemplateToExpressRoute(operation.path)
 
   // Resolving `$ref`, at least OpenAPIRequestValidator cannot handle them properly
-  const parameters_ = _.cloneDeep(operation.openAPIOperation.parameters || [])
-  const requestBody_ = _.cloneDeep(operation.openAPIOperation.requestBody) as
+  const parameters_ = structuredClone(operation.openAPIOperation.parameters || [])
+  const requestBody_ = structuredClone(operation.openAPIOperation.requestBody) as
     | RequestBodyObject
     | undefined
 

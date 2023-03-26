@@ -4,7 +4,6 @@ import {
   CustomOperationProps,
   SchemaComponents,
 } from './types.js'
-import _ from 'lodash'
 import { createOpenAPISchemaFromOperations } from './openApi.js'
 import OpenAPISchemaValidatorImport from 'openapi-schema-validator'
 import { VariableDefinitionNode, VariableNode } from 'graphql'
@@ -33,7 +32,7 @@ export const resolveSchemaComponents = (schema: any, schemaComponents: SchemaCom
     for (const [k, v] of Object.entries(
       schemaComponents[refTarget.replace('#/components/schemas/', '')]
     )) {
-      schema[k] = _.cloneDeep(v)
+      schema[k] = structuredClone(v)
     }
   }
   for (const value of Object.values(schema)) {
