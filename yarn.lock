@@ -466,7 +466,7 @@ __metadata:
     "@types/content-disposition": ^0.5.5
     "@types/express": ^4.17.13
     "@types/graphql-upload": ^16.0.0
-    "@types/jest": ^28.1.1
+    "@types/jest": ^29.5.0
     "@types/lodash": ^4.14.177
     "@types/node": ^18.15.5
     "@types/supertest": ^2.0.12
@@ -1716,13 +1716,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^28.1.1":
-  version: 28.1.1
-  resolution: "@types/jest@npm:28.1.1"
+"@types/jest@npm:^29.5.0":
+  version: 29.5.0
+  resolution: "@types/jest@npm:29.5.0"
   dependencies:
-    jest-matcher-utils: ^27.0.0
-    pretty-format: ^27.0.0
-  checksum: 0a8b045a7b660372decc807c390d3f99a2b12bb1659a1cd593afe04557f4b7c235b0576a5e35b1577710d20e42759d3d8755eb8bed6edc8733f47007e75a5509
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: cd877e5c56d299cceb8bfdcbb1a77723c706750dd3c3bc47403bc3599b8faff590a3b009c68bb5b11bf7a8c77d1fb01de5e124329b4a08e65f1cdda28b0ecdb8
   languageName: node
   linkType: hard
 
@@ -3270,13 +3270,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff-sequences@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "diff-sequences@npm:27.5.1"
-  checksum: a00db5554c9da7da225db2d2638d85f8e41124eccbd56cbaefb3b276dcbb1c1c2ad851c32defe2055a54a4806f030656cbf6638105fd6ce97bb87b90b32a33ca
-  languageName: node
-  linkType: hard
-
 "diff-sequences@npm:^29.4.3":
   version: 29.4.3
   resolution: "diff-sequences@npm:29.4.3"
@@ -3661,7 +3654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@npm:^29.5.0":
+"expect@npm:^29.0.0, expect@npm:^29.5.0":
   version: 29.5.0
   resolution: "expect@npm:29.5.0"
   dependencies:
@@ -4915,18 +4908,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-diff@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "jest-diff@npm:27.5.1"
-  dependencies:
-    chalk: ^4.0.0
-    diff-sequences: ^27.5.1
-    jest-get-type: ^27.5.1
-    pretty-format: ^27.5.1
-  checksum: 8be27c1e1ee57b2bb2bef9c0b233c19621b4c43d53a3c26e2c00a4e805eb4ea11fe1694a06a9fb0e80ffdcfdc0d2b1cb0b85920b3f5c892327ecd1e7bd96b865
-  languageName: node
-  linkType: hard
-
 "jest-diff@npm:^29.5.0":
   version: 29.5.0
   resolution: "jest-diff@npm:29.5.0"
@@ -4972,13 +4953,6 @@ __metadata:
     jest-mock: ^29.5.0
     jest-util: ^29.5.0
   checksum: 57981911cc20a4219b0da9e22b2e3c9f31b505e43f78e61c899e3227ded455ce1a3a9483842c69cfa4532f02cfb536ae0995bf245f9211608edacfc1e478d411
-  languageName: node
-  linkType: hard
-
-"jest-get-type@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "jest-get-type@npm:27.5.1"
-  checksum: 63064ab70195c21007d897c1157bf88ff94a790824a10f8c890392e7d17eda9c3900513cb291ca1c8d5722cad79169764e9a1279f7c8a9c4cd6e9109ff04bbc0
   languageName: node
   linkType: hard
 
@@ -5042,18 +5016,6 @@ __metadata:
     jest-get-type: ^29.4.3
     pretty-format: ^29.5.0
   checksum: 0fb845da7ac9cdfc9b3b2e35f6f623a41c547d7dc0103ceb0349013459d00de5870b5689a625e7e37f9644934b40e8f1dcdd5422d14d57470600350364676313
-  languageName: node
-  linkType: hard
-
-"jest-matcher-utils@npm:^27.0.0":
-  version: 27.5.1
-  resolution: "jest-matcher-utils@npm:27.5.1"
-  dependencies:
-    chalk: ^4.0.0
-    jest-diff: ^27.5.1
-    jest-get-type: ^27.5.1
-    pretty-format: ^27.5.1
-  checksum: bb2135fc48889ff3fe73888f6cc7168ddab9de28b51b3148f820c89fdfd2effdcad005f18be67d0b9be80eda208ad47290f62f03d0a33f848db2dd0273c8217a
   languageName: node
   linkType: hard
 
@@ -7110,18 +7072,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.0.0, pretty-format@npm:^27.5.1":
-  version: 27.5.1
-  resolution: "pretty-format@npm:27.5.1"
-  dependencies:
-    ansi-regex: ^5.0.1
-    ansi-styles: ^5.0.0
-    react-is: ^17.0.1
-  checksum: cf610cffcb793885d16f184a62162f2dd0df31642d9a18edf4ca298e909a8fe80bdbf556d5c9573992c102ce8bf948691da91bf9739bee0ffb6e79c8a8a6e088
-  languageName: node
-  linkType: hard
-
-"pretty-format@npm:^29.5.0":
+"pretty-format@npm:^29.0.0, pretty-format@npm:^29.5.0":
   version: 29.5.0
   resolution: "pretty-format@npm:29.5.0"
   dependencies:
@@ -7298,13 +7249,6 @@ __metadata:
   bin:
     rc: ./cli.js
   checksum: 2e26e052f8be2abd64e6d1dabfbd7be03f80ec18ccbc49562d31f617d0015fbdbcf0f9eed30346ea6ab789e0fdfe4337f033f8016efdbee0df5354751842080e
-  languageName: node
-  linkType: hard
-
-"react-is@npm:^17.0.1":
-  version: 17.0.2
-  resolution: "react-is@npm:17.0.2"
-  checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
   languageName: node
   linkType: hard
 
