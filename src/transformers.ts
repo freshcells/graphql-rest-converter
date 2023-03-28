@@ -50,16 +50,16 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
     // remove possible custom attributes in properties
     const media = (requestBody as OpenAPIV3.RequestBodyObject).content?.[contentType]
 
-    const propertiesWithoutCustomEntries = Object.entries(
-      (media?.schema as OpenAPIV3.NonArraySchemaObject)?.properties || {}
-    )?.reduce((next, [key, entry]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [CustomProperties.VariableName]: customVar, ...restEntry } = entry as WithParameter
-      return {
-        ...next,
-        [key]: restEntry,
-      }
-    }, {} as OpenAPIV3.NonArraySchemaObject['properties'])
+    const propertiesWithoutCustomEntries = Object.fromEntries(
+      Object.entries((media?.schema as OpenAPIV3.NonArraySchemaObject)?.properties || {})?.map(
+        ([key, entry]) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [CustomProperties.VariableName]: customVar, ...restEntry } =
+            entry as WithParameter
+          return [[key], restEntry]
+        }
+      )
+    )
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [CustomProperties.VariableName]: customVar, ...restSchema } = (media?.schema ||

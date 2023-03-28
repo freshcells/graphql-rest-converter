@@ -214,14 +214,10 @@ const getOpenAPIRequestBody = (
   }
   // if our only body argument is a scalar type, we wrap it into an object
   if (bodyVariables.length > 1 || (firstSchema as OpenAPIV3.SchemaObject).type !== 'object') {
-    const requestBodyVariableMap = Object.entries(bodyDirectives).reduce(
-      (next, [variableName, directive]) => {
-        return {
-          ...next,
-          [variableName]: directive.path || variableName,
-        }
-      },
-      {} as Record<string, string>
+    const requestBodyVariableMap = Object.fromEntries(
+      Object.entries(bodyDirectives).map(([variableName, directive]) => {
+        return [[variableName], directive.path || variableName]
+      })
     )
     const requiredKeys = Object.entries(bodyDirectives)
       .filter(([key]) => !(variablesSchema[key] as OpenAPIV3.SchemaObject).nullable)
@@ -237,16 +233,18 @@ const getOpenAPIRequestBody = (
             schema: {
               type: 'object',
               ...(requiredKeys.length > 0 ? { required: requiredKeys } : {}),
-              properties: Object.entries(bodyDirectives).reduce((next, [key, directive]) => {
-                return {
-                  ...next,
-                  [directive.path || key]: {
-                    ...variablesSchema[key],
-                    ...(directive.description ? { description: directive.description } : {}),
-                    [CustomProperties.VariableName]: key,
-                  },
-                }
-              }, {} as { [key: string]: OAType }),
+              properties: Object.fromEntries(
+                Object.entries(bodyDirectives).map(([key, directive]) => {
+                  return [
+                    [directive.path || key],
+                    {
+                      ...variablesSchema[key],
+                      ...(directive.description ? { description: directive.description } : {}),
+                      [CustomProperties.VariableName]: key,
+                    },
+                  ]
+                })
+              ),
             } as OpenAPIV3.NonArraySchemaObject,
           },
           ...additionalMedia,

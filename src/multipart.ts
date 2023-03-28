@@ -25,18 +25,15 @@ export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
   }
   const boundaryBuffer = createBoundaryBuffer(boundary)
   const map = JSON.stringify(
-    allRequestBodyVariables.reduce(
-      (next, variable) => ({
-        ...next,
-        [requestBodyVariableMap[variable]]: [`variables.${variable}`],
-      }),
-      {}
+    Object.fromEntries(
+      allRequestBodyVariables.map((variable) => [
+        requestBodyVariableMap[variable],
+        [`variables.${variable}`],
+      ])
     )
   )
   const mapBuffer = createMultipartContentDispositionBuffer('map', map)
-  const variables = {
-    ...allRequestBodyVariables.reduce((next, variable) => ({ ...next, [variable]: null }), {}),
-  }
+  const variables = Object.fromEntries(allRequestBodyVariables.map((variable) => [variable, null]))
   const operationsBuffer = createMultipartContentDispositionBuffer(
     'operations',
     JSON.stringify({
