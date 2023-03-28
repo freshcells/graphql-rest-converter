@@ -386,6 +386,18 @@ async function main() {
 main()
 ```
 
+## Custom server
+
+The library provides out of the box support for `express`. You may provide your own server with
+
+```ts
+import { createRequestHandler } from '@freshcells/graphql-rest-converter'
+
+// ...
+```
+
+Please consult the [express implementation](./src/express.ts) for an example.
+
 ## Upcoming features
 
 - OpenAPI 3.1 support
