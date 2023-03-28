@@ -15,6 +15,10 @@ type BodyDirectiveInfo = {
   path: string
 }[]
 
+const uniqueKeys = <T extends Record<string, unknown>, K extends keyof T>(items: T[], key: K) => {
+  return new Set<T[typeof key]>(Object.values(items).map((item) => item[key]))
+}
+
 const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
   let varDefMap: Record<string, VariableDefinitionNode> = {}
 
@@ -30,16 +34,11 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
           .map(({ node }) => getBodyDirectiveInfo(varDefMap, node, context.getSchema()))
           .filter((v) => v) as BodyDirectiveInfo
 
-        const uniquePaths = allBodyDirectives.reduce((next, { path }) => {
-          if (!next.includes(path)) {
-            return [...next, path]
-          }
-          return next
-        }, [] as string[])
+        const uniquePaths = uniqueKeys(allBodyDirectives, 'path')
 
         const { node, varDef } = allBodyDirectives?.[0] || {}
 
-        if (uniquePaths.length !== allBodyDirectives.length) {
+        if (uniquePaths.size !== allBodyDirectives.length) {
           context.reportError(
             new GraphQLError(`Only unique "@OABody(path:...)" definitions allowed.`, {
               nodes: [varDef, node, operation],
@@ -47,19 +46,14 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
           )
         }
 
-        const allContentTypes = allBodyDirectives.reduce((next, { contentType }) => {
-          if (!next.includes(contentType)) {
-            return [...next, contentType]
-          }
-          return next
-        }, [] as string[])
+        const allContentTypes = uniqueKeys(allBodyDirectives, 'contentType')
 
-        if (allBodyDirectives.length > 0 && allContentTypes.length > 1) {
+        if (allBodyDirectives.length > 0 && allContentTypes.size > 1) {
           context.reportError(
             new GraphQLError(
-              `Cannot mix different contentType(s) with "@OABody" (found: ${allContentTypes.join(
-                ', '
-              )}).`,
+              `Cannot mix different contentType(s) with "@OABody" (found: ${Array.from(
+                allContentTypes
+              ).join(', ')}).`,
               {
                 nodes: [varDef, node, operation],
               }
