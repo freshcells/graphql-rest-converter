@@ -167,7 +167,7 @@ const innerRequestHandler = <
         variables[requestBodyVariable] =
           (req_.body as Record<string, unknown>)?.[
             operation.requestBodyVariableMap[requestBodyVariable]
-          ] || (operation.requestBodyIsSingleInput ? req_.body : null)
+          ] || (operation.requestBodyIsSingleInput ? req_.body : undefined)
       }
     }
     if (operation.requestBodyFormData === 'FORM_DATA') {
@@ -175,7 +175,7 @@ const innerRequestHandler = <
         variables[requestBodyVariable] =
           (req_.body as Record<string, unknown>)?.[
             operation.requestBodyVariableMap[requestBodyVariable]
-          ] || null
+          ] || undefined
       }
     }
 
@@ -191,9 +191,14 @@ const innerRequestHandler = <
       }
     }
 
+    // make sure we do not pass `undefined` variables
+    const thisVariables = Object.fromEntries(
+      Object.entries(variables).filter(([, value]) => value !== undefined)
+    )
+
     const request = {
       document: graphqlDocument_,
-      variables,
+      variables: thisVariables,
       request: req,
       response: res,
     }

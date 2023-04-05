@@ -1,0 +1,23 @@
+input SampleInputWithDefaults {
+  """
+  The name
+  """
+  name: String! = "my name"
+  moreData: [String!]!
+  someNullableAttribute: Boolean
+}
+
+type Mutation {
+  createSample(input: SampleInputWithDefaults!): Boolean
+}
+
+type Query {
+  getSample(id: Int!): Boolean!
+  optionalParameter(id: Int): Boolean
+  getSampleWithOptional(name: String): String
+}
+
+schema {
+  mutation: Mutation
+  query: Query
+}

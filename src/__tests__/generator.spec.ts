@@ -319,26 +319,4 @@ describe('OpenAPI Generation', () => {
       }).toThrow()
     })
   })
-
-  describe('Optional values', () => {
-    it('should handle defaults as not required', () => {
-      const bridge = createOpenAPIGraphQLBridge({
-        graphqlSchema,
-        graphqlDocument: gql`
-          query getSample($id: Int = 10) @OAOperation(path: "/sample") {
-            getSample(id: $id) {
-              name
-            }
-          }
-        `,
-      })
-
-      expect(
-        bridge.getOpenAPISchema({
-          baseSchema,
-          validate: true,
-        })
-      ).toMatchSnapshot()
-    })
-  })
 })

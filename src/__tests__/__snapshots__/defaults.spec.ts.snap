@@ -1,0 +1,525 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Schema with defaults should handle non-nullable default arguments 1`] = `
+{
+  "components": {
+    "schemas": {},
+  },
+  "info": {
+    "description": "My API",
+    "title": "Sample API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/sample": {
+      "post": {
+        "operationId": "createSample",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "moreData": {
+                    "items": {
+                      "type": "string",
+                    },
+                    "type": "array",
+                  },
+                  "name": {
+                    "default": "my name",
+                    "description": "The name",
+                    "type": "string",
+                  },
+                  "someNullableAttribute": {
+                    "nullable": true,
+                    "type": "boolean",
+                  },
+                },
+                "required": [
+                  "moreData",
+                ],
+                "type": "object",
+                "x-graphql-variable-name": "sample",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createSample": {
+                      "nullable": true,
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "createSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "createSample": {
+                          "nullable": true,
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [
+                        "createSample",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation createSample($sample: SampleInputWithDefaults!) {
+  createSample(input: $sample)
+}",
+      },
+    },
+  },
+}
+`;
+
+exports[`Schema with defaults should handle non-nullable defaults as not required 1`] = `
+{
+  "components": {
+    "schemas": {},
+  },
+  "info": {
+    "description": "My API",
+    "title": "Sample API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/sample": {
+      "get": {
+        "operationId": "getSample",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "default": 10,
+              "format": "int32",
+              "type": "integer",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "getSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "getSample": {
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [
+                        "getSample",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "query getSample($id: Int! = 10) {
+  getSample(id: $id)
+}",
+      },
+    },
+  },
+}
+`;
+
+exports[`Schema with defaults should handle optional parameters 1`] = `
+{
+  "components": {
+    "schemas": {},
+  },
+  "info": {
+    "description": "My API",
+    "title": "Sample API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/sample": {
+      "get": {
+        "operationId": "optionalParameter",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "format": "int32",
+              "nullable": true,
+              "type": "integer",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "optionalParameter": {
+                      "nullable": true,
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "optionalParameter",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "optionalParameter": {
+                          "nullable": true,
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [
+                        "optionalParameter",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "query optionalParameter($id: Int) {
+  optionalParameter(id: $id)
+}",
+      },
+    },
+  },
+}
+`;

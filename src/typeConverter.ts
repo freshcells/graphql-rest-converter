@@ -343,7 +343,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
 
     for (const field of Object.values(type.getFields())) {
       const propertyType = this.fromType(field.type)
-      if (!isNullable(propertyType)) {
+      if (!isNullable(propertyType) && field.defaultValue === undefined) {
         required.push(field.name)
       }
       if (field.defaultValue) {

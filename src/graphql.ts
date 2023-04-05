@@ -162,12 +162,13 @@ const getOpenAPIParameters = (
     const deprecated = paramDirectiveData.deprecated
     const description = paramDirectiveData.description
     const schema = variablesSchema[variableName]
+    const defaultValue = 'default' in schema ? schema.default : undefined
 
     parameters.push({
       in: in_,
       name: parameterName,
       schema,
-      ...(!isNullable(schema) ? { required: true } : {}),
+      ...(!isNullable(schema) && defaultValue === undefined ? { required: true } : {}),
       ...(deprecated === true ? { deprecated } : {}),
       ...(description ? { description } : {}),
       ...{ [CustomProperties.VariableName]: variableName },

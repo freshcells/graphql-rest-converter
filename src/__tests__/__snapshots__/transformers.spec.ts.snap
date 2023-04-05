@@ -1119,7 +1119,6 @@ exports[`Schema Transformations should be able to remove custom properties 1`] =
           {
             "in": "query",
             "name": "id",
-            "required": true,
             "schema": {
               "default": 10,
               "format": "int32",
@@ -3169,7 +3168,6 @@ exports[`Schema Transformations should handle multiple transformations 1`] = `
           {
             "in": "query",
             "name": "id",
-            "required": true,
             "schema": {
               "default": 10,
               "format": "int32",
