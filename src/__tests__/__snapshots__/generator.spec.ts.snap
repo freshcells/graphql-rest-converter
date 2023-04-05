@@ -1,5 +1,209 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`OpenAPI Generation Optional values should handle defaults as not required 1`] = `
+{
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "OAuth2": {
+        "flows": {
+          "password": {
+            "refreshUrl": "http://some-refresh-token-url",
+            "scopes": {
+              "write:admin": "Grants admin access",
+            },
+            "tokenUrl": "http://some-token-url",
+          },
+        },
+        "type": "oauth2",
+      },
+    },
+  },
+  "info": {
+    "description": "My API",
+    "title": "Sample API",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/sample": {
+      "get": {
+        "operationId": "getSample",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "default": 10,
+              "format": "int32",
+              "nullable": true,
+              "type": "integer",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "getSample": {
+                      "description": "This is the default \`Sample\` documentation",
+                      "properties": {
+                        "name": {
+                          "description": "The name",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "getSample",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "getSample": {
+                          "description": "This is the default \`Sample\` documentation",
+                          "properties": {
+                            "name": {
+                              "description": "The name",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "name",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": [
+                        "getSample",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "query getSample($id: Int = 10) {
+  getSample(id: $id) {
+    name
+  }
+}",
+      },
+    },
+  },
+}
+`;
+
 exports[`OpenAPI Generation should create schema from graphql api should be able to remove custom properties 1`] = `
 {
   "components": {

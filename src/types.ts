@@ -78,16 +78,15 @@ export type ResponseTransformerResult = {
 export type CreateOpenAPISchemaConfig<T extends CustomOperationProps = CustomOperationProps> = {
   baseSchema: PartialDeep<OpenAPIV3.Document<T>>
   validate?: boolean
-  transform?: (
-    bridgeOperation: BridgeOperation<T>,
-    operation: OpenAPIV3.OperationObject<T>
-  ) => OpenAPIV3.OperationObject<T>
 }
 
-export type CreateOpenAPIGraphQLBridgeConfig = {
+export type CreateOpenAPIGraphQLBridgeConfig<
+  T extends CustomOperationProps = CustomOperationProps
+> = {
   graphqlSchema: GraphQLSchema | string
   graphqlDocument: DocumentNode | string
   customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject
+  transform?: (operation: OpenAPIV3.OperationObject<T>) => OpenAPIV3.OperationObject<T>
 }
 
 export type CustomOperationProps = {
@@ -106,7 +105,6 @@ export type ReqBodyWithVars = (OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBody
   ParameterCustomProperties
 
 export type SchemaTransformer<T extends CustomOperationProps = CustomOperationProps> = (
-  bridgeOperation: BridgeOperation<T>,
   operation: OpenAPIV3.OperationObject<T>
 ) => OpenAPIV3.OperationObject<T>
 

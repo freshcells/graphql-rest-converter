@@ -250,10 +250,7 @@ import {
   transform,
   createHttpExecutor,
 } from '@freshcells/graphql-rest-converter'
-import {
-  createOpenAPIGraphQLBridge,
-  createExpressMiddlewareFromOpenAPISchema,
-} from '@freshcells/graphql-rest-converter/express'
+import { createOpenAPIGraphQLBridge } from '@freshcells/graphql-rest-converter/express'
 
 const GRAPHQL_ENDPOINT = 'https://example.org/graphql'
 

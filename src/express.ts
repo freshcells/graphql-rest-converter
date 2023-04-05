@@ -79,9 +79,9 @@ export const createOpenAPIGraphQLBridge = <
   ThisResponse extends Response = Response,
   T extends CustomOperationProps = CustomOperationProps
 >(
-  config: CreateOpenAPIGraphQLBridgeConfig
+  config: CreateOpenAPIGraphQLBridgeConfig<T>
 ) => {
-  const { graphqlSchema, graphqlDocument, customScalars } = config
+  const { graphqlSchema, graphqlDocument, customScalars, transform } = config
 
   const graphqlSchema_ =
     typeof graphqlSchema === 'string' ? buildSchema(graphqlSchema) : graphqlSchema
@@ -89,7 +89,12 @@ export const createOpenAPIGraphQLBridge = <
   const graphqlDocument_ =
     typeof graphqlDocument === 'string' ? parse(graphqlDocument) : graphqlDocument
 
-  const operations = getBridgeOperations<T>(graphqlSchema_, graphqlDocument_, customScalars)
+  const operations = getBridgeOperations<T>(
+    graphqlSchema_,
+    graphqlDocument_,
+    customScalars,
+    transform
+  )
 
   return {
     getExpressMiddleware: (

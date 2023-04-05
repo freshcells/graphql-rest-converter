@@ -294,21 +294,51 @@ describe('OpenAPI Generation', () => {
     })
 
     it('should be able to remove custom properties', () => {
+      const bridge = createOpenAPIGraphQLBridge({
+        graphqlDocument: bridgeFixtures,
+        graphqlSchema,
+        transform: removeCustomProperties,
+      })
       const schema = bridge.getOpenAPISchema({
         baseSchema,
-        transform: removeCustomProperties,
       })
 
       expect(schema).toMatchSnapshot()
     })
     it('should throw when invalid', () => {
-      expect(() =>
+      expect(() => {
+        const bridge = createOpenAPIGraphQLBridge({
+          graphqlDocument: bridgeFixtures,
+          graphqlSchema,
+          transform: removeCustomProperties,
+        })
         bridge.getOpenAPISchema({
           baseSchema: {},
           validate: true,
-          transform: removeCustomProperties,
         })
-      ).toThrow()
+      }).toThrow()
+    })
+  })
+
+  describe('Optional values', () => {
+    it('should handle defaults as not required', () => {
+      const bridge = createOpenAPIGraphQLBridge({
+        graphqlSchema,
+        graphqlDocument: gql`
+          query getSample($id: Int = 10) @OAOperation(path: "/sample") {
+            getSample(id: $id) {
+              name
+            }
+          }
+        `,
+      })
+
+      expect(
+        bridge.getOpenAPISchema({
+          baseSchema,
+          validate: true,
+        })
+      ).toMatchSnapshot()
     })
   })
 })

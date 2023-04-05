@@ -1,5 +1,4 @@
 import {
-  BridgeOperation,
   CustomOperationProps,
   CustomProperties,
   OpWithProps,
@@ -12,9 +11,9 @@ import { OpenAPIV3 } from 'openapi-types'
 export const transform = <T extends CustomOperationProps = CustomOperationProps>(
   ...transformers: SchemaTransformer<T>[]
 ) => {
-  return (bridgeOperation: BridgeOperation<T>, operation: OpenAPIV3.OperationObject<T>) =>
+  return (operation: OpenAPIV3.OperationObject<T>) =>
     transformers.reduce((operation, transform) => {
-      return transform(bridgeOperation, operation)
+      return transform(operation)
     }, operation)
 }
 
@@ -23,7 +22,6 @@ type WithParameter = (OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject) & {
 }
 
 export const removeCustomProperties = <T extends CustomOperationProps = CustomOperationProps>(
-  bridgeOperation: BridgeOperation<T>,
   operation: OpenAPIV3.OperationObject<T>
 ): OpenAPIV3.OperationObject<T> => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

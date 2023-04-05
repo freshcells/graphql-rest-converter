@@ -453,7 +453,8 @@ const directiveSchema = buildASTSchema(DIRECTIVE_DEFINITION)
 export const getBridgeOperations = <T extends CustomOperationProps = CustomOperationProps>(
   schema: GraphQLSchema,
   document: DocumentNode,
-  customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject
+  customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject,
+  transform?: (operation: OpenAPIV3.OperationObject<T>) => OpenAPIV3.OperationObject<T>
 ) => {
   const bridgeOperations: Array<BridgeOperation<T>> = []
 
@@ -575,8 +576,13 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
       (operationDirectiveData.method?.toLowerCase() as OpenAPIV3.HttpMethods | undefined) ??
       defaultHttpMethod
 
+    const thisOpenAPIOperation = Object.freeze({
+      ...openAPIOperation,
+      [CustomProperties.Operation]: operationSource,
+    }) as OpenAPIV3.OperationObject<T>
+
     const bridgeOperation = Object.freeze({
-      openAPIOperation,
+      openAPIOperation: transform ? transform(thisOpenAPIOperation) : thisOpenAPIOperation,
       path: operationDirectiveData.path,
       httpMethod,
       graphqlDocument,

@@ -33,24 +33,24 @@ const baseSchema: Partial<OpenAPIV3.Document> = {
 }
 
 describe('Schema Transformations', () => {
-  const bridge = createOpenAPIGraphQLBridge({
-    graphqlDocument: bridgeFixtures,
-    graphqlSchema,
-  })
-
   it('should be able to remove custom properties', () => {
+    const bridge = createOpenAPIGraphQLBridge({
+      graphqlDocument: bridgeFixtures,
+      graphqlSchema,
+      transform: removeCustomProperties,
+    })
     const schema = bridge.getOpenAPISchema({
       baseSchema,
-      transform: removeCustomProperties,
     })
 
     expect(schema).toMatchSnapshot()
   })
 
   it('should handle multiple transformations', () => {
-    const schema = bridge.getOpenAPISchema({
-      baseSchema,
-      transform: transform(removeCustomProperties, (bridgeOperation, operation) => {
+    const bridge = createOpenAPIGraphQLBridge({
+      graphqlDocument: bridgeFixtures,
+      graphqlSchema,
+      transform: transform(removeCustomProperties, (operation) => {
         return {
           ...operation,
           responses: {
@@ -70,20 +70,28 @@ describe('Schema Transformations', () => {
         }
       }),
     })
+
+    const schema = bridge.getOpenAPISchema({
+      baseSchema,
+    })
     expect(schema).toMatchSnapshot()
   })
 
   it('should not allow to mutate a schema', () => {
-    expect(() =>
-      bridge.getOpenAPISchema({
-        baseSchema,
-        transform: (bridgeOperation, operation) => {
+    expect(() => {
+      const bridge = createOpenAPIGraphQLBridge({
+        graphqlDocument: bridgeFixtures,
+        graphqlSchema,
+        transform: (operation) => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           delete operation.responses
           return operation
         },
       })
-    ).toThrow(`Cannot delete property 'responses' of #<Object>`)
+      bridge.getOpenAPISchema({
+        baseSchema,
+      })
+    }).toThrow(`Cannot delete property 'responses' of #<Object>`)
   })
 })

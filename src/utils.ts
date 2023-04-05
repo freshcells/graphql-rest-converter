@@ -46,11 +46,7 @@ export const createOpenAPISchemaWithValidate = <
   operations: BridgeOperations<T>,
   config?: CreateOpenAPISchemaConfig<T>
 ) => {
-  const openAPISchema = createOpenAPISchemaFromOperations<T>(
-    config?.baseSchema || {},
-    operations,
-    config?.transform
-  )
+  const openAPISchema = createOpenAPISchemaFromOperations<T>(config?.baseSchema || {}, operations)
   if (config?.validate) {
     const schemaValidator = new OpenAPISchemaValidator({ version: 3 })
     const schemaValidationErrors = schemaValidator.validate(openAPISchema)
