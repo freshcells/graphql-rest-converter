@@ -62,7 +62,7 @@ export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
   })
 
   req.headers['content-length'] = String(
-    parseInt(req.headers['content-length'] || '0') +
+    parseInt(req.headers['content-length'] || '0', 10) +
       boundaryBuffer.length +
       mapBuffer.length +
       boundaryBuffer.length +
