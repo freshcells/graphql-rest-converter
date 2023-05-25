@@ -1,8 +1,12 @@
-import { specifiedRules, ValidationRule, VariableDefinitionNode } from 'graphql'
-import { ValidationContext } from 'graphql/validation/ValidationContext.js'
+import {
+  specifiedRules,
+  ValidationRule,
+  VariableDefinitionNode,
+  GraphQLError,
+  ValidationContext,
+} from 'graphql'
 import { getDirective, getDirectiveArguments } from './graphqlUtils.js'
 import { OpenAPIDirectives } from './graphql.js'
-import { GraphQLError } from 'graphql/error'
 import { createUniquePathString, getVariablesFromPathTemplate } from './pathTemplate.js'
 import { getParameterName } from './utils.js'
 import type { VariableNode } from 'graphql'

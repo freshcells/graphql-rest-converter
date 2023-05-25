@@ -6,9 +6,8 @@ import {
   CustomOperationProps,
   SchemaComponents,
 } from './types.js'
-import { ExecutionResult } from 'graphql'
+import { ExecutionResult, print } from 'graphql'
 import { resolveSchemaComponents } from './utils.js'
-import { print } from 'graphql/index.js'
 import { OpenAPIV3 } from 'openapi-types'
 import RequestBodyObject = OpenAPIV3.RequestBodyObject
 import OpenAPIRequestCoercerImport from 'openapi-request-coercer'

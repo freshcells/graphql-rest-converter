@@ -1,4 +1,4 @@
-import { GraphQLError } from 'graphql/error'
+import { GraphQLError } from 'graphql'
 
 export class InvalidResponseError extends Error {
   validationErrors: readonly string[]

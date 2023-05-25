@@ -6,14 +6,14 @@ import {
   typeFromAST,
   VariableDefinitionNode,
   VariableNode,
+  GraphQLError,
+  ValidationContext,
 } from 'graphql'
-import { ValidationContext } from 'graphql/validation/ValidationContext.js'
-import { Maybe } from 'graphql/jsutils/Maybe.js'
+import type { Maybe } from 'graphql/jsutils/Maybe.js'
 import { inspect } from 'graphql/jsutils/inspect.js'
 import { getParameterName } from '../utils.js'
 import { getDirectiveArgumentsWithSchema, hasDirective } from '../graphqlUtils.js'
 import { OpenAPIDirectives } from '../graphql.js'
-import { GraphQLError } from 'graphql/error'
 
 export const validateVariable = (
   varDefMap: Record<string, VariableDefinitionNode>,

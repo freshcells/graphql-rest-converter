@@ -9,7 +9,7 @@ import request from 'supertest'
 import processRequest from 'graphql-upload/processRequest.mjs'
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs'
 import { FileUpload } from 'graphql-upload/Upload.mjs'
-import { execute, parse } from 'graphql/index.js'
+import { execute, parse } from 'graphql'
 import assert from 'node:assert'
 import { Readable } from 'node:stream'
 

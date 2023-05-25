@@ -11,6 +11,7 @@ import {
   print,
   validate,
   visit,
+  printSourceLocation,
 } from 'graphql'
 import { mergeSchemas } from '@graphql-tools/schema'
 import { gql } from 'graphql-tag'
@@ -38,7 +39,6 @@ import {
   GraphQLTypeToOpenAPITypeSchemaConverter,
 } from './typeConverter.js'
 import { isNullable } from './openApi.js'
-import { printSourceLocation } from 'graphql/language/printLocation.js'
 import { gqlValidationRules } from './validationRules.js'
 
 const DIRECTIVE_DEFINITION = gql`
