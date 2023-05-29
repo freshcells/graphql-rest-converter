@@ -6951,12 +6951,12 @@ __metadata:
   linkType: hard
 
 "openapi-response-validator@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "openapi-response-validator@npm:12.1.0"
+  version: 12.1.3
+  resolution: "openapi-response-validator@npm:12.1.3"
   dependencies:
     ajv: ^8.4.0
-    openapi-types: ^12.1.0
-  checksum: f07036661ac846c5d508b423d01039cd5bd33d564e053fdc039046f964fad71b03a7c9254195b1d5a8a1912fcc45dce13616af97c445c6d7b040c825e1f91de1
+    openapi-types: ^12.1.3
+  checksum: b09c45b8b8d09b2448f52e2532a13a034fbe7f910aa194320048e53f304f5a8ec987dd4c2403bae711c5d0b5da9f7a44a407b6429b58c72e6a2e2b51137b6a81
   languageName: node
   linkType: hard
 
@@ -6976,6 +6976,13 @@ __metadata:
   version: 12.1.0
   resolution: "openapi-types@npm:12.1.0"
   checksum: d8f3e2bae519aa6bcf2012f4a5592b7283fe928c06f3bdc182776ce637c7ed8d5f9f342724f68c95c9572aefe21ed5e89b18a0295a703da61af5f97bd2aea9a7
+  languageName: node
+  linkType: hard
+
+"openapi-types@npm:^12.1.3":
+  version: 12.1.3
+  resolution: "openapi-types@npm:12.1.3"
+  checksum: 7fa5547f87a58d2aa0eba6e91d396f42d7d31bc3ae140e61b5d60b47d2fd068b48776f42407d5a8da7280cf31195aa128c2fc285e8bb871d1105edee5647a0bb
   languageName: node
   linkType: hard
 
