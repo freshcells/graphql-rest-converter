@@ -6961,14 +6961,14 @@ __metadata:
   linkType: hard
 
 "openapi-schema-validator@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "openapi-schema-validator@npm:12.1.0"
+  version: 12.1.3
+  resolution: "openapi-schema-validator@npm:12.1.3"
   dependencies:
     ajv: ^8.1.0
     ajv-formats: ^2.0.2
     lodash.merge: ^4.6.1
-    openapi-types: ^12.1.0
-  checksum: 1008ef82910cc30e85132c041b269a4cc2991dad17e2d7c4cddbfb5641a15e934016bc4d1bab32f2dc79f7f3673b82b655c3634838c9ce3a8f497af3be762aa5
+    openapi-types: ^12.1.3
+  checksum: 68170db4aced2c47d90bffbfc07e7507b89f79342840bbe2fe349f4f73dd26940f3bb9dd682c9a4ff8075198a02a218d28cd793538b0aa4c88f23ee695a62ae8
   languageName: node
   linkType: hard
 
