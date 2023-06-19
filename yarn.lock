@@ -6917,11 +6917,11 @@ __metadata:
   linkType: hard
 
 "openapi-jsonschema-parameters@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "openapi-jsonschema-parameters@npm:12.1.0"
+  version: 12.1.3
+  resolution: "openapi-jsonschema-parameters@npm:12.1.3"
   dependencies:
-    openapi-types: ^12.1.0
-  checksum: 9465549e132d02ad4be67326e22c9a2e3f0cf19ffa0e3c1fe69a542a675707f11c33080836b0eebd75c02501dbcb5f4130fa446d470ede3ba67b7c52e1bc341f
+    openapi-types: ^12.1.3
+  checksum: 0e3d3073ff1602d038853005fd59243c0b78cd91597c17d9c3f859b3eb782bf70fe6d9b11aa8cf96420289e50f024e326ceabf60dbfb83935a69bae06ebe6525
   languageName: node
   linkType: hard
 
