@@ -8,7 +8,9 @@ export const createMultipartContentDispositionBuffer = (name: string, value: str
 }
 
 export const getBoundaryByRequest = (req: IncomingMessage) => {
-  return (req.headers['content-type'] as string)?.match?.(/boundary=(.*)/)?.[1]
+  const match = (req.headers['content-type'] as string)?.match?.(/boundary=(?:"([^"]+)"|([^;]+))/i)
+  const [, withQuotes, withoutQuotes] = match || []
+  return withQuotes || withoutQuotes
 }
 
 export const createBoundaryBuffer = (boundary: string) => Buffer.from(`\r\n--${boundary}\r\n`)
