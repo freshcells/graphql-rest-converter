@@ -6960,12 +6960,12 @@ __metadata:
   linkType: hard
 
 "openapi-request-coercer@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "openapi-request-coercer@npm:12.1.0"
+  version: 12.1.3
+  resolution: "openapi-request-coercer@npm:12.1.3"
   dependencies:
-    openapi-types: ^12.1.0
+    openapi-types: ^12.1.3
     ts-log: ^2.1.4
-  checksum: 4359d4fd58b032146838aabb9762fc2ac01771e7bea4679af5a241964f3df15ddced7968e6a8d419954d166e93ad32e08f530da0d9a8483d3c4d97be7c7c848c
+  checksum: cbf257d0c662ded5291759235402c0ea14f4187bf137821303347e73faeafcc0eeb97642e825983dea8ddf79b3bf0c44897262774ae8dc22c516b0ee22231fb7
   languageName: node
   linkType: hard
 
