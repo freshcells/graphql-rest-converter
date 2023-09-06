@@ -519,7 +519,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@freshcells/graphql-rest-converter@workspace:."
   dependencies:
-    "@graphql-tools/jest-transform": ^1.2.2
+    "@graphql-tools/jest-transform": ^2.0.0
     "@graphql-tools/mock": ^9.0.0
     "@graphql-tools/schema": ^9.0.17
     "@types/content-disposition": ^0.5.5
@@ -566,17 +566,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/jest-transform@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "@graphql-tools/jest-transform@npm:1.2.2"
+"@graphql-tools/jest-transform@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@graphql-tools/jest-transform@npm:2.0.0"
   dependencies:
-    "@graphql-tools/webpack-loader": 6.7.1
+    "@graphql-tools/webpack-loader": 7.0.0
     "@jest/transform": ^29.0.0
     "@jest/types": ^29.0.0
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: da556e5cf75577516559824fb06459143100b35212e1c986ed004df26e244a596ff0a4e0d3e0187d88acdf20202de010d42888941e25dc52e2124ea2fb7e7c7a
+  checksum: c8e44e0f99aa3b8cadea13ea24577395e943fbd48c78a48668c60524b23632157c71f72ec41228ca0e1d83e33968d3034eda96039d886df358142518c8635bd2
   languageName: node
   linkType: hard
 
@@ -618,14 +618,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/optimize@npm:1.3.1":
-  version: 1.3.1
-  resolution: "@graphql-tools/optimize@npm:1.3.1"
+"@graphql-tools/optimize@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@graphql-tools/optimize@npm:2.0.0"
   dependencies:
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 4eed041bc3199a70ab426eeb10bc4af65f18fa0c5907613aec236fd7e14918d0f895e12489df6ff501562415eef64c99777a3ca6f6a4ee3c796b68e7cb778342
+  checksum: 7f79c0e1852abc571308e887d27d613da5b797256c8c6eb6c5fe7ca77f09e61524778ae281cebc0b698c51d4fe1074e2b8e0d0627b8e2dcf505aa6ed09b49a2f
   languageName: node
   linkType: hard
 
@@ -681,25 +681,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/webpack-loader-runtime@npm:6.4.1":
-  version: 6.4.1
-  resolution: "@graphql-tools/webpack-loader-runtime@npm:6.4.1"
+"@graphql-tools/webpack-loader-runtime@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@graphql-tools/webpack-loader-runtime@npm:7.0.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 462d4e5a56ac3e737812c8ca6b88b627b4eab946ebc8fe096ab57b968209d227fd8e9b2ad4a141a09d1b27dddcdc38e32993a88ca30df874b9b2f01882055e37
+  checksum: 717ece0babdf01d11c8a8b854098d706e82f59717e6a9b5e65589c8ac2bbdb77ffcd19b1c9fe1ff39ce23c9d5f32f00e57f8db29d9ac71c40c7e809b6fc12d13
   languageName: node
   linkType: hard
 
-"@graphql-tools/webpack-loader@npm:6.7.1":
-  version: 6.7.1
-  resolution: "@graphql-tools/webpack-loader@npm:6.7.1"
+"@graphql-tools/webpack-loader@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@graphql-tools/webpack-loader@npm:7.0.0"
   dependencies:
-    "@graphql-tools/optimize": 1.3.1
-    "@graphql-tools/webpack-loader-runtime": 6.4.1
+    "@graphql-tools/optimize": 2.0.0
+    "@graphql-tools/webpack-loader-runtime": 7.0.0
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 0cdf25b265af08789abc9205da3f8c24345cee9ab89b9a5bc0d41477dc9c9a521660d79dd1ab8aeb7c8ef217c55b3c63260b4d72722dd019ab5c68d48a81a0f1
+  checksum: 9922322940db7fbead8b05c8880ca23737a3d6d67281c0a7ddb0babe874ae3320e4f1c16beacd83ec96776f03cc5f5bad6e4ca4015574cb94834ee749b53294b
   languageName: node
   linkType: hard
 
