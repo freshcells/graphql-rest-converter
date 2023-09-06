@@ -7227,7 +7227,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-jsonschema-parameters@npm:^12.1.0":
+"openapi-jsonschema-parameters@npm:^12.1.0, openapi-jsonschema-parameters@npm:^12.1.3":
   version: 12.1.3
   resolution: "openapi-jsonschema-parameters@npm:12.1.3"
   dependencies:
@@ -7247,16 +7247,16 @@ __metadata:
   linkType: hard
 
 "openapi-request-validator@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "openapi-request-validator@npm:12.1.0"
+  version: 12.1.3
+  resolution: "openapi-request-validator@npm:12.1.3"
   dependencies:
     ajv: ^8.3.0
     ajv-formats: ^2.1.0
     content-type: ^1.0.4
-    openapi-jsonschema-parameters: ^12.1.0
-    openapi-types: ^12.1.0
+    openapi-jsonschema-parameters: ^12.1.3
+    openapi-types: ^12.1.3
     ts-log: ^2.1.4
-  checksum: 794b1c15dbf04107ede7b8304e5b7c2fa183ad0c4bd65b3e0ee4d415cf508324932959f661120f1bfb58a23d88b5458dc0db868bc36f9ec44ea03b99ea9d42df
+  checksum: 89526c95845b4f07fb33b55ebd3252f90e07dd1abffdaf9cc755928c73269aa1cf06a40a36b1d6ac28eeee07e4fc610dd9a71f95addfbc7bd463198e353c5dd1
   languageName: node
   linkType: hard
 
