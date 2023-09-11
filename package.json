@@ -97,7 +97,7 @@
     "semantic-release": "^21.0.2",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
-    "typedoc": "^0.24.1",
+    "typedoc": "^0.25.1",
     "typescript": "^5.0.2"
   },
   "engines": {
