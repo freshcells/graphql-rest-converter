@@ -1799,9 +1799,9 @@ __metadata:
   linkType: hard
 
 "@types/content-disposition@npm:*, @types/content-disposition@npm:^0.5.5":
-  version: 0.5.5
-  resolution: "@types/content-disposition@npm:0.5.5"
-  checksum: fdf7379db1d509990bcf9a21d85f05aad878596f28b1418f9179f6436cb22513262c670ce88c6055054a7f5804a9303eeacb70aa59a5e11ffdc1434559db9692
+  version: 0.5.6
+  resolution: "@types/content-disposition@npm:0.5.6"
+  checksum: da07798d52cc8fc46a8843d768b48d54c70f1a44c861dc2c73c4c25a1e08af859709629ab0e4d23d5198107b8926bb48c593df436ba68123d87191f5e25fe4bc
   languageName: node
   linkType: hard
 
