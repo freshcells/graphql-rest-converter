@@ -1857,14 +1857,14 @@ __metadata:
   linkType: hard
 
 "@types/graphql-upload@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@types/graphql-upload@npm:16.0.0"
+  version: 16.0.1
+  resolution: "@types/graphql-upload@npm:16.0.1"
   dependencies:
     "@types/express": "*"
     "@types/koa": "*"
     fs-capacitor: ^8.0.0
     graphql: 0.13.1 - 16
-  checksum: 869f21b7b12327d2541c2f57db45c5bd78dcdaf30a96372706e720b8c270b0b2eb7b9e5266abb9e919532e3943697ae46807612991469b8773a82fdf5a9dcb86
+  checksum: 8ad2162f60f0808a6232cf2d2a8a7a10ce3e7a6a9cbb3bf80d8683a790b98b401d5ef69a83b8d011ce28ee67fdbb2ca1343051ea2133ec6a59772f94558967ba
   languageName: node
   linkType: hard
 
