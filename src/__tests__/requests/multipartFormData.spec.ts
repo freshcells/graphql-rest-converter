@@ -23,6 +23,7 @@ const schema = buildASTSchema(gql`
     uploadAMaybeFile(id: Int!, optionalFile: Upload): Boolean!
     uploadMixedFiles(id: Int!, optionalFile: Upload, requiredFile: Upload!): [String!]!
     uploadMultipleFiles(id: String!, primaryImage: Upload!, secondaryImage: Upload!): [String!]!
+    uploadMultipleFilesAsArray(id: String!, images: [Upload!]): [String!]!
   }
 
   type Query {
@@ -71,6 +72,16 @@ const gqlSchema = addMocksToSchema({
         const secondFile = await streamToString((await secondaryImage).createReadStream())
         return [firstFile, secondFile]
       },
+      uploadMultipleFilesAsArray: async (
+        root: unknown,
+        {
+          images,
+        }: { images: Promise<Array<FileUpload>> }
+      ) => {
+        const files = Promise.all((await images).map(image => streamToString((image).createReadStream())))
+          .then((strings) => strings.reduce((str1, str2) => str1 + str2))
+        return [files]
+      },
     },
   },
   schema: makeExecutableSchema({
@@ -115,6 +126,13 @@ const bridge = createOpenAPIGraphQLBridge({
       $optionalFile: Upload @OABody(contentType: MULTIPART_FORM_DATA)
     ) @OAOperation(path: "/mixed-optional-file/{id}") {
       uploadMixedFiles(id: $id, requiredFile: $requiredFile, optionalFile: $optionalFile)
+    }
+
+    mutation uploadMultipleFilesAsArray(
+      $id: String!
+      $images: [Upload!] @OABody(contentType: MULTIPART_FORM_DATA)
+    ) @OAOperation(path: "/upload-multiple-images-as-array/{id}") {
+      uploadMultipleFilesAsArray(id: $id, images: $images)
     }
   `,
 })
@@ -204,7 +222,15 @@ describe('FormData', () => {
     expect(result.body).toMatchSnapshot()
   })
 
-  it('should not support arrays marked with `MULTIPART_FORM_DATA`', async () => {
-    // todo..
+  it('should support arrays marked with `MULTIPART_FORM_DATA`', async () => {
+    const buffer1 = Buffer.from('firstImage')
+    const buffer2 = Buffer.from('secondImage')
+
+    const result = await request(app)
+      .post('/upload-multiple-images-as-array/15')
+      .attach('images', buffer1, 'custom_file_name1.txt')
+      .attach('images', buffer2, 'custom_file_name2.txt')
+      .expect(200)
+    expect(result.body).toMatchSnapshot()
   })
 })

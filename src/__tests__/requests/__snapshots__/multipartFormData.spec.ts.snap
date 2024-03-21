@@ -581,6 +581,193 @@ exports[`FormData should create the correct schema 1`] = `
 }",
       },
     },
+    "/upload-multiple-images-as-array/{id}": {
+      "post": {
+        "operationId": "uploadMultipleFilesAsArray",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "nullable": true,
+                "type": "object",
+              },
+            },
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "images": {
+                    "items": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/Upload",
+                        },
+                      ],
+                      "nullable": false,
+                      "type": "string",
+                    },
+                    "nullable": true,
+                    "type": "array",
+                    "x-graphql-variable-name": "images",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "uploadMultipleFilesAsArray": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": [
+                    "uploadMultipleFilesAsArray",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "uploadMultipleFilesAsArray": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "uploadMultipleFilesAsArray",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation uploadMultipleFilesAsArray($id: String!, $images: [Upload!]) {
+  uploadMultipleFilesAsArray(id: $id, images: $images)
+}",
+      },
+    },
     "/upload-multiple-images/{id}": {
       "post": {
         "operationId": "uploadMultipleFiles",
