@@ -103,7 +103,6 @@ const gqlSchema = addMocksToSchema({
   preserveResolvers: true,
 })
 
-
 const bridge = createOpenAPIGraphQLBridge({
   graphqlSchema: gqlSchema,
   customScalars: (scalarTypeName: string) => UploadScalars[scalarTypeName]!,
