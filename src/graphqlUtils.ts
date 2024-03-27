@@ -17,13 +17,13 @@ import { GraphQLSchema, VariableDefinitionNode } from 'graphql'
 export const hasDirective = (node: ASTNode, directiveName: string | string[]) =>
   (('directives' in node && node.directives) || []).some((directive) =>
     (typeof directiveName === 'string' ? [directiveName] : directiveName).includes(
-      directive.name.value
-    )
+      directive.name.value,
+    ),
   )
 
 export const getDirective = (node: ASTNode, directiveName: string) =>
   (('directives' in node && node.directives) || []).find(
-    (directive) => directiveName === directive.name.value
+    (directive) => directiveName === directive.name.value,
   )
 
 export const removeDescriptionFromObjectType = <T, S>(node: GraphQLObjectType<T, S>) => {
@@ -32,7 +32,7 @@ export const removeDescriptionFromObjectType = <T, S>(node: GraphQLObjectType<T,
 
 export const getDirectiveArguments = (
   directiveDefinition: GraphQLDirective,
-  directive: DirectiveNode
+  directive: DirectiveNode,
 ) => {
   const args: Record<string, unknown> = {}
   const argsByName = _.keyBy(directive.arguments || [], (x) => x.name.value)
@@ -51,7 +51,7 @@ export const getDirectiveArguments = (
 export const getDirectiveArgumentsWithSchema = (
   schema: GraphQLSchema,
   node: VariableDefinitionNode,
-  directive: string
+  directive: string,
 ) => {
   const thisDirective = schema.getDirective(directive)
   const directiveValue = getDirective(node, directive)
@@ -95,7 +95,7 @@ export const getFragmentDependencies = (fragmentMap: Record<string, FragmentDefi
 
 export const getDependencyClosure = (
   roots: Set<string>,
-  dependencies: Record<string, Set<string>>
+  dependencies: Record<string, Set<string>>,
 ) => {
   const seen = new Set()
   const stack = [...roots]

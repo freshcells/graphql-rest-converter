@@ -9,7 +9,7 @@ app.use(
   bridge.getExpressMiddleware(createSchemaExecutor(gqlSchema), {
     validateResponse: true,
     validateRequest: true,
-  })
+  }),
 )
 
 describe('Requests', () => {

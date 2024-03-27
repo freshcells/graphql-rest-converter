@@ -5,7 +5,7 @@ import { ServerResponse } from 'http'
 
 export type GraphQLExecutorArgs<
   Request extends IncomingMessage = IncomingMessage,
-  Response extends ServerResponse = ServerResponse<Request>
+  Response extends ServerResponse = ServerResponse<Request>,
 > = {
   document: string
   variables: { [key: string]: unknown }
@@ -15,14 +15,14 @@ export type GraphQLExecutorArgs<
 
 export type GraphQLExecutor<
   Request extends IncomingMessage = IncomingMessage,
-  Response extends ServerResponse = ServerResponse<Request>
+  Response extends ServerResponse = ServerResponse<Request>,
 > = (args: GraphQLExecutorArgs<Request, Response>) => Promise<ExecutionResult>
 
 type ExecutorArgs = ConstructorParameters<typeof GraphQLClient>
 
 export const createHttpExecutor = <R extends IncomingMessage>(
   url: ExecutorArgs[0],
-  requestConfig: ExecutorArgs[1]
+  requestConfig: ExecutorArgs[1],
 ): GraphQLExecutor<R> => {
   const client = new GraphQLClient(url, {
     ...requestConfig,
@@ -38,9 +38,9 @@ export const createHttpExecutor = <R extends IncomingMessage>(
 
 export const createSchemaExecutor = <
   Request extends IncomingMessage,
-  Response extends ServerResponse = ServerResponse<Request>
+  Response extends ServerResponse = ServerResponse<Request>,
 >(
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): GraphQLExecutor<Request, Response> => {
   return ({ document, variables }) =>
     Promise.resolve(execute({ schema, document: parse(document), variableValues: variables }))

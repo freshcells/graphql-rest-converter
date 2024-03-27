@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   BridgeOperations,
   CreateOpenAPISchemaConfig,
@@ -10,6 +11,7 @@ import { VariableDefinitionNode, VariableNode } from 'graphql'
 import { getDirective, getDirectiveArgumentsUntyped } from './graphqlUtils.js'
 import { OpenAPIDirectives } from './graphql.js'
 
+// @ts-ignore
 const OpenAPISchemaValidator = OpenAPISchemaValidatorImport.default || OpenAPISchemaValidatorImport
 
 export const getParameterName = (node: VariableNode, nodeDef: VariableDefinitionNode) => {
@@ -30,7 +32,7 @@ export const resolveSchemaComponents = (schema: any, schemaComponents: SchemaCom
     const refTarget = schema.$ref as string
     delete schema.$ref
     for (const [k, v] of Object.entries(
-      schemaComponents[refTarget.replace('#/components/schemas/', '')]
+      schemaComponents[refTarget.replace('#/components/schemas/', '')],
     )) {
       schema[k] = structuredClone(v)
     }
@@ -41,10 +43,10 @@ export const resolveSchemaComponents = (schema: any, schemaComponents: SchemaCom
 }
 
 export const createOpenAPISchemaWithValidate = <
-  T extends CustomOperationProps = CustomOperationProps
+  T extends CustomOperationProps = CustomOperationProps,
 >(
   operations: BridgeOperations<T>,
-  config?: CreateOpenAPISchemaConfig<T>
+  config?: CreateOpenAPISchemaConfig<T>,
 ) => {
   const openAPISchema = createOpenAPISchemaFromOperations<T>(config?.baseSchema || {}, operations)
   if (config?.validate) {

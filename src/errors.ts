@@ -7,7 +7,7 @@ export class InvalidResponseError extends Error {
   constructor(
     message: string,
     validationErrors: readonly string[],
-    graphqlErrors?: ReadonlyArray<GraphQLError>
+    graphqlErrors?: ReadonlyArray<GraphQLError>,
   ) {
     super(message)
     this.validationErrors = validationErrors

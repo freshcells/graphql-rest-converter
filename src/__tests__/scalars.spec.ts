@@ -17,7 +17,7 @@ describe('Scalars', () => {
             }
           }
         `,
-      })
+      }),
     ).toThrow(/Unknown custom scalar/)
   })
   it('should throw if a the `customScalars` methods returns undefined', () => {
@@ -37,9 +37,9 @@ describe('Scalars', () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore this is expected
         customScalars: () => undefined,
-      })
+      }),
     ).toThrow(
-      `Expected a valid schema for scalar "Date", but got undefined. Check your scalar provider function.`
+      `Expected a valid schema for scalar "Date", but got undefined. Check your scalar provider function.`,
     )
   })
   it('should allow custom scalars', async () => {

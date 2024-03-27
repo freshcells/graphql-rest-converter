@@ -16,7 +16,7 @@ app.use(
         data: 'Hello World',
       }
     },
-  })
+  }),
 )
 
 describe('Request transform', () => {

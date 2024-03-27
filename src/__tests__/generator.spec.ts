@@ -44,10 +44,10 @@ describe('OpenAPI Generation', () => {
             mutation mutateSomething($id: String @OAParam) {
               mutationWithoutDefaultArg(id: $id)
             }
-          `
+          `,
         )
       }).toThrow(
-        'Schema validation error(s): Missing required directive "@OAOperation" on operation "mutateSomething". Source: unknown'
+        'Schema validation error(s): Missing required directive "@OAOperation" on operation "mutateSomething". Source: unknown',
       )
     })
     it('should throw for unsupported operations', () => {
@@ -60,10 +60,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
+          `,
         )
       }).toThrow(
-        'Schema validation error(s): Directive "@OAOperation" may not be used on SUBSCRIPTION. Source: unknown'
+        'Schema validation error(s): Directive "@OAOperation" may not be used on SUBSCRIPTION. Source: unknown',
       )
     })
 
@@ -75,7 +75,7 @@ describe('OpenAPI Generation', () => {
             mutation mutateSomething($test: Int!) @OAOperation(path: "/someOp") {
               mutationWithoutDefaultArg(id: $id)
             }
-          `
+          `,
         )
       }).toThrow()
     })
@@ -88,10 +88,10 @@ describe('OpenAPI Generation', () => {
             mutation mutateSomething($id: String) @OAOperation(path: "/mutate/{id}") {
               mutationWithoutDefaultArg(id: $id)
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Variable "$id" of type "String" must be defined as "String!", as it is used within "/mutate/{id}". Source: unknown`
+        `Schema validation error(s): Variable "$id" of type "String" must be defined as "String!", as it is used within "/mutate/{id}". Source: unknown`,
       )
     })
 
@@ -108,10 +108,10 @@ describe('OpenAPI Generation', () => {
             @OAOperation(path: "/mutate/{firstId}") {
               mutationWithoutDefaultArg(id: $firstId)
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): "@OAOperation" POST /mutate/{parameter} has already been defined". Source: unknown`
+        `Schema validation error(s): "@OAOperation" POST /mutate/{parameter} has already been defined". Source: unknown`,
       )
     })
 
@@ -123,8 +123,8 @@ describe('OpenAPI Generation', () => {
             mutation mutateSomething($id: String!) @OAOperation(path: "/mutate/{id}") {
               mutationWithoutDefaultArg(id: $incorrect)
             }
-          `
-        )
+          `,
+        ),
       ).toThrow()
     })
 
@@ -136,10 +136,10 @@ describe('OpenAPI Generation', () => {
             mutation mutateSomething($this: String) @OAOperation(path: "/mutate/{id}") {
               mutationWithoutDefaultArg(id: $this)
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Not all path variables in "/mutate/{id}" are mapped to variables - Missing mappings are: "id". Source: unknown`
+        `Schema validation error(s): Not all path variables in "/mutate/{id}" are mapped to variables - Missing mappings are: "id". Source: unknown`,
       )
     })
 
@@ -159,8 +159,8 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).not.toThrow()
     })
 
@@ -184,10 +184,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Only unique "@OABody(path:...)" definitions allowed. Source: unknown`
+        `Schema validation error(s): Only unique "@OABody(path:...)" definitions allowed. Source: unknown`,
       )
     })
     it('should deny multiple @OABody directives with different contentTypes', () => {
@@ -206,10 +206,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Cannot mix different contentType(s) with "@OABody" (found: JSON, MULTIPART_FORM_DATA). Source: unknown`
+        `Schema validation error(s): Cannot mix different contentType(s) with "@OABody" (found: JSON, MULTIPART_FORM_DATA). Source: unknown`,
       )
     })
     it('should fail in case a `path` parameter is used with @OABody', () => {
@@ -222,10 +222,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Variable "$id" of type "Int!" cannot be used with "@OABody", as it is used within "/my-query/{id}". Source: unknown`
+        `Schema validation error(s): Variable "$id" of type "Int!" cannot be used with "@OABody", as it is used within "/my-query/{id}". Source: unknown`,
       )
     })
     it('should fail in case a `path` parameter is not specified in the path', () => {
@@ -238,10 +238,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Location "path" is invalid for "$id" of type "Int!", because "id" was expected in "/my-query". Source: unknown`
+        `Schema validation error(s): Location "path" is invalid for "$id" of type "Int!", because "id" was expected in "/my-query". Source: unknown`,
       )
     })
     it('should fail in case a renamed `path` parameter is not specified in the path', () => {
@@ -255,10 +255,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Not all path variables in "/my-query/{id}" are mapped to variables - Missing mappings are: "id". Source: unknown`
+        `Schema validation error(s): Not all path variables in "/my-query/{id}" are mapped to variables - Missing mappings are: "id". Source: unknown`,
       )
     })
     it('should fail in case a path parameter is used within another parameter type', () => {
@@ -271,10 +271,10 @@ describe('OpenAPI Generation', () => {
                 id
               }
             }
-          `
-        )
+          `,
+        ),
       ).toThrow(
-        `Schema validation error(s): Location "query" is invalid for "$id" of type "Int!", because "id" is part of the path "/my-query/{id}". Source: unknown`
+        `Schema validation error(s): Location "query" is invalid for "$id" of type "Int!", because "id" is part of the path "/my-query/{id}". Source: unknown`,
       )
     })
   })

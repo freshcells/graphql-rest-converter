@@ -26,7 +26,7 @@ describe('Documentation', () => {
             name
           }
         }
-      `
+      `,
     )
     const openApiSchema = createOpenAPISchemaWithValidate(operations)
 
@@ -56,7 +56,7 @@ describe('Documentation', () => {
             name
           }
         }
-      `
+      `,
     )
     const openApiSchema = createOpenAPISchemaWithValidate(operations)
 
@@ -84,7 +84,7 @@ describe('Documentation', () => {
             name @OADescription(description: "Name of the hero")
           }
         }
-      `
+      `,
     )
     const openApiSchema = createOpenAPISchemaWithValidate(operations)
 

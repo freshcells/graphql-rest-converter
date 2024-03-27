@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.workflow_run.conclusion == 'success'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - run: corepack enable
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           cache: yarn
-      - run: corepack enable
       - run: yarn install --immutable
       - run: yarn semantic-release
         env:

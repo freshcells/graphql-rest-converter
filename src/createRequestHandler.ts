@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { IncomingMessage, ServerResponse } from 'node:http'
 import {
   BridgeOperation,
@@ -17,10 +18,13 @@ import { transformRequest } from './multipart.js'
 import { GraphQLExecutor } from './graphQLExecutor.js'
 import { InvalidResponseError } from './errors.js'
 
+// @ts-ignore
 const OpenAPIRequestCoercer = OpenAPIRequestCoercerImport.default || OpenAPIRequestCoercerImport
 const OpenAPIRequestValidator =
+  // @ts-ignore
   OpenAPIRequestValidatorImport.default || OpenAPIRequestValidatorImport
 const OpenAPIResponseValidator =
+  // @ts-ignore
   OpenAPIResponseValidatorImport.default || OpenAPIResponseValidatorImport
 
 interface ErrorResult {
@@ -30,18 +34,18 @@ interface ErrorResult {
 interface RequestHandler<
   Req extends IncomingMessage,
   Res extends ServerResponse,
-  CustomProps extends CustomOperationProps = CustomOperationProps
+  CustomProps extends CustomOperationProps = CustomOperationProps,
 > {
   registerRoute(
     operation: BridgeOperation<CustomProps>,
     handleRequest: (
       req: Req,
-      res: Res
+      res: Res,
     ) => Promise<{
       code: number
       contentType?: string
       result?: null | string | Buffer | ErrorResult | ExecutionResult<Record<string, unknown>>
-    }>
+    }>,
   ): void
 
   transformJsonBody(req: Req, res: Res): Promise<void>
@@ -52,13 +56,13 @@ interface RequestHandler<
 const innerRequestHandler = <
   Req extends IncomingMessage,
   Res extends ServerResponse,
-  CustomProps extends CustomOperationProps = CustomOperationProps
+  CustomProps extends CustomOperationProps = CustomOperationProps,
 >(
   operation: BridgeOperation<CustomProps>,
   schemaComponents: SchemaComponents,
   handler: RequestHandler<Req, Res, CustomProps>,
   executor: GraphQLExecutor<Req, Res>,
-  config?: CreateMiddlewareConfig<Req, Res>
+  config?: CreateMiddlewareConfig<Req, Res>,
 ) => {
   // Resolving `$ref`, at least OpenAPIRequestValidator cannot handle them properly
   const parameters_ = structuredClone(operation.openAPIOperation.parameters || [])
@@ -93,7 +97,7 @@ const innerRequestHandler = <
   const graphqlDocument_ = print(operation.graphqlDocument)
   const allRequestBodyVariables = Object.keys(operation.requestBodyVariableMap)
   const supportedContentTypes = Object.keys(
-    (operation.openAPIOperation.requestBody as OpenAPIV3.RequestBodyObject)?.content || {}
+    (operation.openAPIOperation.requestBody as OpenAPIV3.RequestBodyObject)?.content || {},
   )
   return async (req: Req, res: Res) => {
     if (operation.requestBodyFormData === 'JSON') {
@@ -185,14 +189,14 @@ const innerRequestHandler = <
           req,
           graphqlDocument_,
           allRequestBodyVariables,
-          operation.requestBodyVariableMap
+          operation.requestBodyVariableMap,
         ),
       }
     }
 
     // make sure we do not pass `undefined` variables
     const thisVariables = Object.fromEntries(
-      Object.entries(variables).filter(([, value]) => value !== undefined)
+      Object.entries(variables).filter(([, value]) => value !== undefined),
     )
 
     const request = {
@@ -234,7 +238,7 @@ const innerRequestHandler = <
         throw new InvalidResponseError(
           responseValidationErrors?.message || 'GraphQL Error',
           responseValidationErrors?.errors || [],
-          result.errors
+          result.errors,
         )
       }
     }
@@ -255,17 +259,17 @@ const innerRequestHandler = <
 export const createRequestHandler = <
   Req extends IncomingMessage,
   Res extends ServerResponse,
-  CustomProps extends CustomOperationProps = CustomOperationProps
+  CustomProps extends CustomOperationProps = CustomOperationProps,
 >(
   bridge: BridgeOperations<CustomProps>,
   handler: RequestHandler<Req, Res, CustomProps>,
   executor: GraphQLExecutor<Req, Res>,
-  config?: CreateMiddlewareConfig<Req, Res>
+  config?: CreateMiddlewareConfig<Req, Res>,
 ) => {
   for (const operation of bridge.operations) {
     handler.registerRoute(
       operation,
-      innerRequestHandler(operation, bridge.schemaComponents, handler, executor, config)
+      innerRequestHandler(operation, bridge.schemaComponents, handler, executor, config),
     )
   }
 }
