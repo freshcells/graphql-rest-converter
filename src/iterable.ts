@@ -1,22 +1,45 @@
 export class AsyncQueue<T> {
-  private items: (T | null | Error)[] = []
-  private processedItems: T[] = []
-  private next: false | ((item: T | null | Error) => void) = false
+  private queue: (T | null | Error)[] = []
+  processedItems: T[] = []
+  #resolve: false | ((item: T | null | Error) => void) = false
+  #reject: false | ((msg?: Error) => void) = false
+
+  /**
+   * alias for `add(null)`
+   */
+  terminate() {
+    this.add(null)
+  }
+
+  /**
+   * alias for `add(error)`
+   */
+  reject(error: Error) {
+    this.add(error)
+  }
 
   add(item: T | null | Error) {
-    if (this.next) {
-      this.next(item)
-      this.next = false
+    if (this.#resolve && !(item instanceof Error)) {
+      this.#resolve(item)
+      if (item !== null) {
+        this.processedItems.push(item)
+      }
+      this.#resolve = false
       return
     }
-    this.items.push(item)
+    if (this.#reject && item instanceof Error) {
+      this.#reject(item)
+      this.#reject = false
+      return
+    }
+    this.queue.push(item)
   }
 
   async *[Symbol.asyncIterator]() {
     while (true) {
       const result = await new Promise((resolve, reject) => {
-        if (this.items.length > 0) {
-          const nextItem = this.items.shift()
+        if (this.queue.length > 0) {
+          const nextItem = this.queue.shift()
           if (nextItem instanceof Error) {
             return reject(nextItem)
           }
@@ -25,16 +48,13 @@ export class AsyncQueue<T> {
           }
           return resolve(nextItem)
         }
-        this.next = resolve
+        this.#resolve = resolve
+        this.#reject = reject
       })
       if (result === null) {
         return
       }
-      yield result
+      yield result as T
     }
-  }
-
-  cleanup(cb: (item: T) => void) {
-    this.processedItems.forEach(cb)
   }
 }

@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AsyncQueue should allow to iterate over values 1`] = `
+[
+  1,
+  2,
+  3,
+]
+`;
+
+exports[`AsyncQueue should work for async work 1`] = `
+[
+  1,
+  2,
+]
+`;
