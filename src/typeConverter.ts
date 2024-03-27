@@ -64,6 +64,7 @@ const mergeDefaultValueToOpenAPISchema = (defaultValue: unknown, openAPISchema: 
       for (const prop of Object.keys(openAPISchema)) {
         delete (openAPISchema as any)[prop]
       }
+      // eslint-disable-next-line no-extra-semi
       ;(openAPISchema as any).default = defaultValue as any
       ;(openAPISchema as any).allOf = [{ $ref: componentPath }]
     }
