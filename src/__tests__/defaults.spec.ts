@@ -36,7 +36,7 @@ describe('Schema with defaults', () => {
       bridge.getOpenAPISchema({
         baseSchema,
         validate: true,
-      })
+      }),
     ).toMatchSnapshot()
   })
   it('should handle non-nullable defaults as not required', () => {
@@ -53,7 +53,7 @@ describe('Schema with defaults', () => {
       bridge.getOpenAPISchema({
         baseSchema,
         validate: true,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -71,7 +71,7 @@ describe('Schema with defaults', () => {
       bridge.getOpenAPISchema({
         baseSchema,
         validate: true,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -101,7 +101,7 @@ describe('Schema with defaults', () => {
       bridge.getExpressMiddleware(createSchemaExecutor(gqlSchema), {
         validateResponse: true,
         validateRequest: true,
-      })
+      }),
     )
     const response = await request(app).get('/sample-optional')
     expect(response.body).toMatchObject({

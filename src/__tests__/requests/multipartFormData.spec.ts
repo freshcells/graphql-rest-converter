@@ -4,25 +4,31 @@ import { gql } from 'graphql-tag'
 import { addMocksToSchema } from '@graphql-tools/mock'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { createOpenAPIGraphQLBridge } from '../../express.js'
-import { OpenAPIV3 } from 'openapi-types'
 import request from 'supertest'
-import processRequest from 'graphql-upload/processRequest.mjs'
-import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs'
-import { FileUpload } from 'graphql-upload/Upload.mjs'
 import { execute, parse } from 'graphql'
 import assert from 'node:assert'
-import { Readable } from 'node:stream'
+import { GraphQLUpload, GraphQLUploads } from '../../graphql-upload/scalars.js'
+import { FileUpload, processRequest } from '../../graphql-upload/processRequest.js'
+import { text } from 'node:stream/consumers'
+import { UploadScalars } from '../../types.js'
 
 const app = express()
 
 const schema = buildASTSchema(gql`
   scalar Upload
+  scalar Uploads
 
   type Mutation {
     uploadAFile(id: Int!, file: Upload!): String!
     uploadAMaybeFile(id: Int!, optionalFile: Upload): Boolean!
     uploadMixedFiles(id: Int!, optionalFile: Upload, requiredFile: Upload!): [String!]!
     uploadMultipleFiles(id: String!, primaryImage: Upload!, secondaryImage: Upload!): [String!]!
+    uploadAnArrayOfFiles(id: String!, images: Uploads!): [String!]!
+    uploadAnArrayOfFilesAndASingleFile(
+      id: String!
+      otherFiles: Uploads!
+      coverPicture: Upload!
+    ): [String!]!
   }
 
   type Query {
@@ -35,41 +41,59 @@ const schema = buildASTSchema(gql`
   }
 `)
 
-async function streamToString(stream: Readable) {
-  const chunks = []
-  for await (const chunk of stream) {
-    chunks.push(Buffer.from(chunk))
-  }
-  return Buffer.concat(chunks).toString('utf-8')
-}
-
 const gqlSchema = addMocksToSchema({
   resolvers: {
     Upload: GraphQLUpload,
+    Uploads: GraphQLUploads,
     Mutation: {
       uploadAFile: async (root: unknown, { file }: { file: Promise<FileUpload> }) => {
-        return await streamToString((await file).createReadStream())
+        return await text((await file).createReadStream())
       },
       uploadMixedFiles: async (
         root: unknown,
-        { requiredFile }: { requiredFile: Promise<FileUpload>; optionalFile: Promise<FileUpload> }
+        { requiredFile }: { requiredFile: Promise<FileUpload>; optionalFile: Promise<FileUpload> },
       ) => {
         // This is an edge case, technically the spec forbids this case / did not think about it.
         // We could have a timeout on the optional file and ignore it if it was not transmitted within a certain
         // time window
         const result = await requiredFile
-        return [await streamToString(result.createReadStream())]
+        return [await text(result.createReadStream())]
       },
       uploadMultipleFiles: async (
         root: unknown,
         {
           primaryImage,
           secondaryImage,
-        }: { primaryImage: Promise<FileUpload>; secondaryImage: Promise<FileUpload> }
+        }: { primaryImage: Promise<FileUpload>; secondaryImage: Promise<FileUpload> },
       ) => {
-        const firstFile = await streamToString((await primaryImage).createReadStream())
-        const secondFile = await streamToString((await secondaryImage).createReadStream())
+        const firstFile = await text((await primaryImage).createReadStream())
+        const secondFile = await text((await secondaryImage).createReadStream())
         return [firstFile, secondFile]
+      },
+      uploadAnArrayOfFiles: async (
+        root: unknown,
+        { images }: { images: AsyncGenerator<FileUpload> },
+      ) => {
+        const result = []
+        for await (const image of images) {
+          result.push(await text(image.createReadStream()))
+        }
+        return result
+      },
+      uploadAnArrayOfFilesAndASingleFile: async (
+        root: unknown,
+        {
+          otherFiles,
+          coverPicture,
+        }: { otherFiles: AsyncGenerator<FileUpload>; coverPicture: Promise<FileUpload> },
+      ) => {
+        const result = []
+
+        result.push(await text((await coverPicture).createReadStream()))
+        for await (const file of otherFiles) {
+          result.push(await text(file.createReadStream()))
+        }
+        return result
       },
     },
   },
@@ -79,16 +103,10 @@ const gqlSchema = addMocksToSchema({
   preserveResolvers: true,
 })
 
-const scalars: Record<string, OpenAPIV3.SchemaObject> = {
-  Upload: {
-    type: 'string',
-    format: 'binary',
-  },
-}
 
 const bridge = createOpenAPIGraphQLBridge({
   graphqlSchema: gqlSchema,
-  customScalars: (scalarTypeName: string) => scalars[scalarTypeName]!,
+  customScalars: (scalarTypeName: string) => UploadScalars[scalarTypeName]!,
   graphqlDocument: gql`
     mutation uploadFile($id: Int!, $file: Upload! @OABody(contentType: MULTIPART_FORM_DATA))
     @OAOperation(path: "/upload-file/{id}") {
@@ -116,6 +134,19 @@ const bridge = createOpenAPIGraphQLBridge({
     ) @OAOperation(path: "/mixed-optional-file/{id}") {
       uploadMixedFiles(id: $id, requiredFile: $requiredFile, optionalFile: $optionalFile)
     }
+    mutation uploadAnArrayOfFiles(
+      $id: String!
+      $images: Uploads! @OABody(contentType: MULTIPART_FORM_DATA)
+    ) @OAOperation(path: "/upload-an-array-of-files/{id}") {
+      uploadAnArrayOfFiles(id: $id, images: $images)
+    }
+    mutation uploadAnArrayOfFilesAndASingleFile(
+      $id: String!
+      $files: Uploads! @OABody(contentType: MULTIPART_FORM_DATA)
+      $coverImage: Upload! @OABody(contentType: MULTIPART_FORM_DATA)
+    ) @OAOperation(path: "/upload-arrays-and-single/{id}") {
+      uploadAnArrayOfFilesAndASingleFile(id: $id, otherFiles: $files, coverPicture: $coverImage)
+    }
   `,
 })
 app.use(
@@ -129,7 +160,9 @@ app.use(
       })
     }
     // Process our multipart request and make sure files resolve
-    const uploadRequest = await processRequest(request, response)
+    const uploadRequest = await processRequest(request, response, {
+      maxFiles: 5,
+    })
     // we do not support batching requests, so we can safely assume a single request
     assert(!Array.isArray(uploadRequest))
     return execute({
@@ -137,10 +170,10 @@ app.use(
       document: parse(uploadRequest.query),
       variableValues: {
         ...variables,
-        ...(uploadRequest.variables as Record<string, unknown>),
+        ...uploadRequest.variables,
       },
     })
-  })
+  }),
 )
 
 describe('FormData', () => {
@@ -155,7 +188,7 @@ describe('FormData', () => {
             description: 'Description',
           },
         },
-      })
+      }),
     ).toMatchSnapshot()
   })
   it('should support multipart form data requests with a single file', async () => {
@@ -204,7 +237,37 @@ describe('FormData', () => {
     expect(result.body).toMatchSnapshot()
   })
 
-  it('should not support arrays marked with `MULTIPART_FORM_DATA`', async () => {
-    // todo..
+  it('should support an array of files`', async () => {
+    const buffer1 = Buffer.from('first file')
+    const buffer2 = Buffer.from('second file')
+
+    const result = await request(app)
+      .post('/upload-an-array-of-files/5')
+      .attach('images', buffer1, 'first.txt')
+      .attach('images', buffer2, 'second.txt')
+      .expect(200)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should handle errors in case of too many files`', async () => {
+    const result = await request(app)
+      .post('/upload-an-array-of-files/5')
+      .attach('images', Buffer.from('first file'), 'first.txt')
+      .attach('images', Buffer.from('second file'), 'second.txt')
+      .attach('images', Buffer.from('third file'), 'third.txt')
+      .attach('images', Buffer.from('fourth file'), 'fourth.txt')
+      .attach('images', Buffer.from('fifth file'), 'fifth.txt')
+      .attach('images', Buffer.from('sixth file'), 'sixth.txt')
+      .expect(500)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should allow a mix of files and single file', async () => {
+    const result = await request(app)
+      .post('/upload-arrays-and-single/5')
+      .attach('files', Buffer.from('first file'), 'first.txt')
+      .attach('files', Buffer.from('second file'), 'second.txt')
+      .attach('files', Buffer.from('third file'), 'third.txt')
+      .attach('coverImage', Buffer.from('fourth file'), 'fourth.txt')
+      .expect(200)
+    expect(result.body).toMatchSnapshot()
   })
 })

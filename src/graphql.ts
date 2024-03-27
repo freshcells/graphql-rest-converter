@@ -107,7 +107,7 @@ export enum OpenAPIDirectives {
 }
 
 const graphqlOperationDirectiveDataToOpenAPIOperation = (
-  requestConfig: OpenAPIOperationDirectiveData
+  requestConfig: OpenAPIOperationDirectiveData,
 ) => {
   const { tags, summary, description, externalDocs, security, deprecated } = requestConfig
   return {
@@ -132,7 +132,7 @@ const graphqlOperationDirectiveDataToOpenAPIOperation = (
 const getOpenAPIParameters = (
   variablesSchema: Record<string, OAType>,
   path: string,
-  paramsDirectiveData: Record<string, OpenAPIParamDirectiveData>
+  paramsDirectiveData: Record<string, OpenAPIParamDirectiveData>,
 ) => {
   const parameters: OpenAPIV3.ParameterObject[] = []
   const variableMap: Record<string, string> = {}
@@ -157,8 +157,8 @@ const getOpenAPIParameters = (
     const in_ = pathVariables.has(parameterName)
       ? 'path'
       : paramDirectiveDataIn && ['header'].includes(paramDirectiveDataIn)
-      ? paramDirectiveDataIn
-      : 'query'
+        ? paramDirectiveDataIn
+        : 'query'
     const deprecated = paramDirectiveData.deprecated
     const description = paramDirectiveData.description
     const schema = variablesSchema[variableName]
@@ -183,7 +183,7 @@ const getOpenAPIParameters = (
 
 const getOpenAPIRequestBody = (
   variablesSchema: Record<string, OAType>,
-  bodyDirectives: Record<string, OpenAPIBodyDirectiveData>
+  bodyDirectives: Record<string, OpenAPIBodyDirectiveData>,
 ) => {
   const bodyVariables = Object.keys(bodyDirectives)
   if (bodyVariables.length === 0) {
@@ -218,7 +218,7 @@ const getOpenAPIRequestBody = (
     const requestBodyVariableMap = Object.fromEntries(
       Object.entries(bodyDirectives).map(([variableName, directive]) => {
         return [[variableName], directive.path || variableName]
-      })
+      }),
     )
     const requiredKeys = Object.entries(bodyDirectives)
       .filter(([key]) => !(variablesSchema[key] as OpenAPIV3.SchemaObject).nullable)
@@ -244,7 +244,7 @@ const getOpenAPIRequestBody = (
                       [CustomProperties.VariableName]: key,
                     },
                   ]
-                })
+                }),
               ),
             } as OpenAPIV3.NonArraySchemaObject,
           },
@@ -288,7 +288,7 @@ type OpenAPIOperationDirectiveData = {
     {
       schema: string
       scopes: string[]
-    } | null
+    } | null,
   ]
   deprecated?: boolean
   method: OpenAPIV3.HttpMethods
@@ -313,7 +313,7 @@ const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperation
   parameters: OpenAPIV3.ParameterObject[],
   requestBody: OpenAPIV3.RequestBodyObject | null,
   resultSchema: OAType,
-  operationDirectiveData: OpenAPIOperationDirectiveData
+  operationDirectiveData: OpenAPIOperationDirectiveData,
 ) => {
   const responses = {
     '200': {
@@ -420,7 +420,7 @@ const createOpenAPIOperation = <T extends CustomOperationProps = CustomOperation
 const getVariablesDirectiveData = (
   paramDirectiveDefinition: GraphQLDirective,
   bodyDirectiveDefinition: GraphQLDirective,
-  operation: OperationDefinitionNode
+  operation: OperationDefinitionNode,
 ) => {
   const paramsDirectiveData: Record<string, OpenAPIParamDirectiveData> = {}
   const bodiesDirectiveData: Record<string, OpenAPIBodyDirectiveData> = {}
@@ -430,7 +430,7 @@ const getVariablesDirectiveData = (
     if (bodyDirective) {
       bodiesDirectiveData[variableDefinition.variable.name.value] = getDirectiveArguments(
         bodyDirectiveDefinition,
-        bodyDirective
+        bodyDirective,
       ) as OpenAPIBodyDirectiveData
       continue
     }
@@ -438,7 +438,7 @@ const getVariablesDirectiveData = (
     paramsDirectiveData[variableDefinition.variable.name.value] = paramDirective
       ? (getDirectiveArguments(
           paramDirectiveDefinition,
-          paramDirective
+          paramDirective,
         ) as OpenAPIParamDirectiveData)
       : {}
   }
@@ -455,7 +455,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
   schema: GraphQLSchema,
   document: DocumentNode,
   customScalars?: (scalarTypeName: string) => OpenAPIV3.SchemaObject,
-  transform?: (operation: OpenAPIV3.OperationObject<T>) => OpenAPIV3.OperationObject<T>
+  transform?: (operation: OpenAPIV3.OperationObject<T>) => OpenAPIV3.OperationObject<T>,
 ) => {
   const bridgeOperations: Array<BridgeOperation<T>> = []
 
@@ -469,12 +469,12 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
     schema,
     customScalars,
     fragmentMap,
-    referencableFragments
+    referencableFragments,
   )
   const validationResult = validate(
     mergeSchemas({ schemas: [directiveSchema, schema] }),
     document,
-    gqlValidationRules
+    gqlValidationRules,
   )
   if (validationResult.length > 0) {
     const errors = validationResult
@@ -484,7 +484,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
             error.locations && error.source
               ? printSourceLocation(error.source, error.locations[0])
               : 'unknown'
-          }`
+          }`,
       )
       .join(', ')
     throw new Error(`Schema validation error(s): ${errors}`)
@@ -504,25 +504,25 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
 
     const operationDirectiveData = getDirectiveArguments(
       directiveSchema.getDirective(OpenAPIDirectives.Operation)!,
-      operationDirective
+      operationDirective,
     ) as OpenAPIOperationDirectiveData
 
     const { paramsDirectiveData, bodiesDirectiveData } = getVariablesDirectiveData(
       directiveSchema.getDirective(OpenAPIDirectives.Param)!,
       directiveSchema.getDirective(OpenAPIDirectives.Body)!,
-      operation
+      operation,
     )
 
     // ## Remove custom directives
 
     const operationFragmentDependencies = getDependencyClosure(
       getReferencedFragments(operation),
-      fragmentDependencies
+      fragmentDependencies,
     )
 
     // ## Include dependency fragments
     const referencedFragments = Object.values(
-      _.pickBy(fragmentMap, (v, k) => operationFragmentDependencies.has(k))
+      _.pickBy(fragmentMap, (v, k) => operationFragmentDependencies.has(k)),
     )
 
     const singleOperationDocument = {
@@ -545,7 +545,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
     const { parameters, variableMap } = getOpenAPIParameters(
       variablesSchema,
       operationDirectiveData.path,
-      paramsDirectiveData
+      paramsDirectiveData,
     )
 
     // ## Build OpenAPI schema: Request body
@@ -563,7 +563,7 @@ export const getBridgeOperations = <T extends CustomOperationProps = CustomOpera
       parameters,
       requestBody?.schema || null,
       resultSchema,
-      operationDirectiveData
+      operationDirectiveData,
     )
 
     // # Build bridge operation

@@ -31,11 +31,11 @@ const formBodyParserPromise = middlewareToPromise(express.urlencoded({ extended:
 const createExpressMiddleware = <
   CustomProps extends CustomOperationProps = CustomOperationProps,
   ThisRequest extends Request = Request,
-  ThisResponse extends Response = Response
+  ThisResponse extends Response = Response,
 >(
   operations: BridgeOperations<CustomProps>,
   executor: GraphQLExecutor<ThisRequest, ThisResponse>,
-  config?: CreateMiddlewareConfig<ThisRequest, ThisResponse>
+  config?: CreateMiddlewareConfig<ThisRequest, ThisResponse>,
 ) => {
   const router = express.Router()
   createRequestHandler<ThisRequest, ThisResponse, CustomProps>(
@@ -68,7 +68,7 @@ const createExpressMiddleware = <
       },
     },
     executor,
-    config
+    config,
   )
 
   return router
@@ -77,9 +77,9 @@ const createExpressMiddleware = <
 export const createOpenAPIGraphQLBridge = <
   ThisRequest extends Request = Request,
   ThisResponse extends Response = Response,
-  T extends CustomOperationProps = CustomOperationProps
+  T extends CustomOperationProps = CustomOperationProps,
 >(
-  config: CreateOpenAPIGraphQLBridgeConfig<T>
+  config: CreateOpenAPIGraphQLBridgeConfig<T>,
 ) => {
   const { graphqlSchema, graphqlDocument, customScalars, transform } = config
 
@@ -93,13 +93,13 @@ export const createOpenAPIGraphQLBridge = <
     graphqlSchema_,
     graphqlDocument_,
     customScalars,
-    transform
+    transform,
   )
 
   return {
     getExpressMiddleware: (
       executor: GraphQLExecutor<ThisRequest, ThisResponse>,
-      config?: CreateMiddlewareConfig
+      config?: CreateMiddlewareConfig,
     ) => createExpressMiddleware(operations, executor, config),
     getOpenAPISchema: (config: CreateOpenAPISchemaConfig<T>): OpenAPIV3.Document<T> =>
       createOpenAPISchemaWithValidate<T>(operations, config),

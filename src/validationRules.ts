@@ -46,7 +46,7 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
           context.reportError(
             new GraphQLError(`Only unique "@OABody(path:...)" definitions allowed.`, {
               nodes: [varDef, node, operation],
-            })
+            }),
           )
         }
 
@@ -56,12 +56,12 @@ const oaBodyValidation: ValidationRule = (context: ValidationContext) => {
           context.reportError(
             new GraphQLError(
               `Cannot mix different contentType(s) with "@OABody" (found: ${Array.from(
-                allContentTypes
+                allContentTypes,
               ).join(', ')}).`,
               {
                 nodes: [varDef, node, operation],
-              }
-            )
+              },
+            ),
           )
         }
       },
@@ -97,15 +97,15 @@ const oaOperationValidation: ValidationRule = (context: ValidationContext) => {
               `Missing required directive "@OAOperation" on operation "${operation.name?.value}".`,
               {
                 nodes: [operation],
-              }
-            )
+              },
+            ),
           )
           return
         }
 
         const directiveArguments = getDirectiveArguments(
           operationDirective,
-          operationDirectiveValue
+          operationDirectiveValue,
         )
 
         const pathDefinition = directiveArguments.path as string
@@ -119,7 +119,7 @@ const oaOperationValidation: ValidationRule = (context: ValidationContext) => {
           context.reportError(
             new GraphQLError(`"@OAOperation" ${opsKey} has already been defined".`, {
               nodes: [operation],
-            })
+            }),
           )
           return
         }
@@ -130,15 +130,15 @@ const oaOperationValidation: ValidationRule = (context: ValidationContext) => {
           const mapped = usages.filter(
             ({ node }) =>
               varDefMap[node.name.value] &&
-              pathVariables.has(getParameterName(node, varDefMap[node.name.value]))
+              pathVariables.has(getParameterName(node, varDefMap[node.name.value])),
           )
           const missing = pathVarValues.filter(
             (varName) =>
               !mapped.find(
                 ({ node }) =>
                   varDefMap[node.name.value] &&
-                  getParameterName(node, varDefMap[node.name.value]) === varName
-              )
+                  getParameterName(node, varDefMap[node.name.value]) === varName,
+              ),
           )
           if (mapped.length !== pathVariables.size) {
             context.reportError(
@@ -148,8 +148,8 @@ const oaOperationValidation: ValidationRule = (context: ValidationContext) => {
                   .join(', ')}.`,
                 {
                   nodes: [operation],
-                }
-              )
+                },
+              ),
             )
             return
           }

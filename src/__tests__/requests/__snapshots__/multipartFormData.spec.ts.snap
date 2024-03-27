@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FormData should allow a mix of files and single file 1`] = `
+{
+  "uploadAnArrayOfFilesAndASingleFile": [
+    "fourth file",
+    "first file",
+    "second file",
+    "third file",
+  ],
+}
+`;
+
 exports[`FormData should allow mixed optional files 1`] = `
 {
   "uploadMixedFiles": [
@@ -19,10 +30,19 @@ exports[`FormData should create the correct schema 1`] = `
   "components": {
     "schemas": {
       "Upload": {
-        "description": "The \`Upload\` scalar type represents a file upload.",
+        "description": "The \`Upload\` scalar type represents a single file upload.",
         "format": "binary",
         "nullable": true,
         "type": "string",
+      },
+      "Uploads": {
+        "description": "The \`Uploads\` scalar type represents multiple file uploads.",
+        "items": {
+          "format": "binary",
+          "type": "string",
+        },
+        "nullable": true,
+        "type": "array",
       },
     },
   },
@@ -406,6 +426,381 @@ exports[`FormData should create the correct schema 1`] = `
 }",
       },
     },
+    "/upload-an-array-of-files/{id}": {
+      "post": {
+        "operationId": "uploadAnArrayOfFiles",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "images": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Uploads",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "array",
+                    "x-graphql-variable-name": "images",
+                  },
+                },
+                "required": [
+                  "images",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "uploadAnArrayOfFiles": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": [
+                    "uploadAnArrayOfFiles",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "uploadAnArrayOfFiles": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "uploadAnArrayOfFiles",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation uploadAnArrayOfFiles($id: String!, $images: Uploads!) {
+  uploadAnArrayOfFiles(id: $id, images: $images)
+}",
+      },
+    },
+    "/upload-arrays-and-single/{id}": {
+      "post": {
+        "operationId": "uploadAnArrayOfFilesAndASingleFile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+            "x-graphql-variable-name": "id",
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "coverImage": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Upload",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "string",
+                    "x-graphql-variable-name": "coverImage",
+                  },
+                  "files": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Uploads",
+                      },
+                    ],
+                    "nullable": false,
+                    "type": "array",
+                    "x-graphql-variable-name": "files",
+                  },
+                },
+                "required": [
+                  "files",
+                  "coverImage",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "uploadAnArrayOfFilesAndASingleFile": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "required": [
+                    "uploadAnArrayOfFilesAndASingleFile",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "errorCode": {
+                            "type": "string",
+                          },
+                          "location": {
+                            "type": "string",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Invalid request",
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Unsupported Media Type",
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "description": "Branch of data that does not contain errors",
+                      "nullable": true,
+                      "properties": {
+                        "uploadAnArrayOfFilesAndASingleFile": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "uploadAnArrayOfFilesAndASingleFile",
+                      ],
+                      "type": "object",
+                    },
+                    "errors": {
+                      "items": {
+                        "properties": {
+                          "locations": {
+                            "items": {
+                              "properties": {
+                                "column": {
+                                  "type": "integer",
+                                },
+                                "line": {
+                                  "type": "integer",
+                                },
+                              },
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                          "path": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "type": "object",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Internal Server Error",
+          },
+        },
+        "x-graphql-operation": "mutation uploadAnArrayOfFilesAndASingleFile($id: String!, $files: Uploads!, $coverImage: Upload!) {
+  uploadAnArrayOfFilesAndASingleFile(
+    id: $id
+    otherFiles: $files
+    coverPicture: $coverImage
+  )
+}",
+      },
+    },
     "/upload-file/{id}": {
       "post": {
         "operationId": "uploadFile",
@@ -777,6 +1172,35 @@ exports[`FormData should create the correct schema 1`] = `
       },
     },
   },
+}
+`;
+
+exports[`FormData should handle errors in case of too many files\` 1`] = `
+{
+  "data": null,
+  "errors": [
+    {
+      "locations": [
+        {
+          "column": 3,
+          "line": 2,
+        },
+      ],
+      "message": "5 max file uploads exceeded.",
+      "path": [
+        "uploadAnArrayOfFiles",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`FormData should support an array of files\` 1`] = `
+{
+  "uploadAnArrayOfFiles": [
+    "first file",
+    "second file",
+  ],
 }
 `;
 

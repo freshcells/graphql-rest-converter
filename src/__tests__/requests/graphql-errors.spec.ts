@@ -13,7 +13,7 @@ describe('GraphQL Errors', () => {
       bridge.getExpressMiddleware(createSchemaExecutor(gqlSchema), {
         validateResponse: false,
         validateRequest: false,
-      })
+      }),
     )
     const response = await request(app).get('/sample/not-a-number').expect(500)
     expect(response.body).toMatchSnapshot()
@@ -25,7 +25,7 @@ describe('GraphQL Errors', () => {
       bridge.getExpressMiddleware(createSchemaExecutor(gqlSchema), {
         validateResponse: true,
         validateRequest: false,
-      })
+      }),
     )
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     app.use(((err, req, res, next) => {
@@ -66,7 +66,7 @@ describe('GraphQL Errors', () => {
       bridge.getExpressMiddleware(createSchemaExecutor(gqlSchema), {
         validateResponse: false,
         validateRequest: false,
-      })
+      }),
     )
     it('should handle malformed JSON bodies', async () => {
       const response = await request(app)
