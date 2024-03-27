@@ -1175,6 +1175,26 @@ exports[`FormData should create the correct schema 1`] = `
 }
 `;
 
+exports[`FormData should fail if a file is too big 1`] = `
+{
+  "data": null,
+  "errors": [
+    {
+      "locations": [
+        {
+          "column": 3,
+          "line": 2,
+        },
+      ],
+      "message": "File truncated as it exceeds the 1000 byte size limit.",
+      "path": [
+        "uploadAnArrayOfFilesAndASingleFile",
+      ],
+    },
+  ],
+}
+`;
+
 exports[`FormData should handle errors in case of too many files\` 1`] = `
 {
   "data": null,
@@ -1192,6 +1212,12 @@ exports[`FormData should handle errors in case of too many files\` 1`] = `
       ],
     },
   ],
+}
+`;
+
+exports[`FormData should ignore other files\` 1`] = `
+{
+  "uploadAnArrayOfFiles": [],
 }
 `;
 
@@ -1215,6 +1241,16 @@ exports[`FormData should support uploading multiple files 1`] = `
   "uploadMultipleFiles": [
     "firstImage",
     "secondImage",
+  ],
+}
+`;
+
+exports[`FormData should throw if no files where given\` 1`] = `
+{
+  "errors": [
+    {
+      "message": "Only "multipart/form-data" supported",
+    },
   ],
 }
 `;

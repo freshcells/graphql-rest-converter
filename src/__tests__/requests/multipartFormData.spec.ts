@@ -161,6 +161,7 @@ app.use(
     // Process our multipart request and make sure files resolve
     const uploadRequest = await processRequest(request, response, {
       maxFiles: 5,
+      maxFileSize: 1000,
     })
     // we do not support batching requests, so we can safely assume a single request
     assert(!Array.isArray(uploadRequest))
@@ -247,6 +248,18 @@ describe('FormData', () => {
       .expect(200)
     expect(result.body).toMatchSnapshot()
   })
+  it('should throw if no files where given`', async () => {
+    const result = await request(app).post('/upload-an-array-of-files/5').expect(415)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should ignore other files`', async () => {
+    const buffer1 = Buffer.from('first file')
+    const result = await request(app)
+      .post('/upload-an-array-of-files/5')
+      .attach('some-non-field', buffer1, 'first.txt')
+      .expect(200)
+    expect(result.body).toMatchSnapshot()
+  })
   it('should handle errors in case of too many files`', async () => {
     const result = await request(app)
       .post('/upload-an-array-of-files/5')
@@ -267,6 +280,16 @@ describe('FormData', () => {
       .attach('files', Buffer.from('third file'), 'third.txt')
       .attach('coverImage', Buffer.from('fourth file'), 'fourth.txt')
       .expect(200)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should fail if a file is too big', async () => {
+    const result = await request(app)
+      .post('/upload-arrays-and-single/5')
+      .attach('files', Buffer.from('first file'), 'first.txt')
+      .attach('files', Buffer.from('second file'), 'second.txt')
+      .attach('files', Buffer.from('b'.repeat(1001)), 'third.txt')
+      .attach('coverImage', Buffer.from('fourth file'), 'fourth.txt')
+      .expect(500)
     expect(result.body).toMatchSnapshot()
   })
 })

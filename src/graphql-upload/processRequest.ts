@@ -75,7 +75,7 @@ export function processRequest(
       if (map)
         for (const upload of map.values()) {
           if (upload instanceof AsyncQueue) {
-            upload.add(exitError)
+            upload.reject(exitError)
           }
           if (upload instanceof Upload) {
             if (!upload.value) {
@@ -309,7 +309,7 @@ export function processRequest(
 
       for (const upload of map.values()) {
         if (upload instanceof AsyncQueue) {
-          upload.add(null)
+          upload.terminate()
         }
         if (upload instanceof Upload) {
           if (!upload.value) {
@@ -332,7 +332,7 @@ export function processRequest(
       if (map)
         for (const upload of map.values()) {
           if (upload instanceof AsyncQueue) {
-            upload.cleanup((item) => {
+            upload.processedItems.forEach((item) => {
               item.capacitor.release()
             })
           } else {
