@@ -38,7 +38,7 @@ export type ParameterCustomProperties = {
 
 export type ResponseTransformerArgs<
   T extends IncomingMessage = IncomingMessage,
-  S extends ServerResponse = ServerResponse<T>
+  S extends ServerResponse = ServerResponse<T>,
 > = {
   result: ExecutionResult
   request: GraphQLExecutorArgs<T, S>
@@ -51,7 +51,7 @@ export type ResponseTransformerArgs<
 
 export type CreateMiddlewareConfig<
   T extends IncomingMessage = IncomingMessage,
-  S extends ServerResponse = ServerResponse
+  S extends ServerResponse = ServerResponse,
 > = {
   responseTransformer?: ResponseTransformer<T, S>
   /**
@@ -66,7 +66,7 @@ export type CreateMiddlewareConfig<
 
 export type ResponseTransformer<
   T extends IncomingMessage = IncomingMessage,
-  S extends ServerResponse = ServerResponse<T>
+  S extends ServerResponse = ServerResponse<T>,
 > = (args: ResponseTransformerArgs<T, S>) => Promise<ResponseTransformerResult | void>
 
 export type ResponseTransformerResult = {
@@ -81,7 +81,7 @@ export type CreateOpenAPISchemaConfig<T extends CustomOperationProps = CustomOpe
 }
 
 export type CreateOpenAPIGraphQLBridgeConfig<
-  T extends CustomOperationProps = CustomOperationProps
+  T extends CustomOperationProps = CustomOperationProps,
 > = {
   graphqlSchema: GraphQLSchema | string
   graphqlDocument: DocumentNode | string
@@ -105,10 +105,24 @@ export type ReqBodyWithVars = (OpenAPIV3.ReferenceObject | OpenAPIV3.RequestBody
   ParameterCustomProperties
 
 export type SchemaTransformer<T extends CustomOperationProps = CustomOperationProps> = (
-  operation: OpenAPIV3.OperationObject<T>
+  operation: OpenAPIV3.OperationObject<T>,
 ) => OpenAPIV3.OperationObject<T>
 
 export enum CustomProperties {
   Operation = 'x-graphql-operation',
   VariableName = 'x-graphql-variable-name',
+}
+
+export const UploadScalars: Record<string, OpenAPIV3.SchemaObject> = {
+  Upload: {
+    type: 'string',
+    format: 'binary',
+  },
+  Uploads: {
+    type: 'array',
+    items: {
+      type: 'string',
+      format: 'binary',
+    },
+  },
 }

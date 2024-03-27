@@ -53,7 +53,7 @@ describe('FormData', () => {
             description: 'Description',
           },
         },
-      })
+      }),
     ).toMatchSnapshot()
   })
   it('should only support form-data requests', async () => {

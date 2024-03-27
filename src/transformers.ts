@@ -22,7 +22,7 @@ type WithParameter = (OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject) & {
 }
 
 export const removeCustomProperties = <T extends CustomOperationProps = CustomOperationProps>(
-  operation: OpenAPIV3.OperationObject<T>
+  operation: OpenAPIV3.OperationObject<T>,
 ): OpenAPIV3.OperationObject<T> => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { [CustomProperties.Operation]: customOp, ...restOperation } = operation
@@ -35,7 +35,7 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [CustomProperties.VariableName]: customParam, ...rest } = parameter
           return rest
-        }
+        },
       ),
     },
   }
@@ -55,8 +55,8 @@ export const removeCustomProperties = <T extends CustomOperationProps = CustomOp
           const { [CustomProperties.VariableName]: customVar, ...restEntry } =
             entry as WithParameter
           return [[key], restEntry]
-        }
-      )
+        },
+      ),
     )
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -19,7 +19,7 @@ export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
   req: R,
   graphqlOperation: string,
   allRequestBodyVariables: string[],
-  requestBodyVariableMap: Record<string, string>
+  requestBodyVariableMap: Record<string, string>,
 ) => {
   const boundary = getBoundaryByRequest(req)
   if (!boundary) {
@@ -31,8 +31,8 @@ export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
       allRequestBodyVariables.map((variable) => [
         requestBodyVariableMap[variable],
         [`variables.${variable}`],
-      ])
-    )
+      ]),
+    ),
   )
   const mapBuffer = createMultipartContentDispositionBuffer('map', map)
   const variables = Object.fromEntries(allRequestBodyVariables.map((variable) => [variable, null]))
@@ -41,7 +41,7 @@ export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
     JSON.stringify({
       query: graphqlOperation,
       variables,
-    })
+    }),
   )
 
   let operationAdded = false
@@ -68,7 +68,7 @@ export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
       boundaryBuffer.length +
       mapBuffer.length +
       boundaryBuffer.length +
-      operationsBuffer.length
+      operationsBuffer.length,
   )
 
   // Pipes the request stream through the transformation stream

@@ -22,7 +22,7 @@ export const validateVariable = (
   node: VariableNode,
   type: Maybe<GraphQLInputType>,
   operation: OperationDefinitionNode,
-  pathDefinition: string
+  pathDefinition: string,
 ) => {
   const varName = node.name.value
   const varDef = varDefMap[varName]
@@ -36,7 +36,7 @@ export const validateVariable = (
   const paramDirectiveArguments = getDirectiveArgumentsWithSchema(
     context.getSchema(),
     varDef,
-    OpenAPIDirectives.Param
+    OpenAPIDirectives.Param,
   )
   const inValue = (paramDirectiveArguments?.in as string | undefined)?.toLowerCase()
   if (pathVariables.has(parameterName)) {
@@ -46,8 +46,8 @@ export const validateVariable = (
           `Variable "$${varName}" of type "${varTypeStr}" cannot be used with "@OABody", as it is used within "${pathDefinition}".`,
           {
             nodes: [varDef, node, operation],
-          }
-        )
+          },
+        ),
       )
       return
     }
@@ -58,8 +58,8 @@ export const validateVariable = (
           `Variable "$${varName}" of type "${varTypeStr}" must be defined as "${varTypeStr}!", as it is used within "${pathDefinition}".`,
           {
             nodes: [varDef, node, operation],
-          }
-        )
+          },
+        ),
       )
       return
     }
@@ -71,8 +71,8 @@ export const validateVariable = (
         `Location "${inValue}" is invalid for "$${varName}" of type "${varTypeStr}", because "${parameterName}" is part of the path "${pathDefinition}".`,
         {
           nodes: [varDef, node, operation],
-        }
-      )
+        },
+      ),
     )
   }
   if (!pathVariables.has(parameterName) && inValue === 'path') {
@@ -81,8 +81,8 @@ export const validateVariable = (
         `Location "${inValue}" is invalid for "$${varName}" of type "${varTypeStr}", because "${parameterName}" was expected in "${pathDefinition}".`,
         {
           nodes: [varDef, node, operation],
-        }
-      )
+        },
+      ),
     )
   }
 }
@@ -90,7 +90,7 @@ export const validateVariable = (
 export const getBodyDirectiveInfo = (
   varDefMap: Record<string, VariableDefinitionNode>,
   node: VariableNode,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ) => {
   const varName = node.name.value
   const varDef = varDefMap[varName]

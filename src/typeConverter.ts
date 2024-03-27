@@ -118,7 +118,7 @@ export const possibleTypesSubsetChecker = (schema: GraphQLSchema) => {
 export const getReferenceableFragments = (
   schema: GraphQLSchema,
   fragmentMap: any,
-  document: DocumentNode
+  document: DocumentNode,
 ) => {
   const referenceableFragments = new Map()
   const isPossibleTypesSubset = possibleTypesSubsetChecker(schema)
@@ -126,7 +126,7 @@ export const getReferenceableFragments = (
   const checkSelectionSet = (
     selectionSet: SelectionSetNode,
     type: GraphQLCompositeType,
-    isOptional: boolean
+    isOptional: boolean,
   ) => {
     for (const selection of selectionSet.selections) {
       if (selection.kind === Kind.FRAGMENT_SPREAD) {
@@ -142,7 +142,7 @@ export const getReferenceableFragments = (
           (selection.typeCondition !== undefined &&
             isPossibleTypesSubset(
               type,
-              schema.getType(selection.typeCondition.name.value)! as GraphQLCompositeType
+              schema.getType(selection.typeCondition.name.value)! as GraphQLCompositeType,
             ))
         if (!checkSelectionSet(selection.selectionSet, type, isOptional_)) {
           return false
@@ -176,7 +176,7 @@ export const getReferenceableFragments = (
     if (!referenceableFragments.has(fragmentName)) {
       referenceableFragments.set(
         fragmentName,
-        checkSelectionSet(definition.selectionSet, fragmentType, false)
+        checkSelectionSet(definition.selectionSet, fragmentType, false),
       )
     }
     return referenceableFragments.get(fragmentName)
@@ -186,7 +186,7 @@ export const getReferenceableFragments = (
     if (isFragmentDefinitionNode(definition)) {
       checkFragment(
         definition,
-        schema.getType(definition.typeCondition.name.value) as GraphQLCompositeType
+        schema.getType(definition.typeCondition.name.value) as GraphQLCompositeType,
       )
     }
   }
@@ -202,19 +202,19 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
   constructor(
     private graphqlSchema: GraphQLSchema,
     private customScalars: (scalarTypeName: string) => OpenAPIV3.SchemaObject = (
-      scalarTypeName
+      scalarTypeName,
     ) => {
       throw new Error(`Unknown custom scalar "${scalarTypeName}"`)
     },
     private fragmentMap: Record<string, FragmentDefinitionNode> = {},
-    private referenceableFragments: Set<string> = new Set()
+    private referenceableFragments: Set<string> = new Set(),
   ) {
     this.#isPossibleTypesSubset = possibleTypesSubsetChecker(graphqlSchema)
   }
 
   public fromDocument(document: DocumentNode) {
     document.definitions.flatMap((definition) =>
-      definition.kind === Kind.OPERATION_DEFINITION ? [this.fromOperation(definition)] : []
+      definition.kind === Kind.OPERATION_DEFINITION ? [this.fromOperation(definition)] : [],
     )
   }
 
@@ -246,7 +246,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         ? removeDescriptionFromObjectType(this.graphqlSchema.getMutationType()!)
         : removeDescriptionFromObjectType(this.graphqlSchema.getQueryType()!),
       operation.selectionSet,
-      true
+      true,
     )
   }
 
@@ -372,13 +372,13 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     (type) => ({
       type: 'string',
       enum: this.getPossibleTypes(type),
-    })
+    }),
   )
 
   public fromField(
     type: GraphQLCompositeType,
     fieldName: string,
-    selectionSet?: SelectionSetNode
+    selectionSet?: SelectionSetNode,
   ): OAType {
     if (fieldName === '__typename') {
       return this.getTypenameSchema(type)
@@ -410,7 +410,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         allOf,
         false,
         typeFromCondition as GraphQLCompositeType,
-        fragment.selectionSet
+        fragment.selectionSet,
       )
 
       const description = getDescriptionFromNode(fragment)
@@ -423,7 +423,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
         ...(description ? { description } : {}),
         nullable: true,
       }
-    }
+    },
   )
 
   private addSelectionSet(
@@ -432,7 +432,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
     allOf: OpenAPIV3.ReferenceObject[],
     isOptional: boolean,
     type: GraphQLCompositeType,
-    selectionSet: SelectionSetNode
+    selectionSet: SelectionSetNode,
   ) {
     for (const selection of selectionSet.selections) {
       if (selection.kind === Kind.FIELD) {
@@ -470,7 +470,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
             allOf,
             isSelectionSetOptional,
             fragmentType as GraphQLCompositeType,
-            fragment.selectionSet
+            fragment.selectionSet,
           )
         }
       }
@@ -494,7 +494,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
           allOf,
           isSelectionSetOptional,
           fragmentType,
-          selection.selectionSet
+          selection.selectionSet,
         )
       }
     }
@@ -522,7 +522,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       enum: type.getValues().map((x) => x.value),
       ...(type.description ? { description: type.description } : {}),
       nullable: true,
-    })
+    }),
   )
 
   public fromCustomScalar = this.fromReference<GraphQLScalarType>(
@@ -531,7 +531,7 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
       const typeSchema = this.customScalars(type.name)
       if (!typeSchema) {
         throw new Error(
-          `Expected a valid schema for scalar "${type.name}", but got undefined. Check your scalar provider function.`
+          `Expected a valid schema for scalar "${type.name}", but got undefined. Check your scalar provider function.`,
         )
       }
       const description = type.description
@@ -546,12 +546,12 @@ export class GraphQLTypeToOpenAPITypeSchemaConverter {
             ...typeSchema,
             ...(description ? { description } : {}),
           }
-    }
+    },
   )
 
   private fromReference<T>(
     nameCreator: (type: T) => string,
-    schemaCreator: (type: T) => OpenAPIV3.SchemaObject
+    schemaCreator: (type: T) => OpenAPIV3.SchemaObject,
   ) {
     return (type: T) => {
       const name = nameCreator(type)
