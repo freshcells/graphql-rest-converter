@@ -5,19 +5,16 @@ import {
   BridgeOperations,
   CreateMiddlewareConfig,
   CustomOperationProps,
-  MULTIPART_FORM_DATA_CONTENT_TYPE,
   SchemaComponents,
 } from './types.js'
 import { ExecutionResult, print } from 'graphql'
 import { resolveSchemaComponents } from './utils.js'
 import { OpenAPIV3 } from 'openapi-types'
 import RequestBodyObject = OpenAPIV3.RequestBodyObject
-import ArraySchemaObject = OpenAPIV3.ArraySchemaObject
-import SchemaObject = OpenAPIV3.SchemaObject
 import OpenAPIRequestCoercerImport from 'openapi-request-coercer'
 import OpenAPIRequestValidatorImport from 'openapi-request-validator'
 import OpenAPIResponseValidatorImport from 'openapi-response-validator'
-import { transformRequest } from './multipart.js'
+import { transformBodyVariablesFromOperation, transformRequest } from './multipart.js'
 import { GraphQLExecutor } from './graphQLExecutor.js'
 import { InvalidResponseError } from './errors.js'
 
@@ -186,29 +183,13 @@ const innerRequestHandler = <
     }
 
     if (operation.requestBodyFormData === 'MULTIPART_FORM_DATA') {
-      const thisRequestBodyVariableMap = Object.entries(operation.requestBodyVariableMap).map(
-        ([key, value]) => {
-          if (
-            operation.openAPIOperation?.requestBody &&
-            'content' in operation.openAPIOperation.requestBody
-          ) {
-            const body = operation.openAPIOperation.requestBody
-            const type = (
-              (body.content?.[MULTIPART_FORM_DATA_CONTENT_TYPE]?.schema as SchemaObject)
-                ?.properties?.[key] as ArraySchemaObject
-            )?.type
-            return [key, type === 'array' ? `${value}[]` : value]
-          }
-          return [key, value]
-        },
-      )
       variables = {
         ...variables,
         ...transformRequest(
           req,
           graphqlDocument_,
           allRequestBodyVariables,
-          Object.fromEntries(thisRequestBodyVariableMap),
+          transformBodyVariablesFromOperation(operation),
         ),
       }
     }
