@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import express, { RequestHandler, Request, Response } from 'express'
 import { OpenAPIV3 } from 'openapi-types'
 import { parse, buildSchema } from 'graphql'

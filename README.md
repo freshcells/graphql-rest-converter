@@ -332,7 +332,7 @@ async function main() {
           body: JSON.stringify({ query: getIntrospectionQuery() }),
         })
       ).json()
-    ).data
+    ).data,
   )
 
   const openAPIGraphQLBridge = createOpenAPIGraphQLBridge({

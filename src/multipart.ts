@@ -1,5 +1,9 @@
 import { IncomingMessage } from 'node:http'
 import { Transform } from 'node:stream'
+import { BridgeOperation, CustomOperationProps, MULTIPART_FORM_DATA_CONTENT_TYPE } from './types.js'
+import { OpenAPIV3 } from 'openapi-types'
+import ArraySchemaObject = OpenAPIV3.ArraySchemaObject
+import SchemaObject = OpenAPIV3.SchemaObject
 
 // see https://www.rfc-editor.org/rfc/rfc7578#section-4.1
 // We have to use CRLF (\r\n) to separate each chunk
@@ -14,6 +18,29 @@ export const getBoundaryByRequest = (req: IncomingMessage) => {
 }
 
 export const createBoundaryBuffer = (boundary: string) => Buffer.from(`\r\n--${boundary}\r\n`)
+
+export const transformBodyVariablesFromOperation = <
+  CustomProps extends CustomOperationProps = CustomOperationProps,
+>(
+  operation: BridgeOperation<CustomProps>,
+) => {
+  const entries = Object.entries(operation.requestBodyVariableMap).map(([key, value]) => {
+    if (
+      operation.openAPIOperation?.requestBody &&
+      'content' in operation.openAPIOperation.requestBody
+    ) {
+      const body = operation.openAPIOperation.requestBody
+      const type = (
+        (body.content?.[MULTIPART_FORM_DATA_CONTENT_TYPE]?.schema as SchemaObject)?.properties?.[
+          key
+        ] as ArraySchemaObject
+      )?.type
+      return [key, type === 'array' ? `${value}[]` : value]
+    }
+    return [key, value]
+  })
+  return Object.fromEntries(entries)
+}
 
 export const transformRequest = <R extends IncomingMessage = IncomingMessage>(
   req: R,
