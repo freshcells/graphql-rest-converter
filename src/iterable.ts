@@ -1,5 +1,5 @@
 export class AsyncQueue<T> {
-  private queue: (T | null | Error)[] = []
+  #queue: (T | null | Error)[] = []
   processedItems: T[] = []
   #resolve: false | ((item: T | null | Error) => void) = false
   #reject: false | ((msg?: Error) => void) = false
@@ -32,14 +32,14 @@ export class AsyncQueue<T> {
       this.#reject = false
       return
     }
-    this.queue.push(item)
+    this.#queue.push(item)
   }
 
   async *[Symbol.asyncIterator]() {
     while (true) {
       const result = await new Promise((resolve, reject) => {
-        if (this.queue.length > 0) {
-          const nextItem = this.queue.shift()
+        if (this.#queue.length > 0) {
+          const nextItem = this.#queue.shift()
           if (nextItem instanceof Error) {
             return reject(nextItem)
           }
