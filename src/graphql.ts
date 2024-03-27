@@ -217,7 +217,11 @@ const getOpenAPIRequestBody = (
   if (bodyVariables.length > 1 || (firstSchema as OpenAPIV3.SchemaObject).type !== 'object') {
     const requestBodyVariableMap = Object.fromEntries(
       Object.entries(bodyDirectives).map(([variableName, directive]) => {
-        return [[variableName], directive.path || variableName]
+        const requestBodyVariableName =
+          (variablesSchema[variableName] as OpenAPIV3.SchemaObject).type === 'array'
+            ? `${directive.path || variableName}[]`
+            : directive.path || variableName
+        return [[variableName], requestBodyVariableName]
       }),
     )
     const requiredKeys = Object.entries(bodyDirectives)

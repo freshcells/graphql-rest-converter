@@ -14,7 +14,7 @@ import RequestBodyObject = OpenAPIV3.RequestBodyObject
 import OpenAPIRequestCoercerImport from 'openapi-request-coercer'
 import OpenAPIRequestValidatorImport from 'openapi-request-validator'
 import OpenAPIResponseValidatorImport from 'openapi-response-validator'
-import { transformBodyVariablesFromOperation, transformRequest } from './multipart.js'
+import { transformRequest } from './multipart.js'
 import { GraphQLExecutor } from './graphQLExecutor.js'
 import { InvalidResponseError } from './errors.js'
 
@@ -189,7 +189,7 @@ const innerRequestHandler = <
           req,
           graphqlDocument_,
           allRequestBodyVariables,
-          transformBodyVariablesFromOperation(operation),
+          operation.requestBodyVariableMap,
         ),
       }
     }
