@@ -1,10 +1,7 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ["Test"]
-    types:
-      - completed
+  workflow_call: {}
 
 permissions:
   contents: write
@@ -14,7 +11,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/next') && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/next') }}
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
