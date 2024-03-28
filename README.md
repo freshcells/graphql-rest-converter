@@ -395,6 +395,53 @@ import { createRequestHandler } from '@freshcells/graphql-rest-converter'
 
 Please consult the [express implementation](./src/express.ts) for an example.
 
+## Uploads
+
+The library comes with an extended version of the `graphql-upload` spec.
+It introduces a new Scalar, `Uploads`, which allows to upload an arbitrary amount of files, similar to `[Upload!]!`.
+
+To not depend on a known set of files (
+see https://github.com/jaydenseric/graphql-multipart-request-spec?tab=readme-ov-file#file-list) beforehand (as this
+would be uncomfortable to use in a REST API) we define that a field is an array, by appending `[]`.
+
+The payload now looks like the following:
+
+```text
+--------------------------ec62457de6331cad
+Content-Disposition: form-data; name="operations"
+
+{ "query": "mutation($files: Uploads!) { multipleUpload(files: $files) { id } }", "variables": { "files": null } }
+--------------------------ec62457de6331cad
+Content-Disposition: form-data; name="map"
+
+{ "files[]": ["variables.files"] }
+--------------------------ec62457de6331cad
+Content-Disposition: form-data; name="files"; filename="b.txt"
+Content-Type: text/plain
+
+Bravo file content.
+
+--------------------------ec62457de6331cad
+Content-Disposition: form-data; name="files"; filename="c.txt"
+Content-Type: text/plain
+
+Charlie file content.
+
+--------------------------ec62457de6331cad--
+
+```
+
+Instead of receiving a `Array<Promise<FileUpload>>` you will now receive an `AsyncGenerator<FileUpload>` that you can
+iterate over.
+
+```typescript
+// ...
+
+for await (const file of otherFiles) {
+  await yourUploadMethod(file.createReadStream())
+}
+```
+
 ## Upcoming features
 
 - OpenAPI 3.1 support
