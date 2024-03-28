@@ -22,7 +22,7 @@ export interface FileUpload {
 
 interface Operation {
   query: string
-  variables: Record<string, unknown>
+  variables: Record<string, Upload | AsyncQueue<FileUpload>>
 }
 
 /**

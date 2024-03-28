@@ -1195,6 +1195,26 @@ exports[`FormData should fail if a file is too big 1`] = `
 }
 `;
 
+exports[`FormData should fail if a single file is too big 1`] = `
+{
+  "data": null,
+  "errors": [
+    {
+      "locations": [
+        {
+          "column": 3,
+          "line": 2,
+        },
+      ],
+      "message": "File truncated as it exceeds the 1000 byte size limit.",
+      "path": [
+        "uploadAFile",
+      ],
+    },
+  ],
+}
+`;
+
 exports[`FormData should handle errors in case of too many files\` 1`] = `
 {
   "data": null,
