@@ -200,6 +200,14 @@ describe('FormData', () => {
     expect(result.body).toMatchSnapshot()
   })
 
+  it('should fail if a single file is too big', async () => {
+    const result = await request(app)
+      .post('/upload-file/10')
+      .attach('file', Buffer.from('b'.repeat(1001)), 'custom_file_name.txt')
+      .expect(500)
+    expect(result.body).toMatchSnapshot()
+  })
+
   it('should support uploading multiple files', async () => {
     const buffer1 = Buffer.from('firstImage')
     const buffer2 = Buffer.from('secondImage')
