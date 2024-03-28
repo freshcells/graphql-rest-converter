@@ -148,4 +148,13 @@ describe('AsyncQueue', () => {
       await Promise.all([p1, p2])
     }).rejects.toThrow(new Error('Something is broken'))
   })
+  it('should allow direct termination', async () => {
+    const noopQueue = new AsyncQueue()
+    noopQueue.terminate()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for await (const item of noopQueue) {
+      // ..
+    }
+    expect(true)
+  })
 })

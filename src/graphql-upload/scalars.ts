@@ -41,6 +41,11 @@ const GraphQLUploadsConfig: GraphQLScalarTypeConfig<unknown, unknown> = {
     if (value instanceof AsyncQueue) {
       return value
     }
+    if (Array.isArray(value) && value.length === 0) {
+      const queue = new AsyncQueue<unknown>()
+      queue.terminate()
+      return queue
+    }
     throw new GraphQLError('Uploads value invalid.')
   },
   parseLiteral(node) {
