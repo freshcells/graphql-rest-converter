@@ -25,4 +25,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
   release:
+    needs:
+      - test
     uses: ./.github/workflows/release.yaml
