@@ -28,3 +28,4 @@ jobs:
     needs:
       - test
     uses: ./.github/workflows/release.yaml
+    secrets: inherit
