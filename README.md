@@ -442,6 +442,18 @@ for await (const file of otherFiles) {
 }
 ```
 
+**Important**: Make sure to add `CSRF` protection when you allow uploading files with the graphql-upload extension.
+
+### Usage with express
+
+```ts
+import { graphqlUploadExpress } from '@freshcells/graphql-rest-converter/express'
+
+// ...
+
+app.use('/graphql', graphqlUploadExpress())
+```
+
 ## Upcoming features
 
 - OpenAPI 3.1 support

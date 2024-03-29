@@ -15,6 +15,8 @@ import { GraphQLExecutor } from './graphQLExecutor.js'
 import { createOpenAPISchemaWithValidate } from './utils.js'
 import { createRequestHandler } from './createRequestHandler.js'
 
+export { graphqlUploadExpress } from './graphql-upload/expressMiddleware.js'
+
 const middlewareToPromise =
   (middleware: RequestHandler) =>
   (req: Parameters<RequestHandler>[0], res: Parameters<RequestHandler>[1]) => {
