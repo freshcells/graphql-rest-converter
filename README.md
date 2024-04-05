@@ -395,7 +395,11 @@ import { createRequestHandler } from '@freshcells/graphql-rest-converter'
 
 Please consult the [express implementation](./src/express.ts) for an example.
 
-## Uploads
+## GraphQL Upload extension
+
+Based on https://github.com/jaydenseric/graphql-upload
+
+### `Uploads` instead of `[Upload!]!`
 
 The library comes with an extended version of the `graphql-upload` spec.
 It introduces a new Scalar, `Uploads`, which allows to upload an arbitrary amount of files, similar to `[Upload!]!`.
@@ -433,6 +437,11 @@ Charlie file content.
 
 Instead of receiving a `Array<Promise<FileUpload>>` you will now receive an `AsyncGenerator<FileUpload>` that you can
 iterate over.
+
+### Optional `Upload`
+
+You may also now define optional `Upload` arguments. You will receive a `Promise<FileUpload | null>` in your resolver when
+send via `multipart/form-data`.
 
 ```typescript
 // ...
