@@ -3,8 +3,8 @@ export {
   GraphQLUpload,
   createGraphQLUploads,
   createGraphQLUpload,
-} from './graphql-upload/scalars.js'
-export { processRequest, FileUpload } from './graphql-upload/processRequest.js'
+} from './upload/scalars.js'
+export { processRequest, FileUpload } from './upload/processRequest.js'
 
-export { UploadScalars } from './graphql-upload/openapi.js'
+export { UploadScalars } from './upload/openapi.js'
 export { AsyncQueue } from './iterable.js'

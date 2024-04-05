@@ -42,10 +42,12 @@
   },
   "files": [
     "dist",
+    "upload/*.d.ts",
+    "validations/*.d.ts",
     "*.d.ts"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.build.json && tsc --project tsconfig.cjs.build.json && sh ./esm-postbuild.sh",
+    "build": "tsc --project tsconfig.build.json && tsc --project tsconfig.cjs.build.json && cpy --rename package.json ./package.cjs.json ./dist/cjs",
     "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --ci",
     "test:watch": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --watch",
     "test:coverage": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --coverage",
@@ -55,7 +57,7 @@
     "lint:fix": "yarn lint --fix",
     "prettify": "prettier \"**/*.{ts,tsx,graphql,md}\" --write",
     "qa": "tsc --noEmit && yarn test --coverage && yarn lint && yarn format",
-    "prepack": "yarn build && cp ./dist/mjs/*.d.ts ."
+    "prepack": "yarn build && cpy ./dist/mjs/**/*.d.ts ."
   },
   "exports": {
     ".": {
@@ -103,6 +105,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
+    "cpy-cli": "^5.0.0",
     "eslint": "^8.57.0",
     "express": "^4.19.2",
     "jest": "^29.7.0",
