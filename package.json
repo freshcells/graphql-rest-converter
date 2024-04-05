@@ -57,7 +57,7 @@
     "lint:fix": "yarn lint --fix",
     "prettify": "prettier \"**/*.{ts,tsx,graphql,md}\" --write",
     "qa": "tsc --noEmit && yarn test --coverage && yarn lint && yarn format",
-    "prepack": "yarn build && cpy ./dist/mjs/**/*.d.ts ."
+    "prepack": "yarn build && cpy \"./dist/mjs/**/*.d.ts\" ."
   },
   "exports": {
     ".": {
