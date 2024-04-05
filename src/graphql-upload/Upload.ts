@@ -8,10 +8,10 @@ import { FileUpload } from './processRequest.js'
  * {@link GraphQLUpload} derives it’s value from {@link Upload.promise}.
  */
 export default class Upload {
-  promise: Promise<FileUpload>
-  resolve?: (file: FileUpload) => void
+  promise: Promise<FileUpload | null>
+  resolve?: (file: FileUpload | null) => void
   reject?: (error: Error) => void
-  value?: FileUpload
+  value?: FileUpload | null
 
   constructor() {
     /**
@@ -23,7 +23,7 @@ export default class Upload {
        * Resolves the upload promise with the file upload details. This should
        * only be utilized by {@linkcode processRequest}.
        */
-      this.resolve = (file: FileUpload) => {
+      this.resolve = (file: FileUpload | null) => {
         /**
          * The file upload details, available when the
          * {@linkcode Upload.promise} resolves. This should only be utilized by
