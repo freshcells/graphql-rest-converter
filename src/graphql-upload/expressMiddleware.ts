@@ -22,8 +22,8 @@ export function graphqlUploadExpress(processRequestOptions?: Parameters<typeof p
     }
 
     processRequest(request, response, processRequestOptions)
-      .then((body) => {
-        request.body = body
+      .then(({ operations }) => {
+        request.body = operations
         next()
       })
       .catch((error) => {

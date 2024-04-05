@@ -21,9 +21,12 @@ describe('graphql-upload-spec', () => {
     const app = express()
     app.use(async (req, res) => {
       const result = await processRequest(req, res)
-      res.status(200).send(result)
+      res.status(200).send(result.operations)
     })
-    const operation = { variables: { a: true } }
+    const operation = {
+      query: `mutation upload($a: Upload) { uploadFile(file: $a) }`,
+      variables: { a: true },
+    }
 
     await request(app)
       .post('/')
@@ -35,10 +38,10 @@ describe('graphql-upload-spec', () => {
     const app = express()
     app.use(
       handleAsyncError(async (req, res) => {
-        const result = await processRequest(req, res)
-        assert(!Array.isArray(result))
-        if ('promise' in result.variables.file) {
-          await result.variables.file.promise
+        const { operations } = await processRequest(req, res)
+        assert(!Array.isArray(operations))
+        if ('promise' in operations.variables.file) {
+          await operations.variables.file.promise
         }
         res.status(200).send(result)
       }),
@@ -46,7 +49,34 @@ describe('graphql-upload-spec', () => {
 
     const result = await request(app)
       .post('/')
-      .field('operations', JSON.stringify({ variables: { file: null } }))
+      .field(
+        'operations',
+        JSON.stringify({
+          query: `mutation upload($file: Upload!) { uploadFile(file: $a) }`,
+          variables: { file: null },
+        }),
+      )
+      .field('map', JSON.stringify({ 1: ['variables.file'] }))
+      .expect(400)
+    expect(result.text).toMatchSnapshot()
+  })
+
+  it('`processRequest` with missing graphql document', async () => {
+    const app = express()
+    app.use(
+      handleAsyncError(async (req, res) => {
+        const result = await processRequest(req, res)
+        res.status(200).send(result.operations)
+      }),
+    )
+    const result = await request(app)
+      .post('/')
+      .field(
+        'operations',
+        JSON.stringify({
+          variables: { file: null },
+        }),
+      )
       .field('map', JSON.stringify({ 1: ['variables.file'] }))
       .expect(400)
     expect(result.text).toMatchSnapshot()

@@ -29,6 +29,8 @@ const schema = buildASTSchema(gql`
       otherFiles: Uploads!
       coverPicture: Upload!
     ): [String!]!
+    uploadOptionalFiles(id: String!, otherFiles: Uploads): [String!]!
+    uploadOptionalFilesAndFile(id: String!, otherFiles: Uploads, coverPicture: Upload): [String!]!
   }
 
   type Query {
@@ -95,6 +97,34 @@ const gqlSchema = addMocksToSchema({
         }
         return result
       },
+      uploadOptionalFiles: async (
+        root: unknown,
+        { otherFiles }: { otherFiles: AsyncGenerator<FileUpload> },
+      ) => {
+        const result = []
+
+        for await (const file of otherFiles) {
+          result.push(await text(file.createReadStream()))
+        }
+        return result
+      },
+      uploadOptionalFilesAndFile: async (
+        root: unknown,
+        {
+          otherFiles,
+          coverPicture,
+        }: { otherFiles: AsyncGenerator<FileUpload>; coverPicture: Promise<FileUpload | null> },
+      ) => {
+        const result = []
+
+        const picture = await coverPicture
+
+        assert(null === picture)
+        for await (const file of otherFiles) {
+          result.push(await text(file.createReadStream()))
+        }
+        return result
+      },
     },
   },
   schema: makeExecutableSchema({
@@ -146,6 +176,19 @@ const bridge = createOpenAPIGraphQLBridge({
     ) @OAOperation(path: "/upload-arrays-and-single/{id}") {
       uploadAnArrayOfFilesAndASingleFile(id: $id, otherFiles: $files, coverPicture: $coverImage)
     }
+    mutation uploadOptionalFiles(
+      $id: String!
+      $files: Uploads @OABody(contentType: MULTIPART_FORM_DATA)
+    ) @OAOperation(path: "/upload-optional-files/{id}") {
+      uploadOptionalFiles(id: $id, otherFiles: $files)
+    }
+    mutation uploadOptionalFilesAndFile(
+      $id: String!
+      $files: Uploads @OABody(contentType: MULTIPART_FORM_DATA)
+      $coverPicture: Upload @OABody(contentType: MULTIPART_FORM_DATA)
+    ) @OAOperation(path: "/upload-optional-files-and-file/{id}") {
+      uploadOptionalFilesAndFile(id: $id, otherFiles: $files, coverPicture: $coverPicture)
+    }
   `,
 })
 app.use(
@@ -159,7 +202,7 @@ app.use(
       })
     }
     // Process our multipart request and make sure files resolve
-    const uploadRequest = await processRequest(request, response, {
+    const { operations: uploadRequest, parsedDocuments } = await processRequest(request, response, {
       maxFiles: 5,
       maxFileSize: 1000,
     })
@@ -167,7 +210,7 @@ app.use(
     assert(!Array.isArray(uploadRequest))
     return execute({
       schema: gqlSchema,
-      document: parse(uploadRequest.query),
+      document: parsedDocuments[0],
       variableValues: {
         ...variables,
         ...uploadRequest.variables,
@@ -297,6 +340,30 @@ describe('FormData', () => {
       .attach('files', Buffer.from('second file'), 'second.txt')
       .attach('files', Buffer.from('b'.repeat(1001)), 'third.txt')
       .attach('coverImage', Buffer.from('fourth file'), 'fourth.txt')
+      .expect(500)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should allow optional files', async () => {
+    const result = await request(app)
+      .post('/upload-optional-files/5')
+      .field('some', 'value')
+      .set('Content-Type', 'multipart/form-data')
+      .expect(200)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should allow optional files and file in combination', async () => {
+    const result = await request(app)
+      .post('/upload-optional-files-and-file/5')
+      .field('some', 'value')
+      .set('Content-Type', 'multipart/form-data')
+      .expect(200)
+    expect(result.body).toMatchSnapshot()
+  })
+  it('should fail if a required file is missing', async () => {
+    const result = await request(app)
+      .post('/upload-file/10')
+      .field('some', 'value')
+      .set('Content-Type', 'multipart/form-data')
       .expect(500)
     expect(result.body).toMatchSnapshot()
   })

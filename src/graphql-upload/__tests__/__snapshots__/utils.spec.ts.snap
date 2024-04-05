@@ -1,0 +1,254 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getAllVariablesFromDocuments 1`] = `
+{
+  "0.variables.var1": {
+    "defaultValue": undefined,
+    "directives": [],
+    "kind": "VariableDefinition",
+    "loc": {
+      "end": 34,
+      "start": 21,
+    },
+    "type": {
+      "kind": "NamedType",
+      "loc": {
+        "end": 34,
+        "start": 28,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 34,
+          "start": 28,
+        },
+        "value": "Upload",
+      },
+    },
+    "variable": {
+      "kind": "Variable",
+      "loc": {
+        "end": 26,
+        "start": 21,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 26,
+          "start": 22,
+        },
+        "value": "var1",
+      },
+    },
+  },
+  "0.variables.var2": {
+    "defaultValue": undefined,
+    "directives": [],
+    "kind": "VariableDefinition",
+    "loc": {
+      "end": 50,
+      "start": 36,
+    },
+    "type": {
+      "kind": "NonNullType",
+      "loc": {
+        "end": 50,
+        "start": 43,
+      },
+      "type": {
+        "kind": "NamedType",
+        "loc": {
+          "end": 49,
+          "start": 43,
+        },
+        "name": {
+          "kind": "Name",
+          "loc": {
+            "end": 49,
+            "start": 43,
+          },
+          "value": "Upload",
+        },
+      },
+    },
+    "variable": {
+      "kind": "Variable",
+      "loc": {
+        "end": 41,
+        "start": 36,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 41,
+          "start": 37,
+        },
+        "value": "var2",
+      },
+    },
+  },
+  "0.variables.var3": {
+    "defaultValue": undefined,
+    "directives": [],
+    "kind": "VariableDefinition",
+    "loc": {
+      "end": 65,
+      "start": 52,
+    },
+    "type": {
+      "kind": "NamedType",
+      "loc": {
+        "end": 65,
+        "start": 59,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 65,
+          "start": 59,
+        },
+        "value": "Upload",
+      },
+    },
+    "variable": {
+      "kind": "Variable",
+      "loc": {
+        "end": 57,
+        "start": 52,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 57,
+          "start": 53,
+        },
+        "value": "var3",
+      },
+    },
+  },
+  "1.variables.var1": {
+    "defaultValue": undefined,
+    "directives": [],
+    "kind": "VariableDefinition",
+    "loc": {
+      "end": 34,
+      "start": 21,
+    },
+    "type": {
+      "kind": "NamedType",
+      "loc": {
+        "end": 34,
+        "start": 28,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 34,
+          "start": 28,
+        },
+        "value": "Upload",
+      },
+    },
+    "variable": {
+      "kind": "Variable",
+      "loc": {
+        "end": 26,
+        "start": 21,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 26,
+          "start": 22,
+        },
+        "value": "var1",
+      },
+    },
+  },
+  "1.variables.var2": {
+    "defaultValue": undefined,
+    "directives": [],
+    "kind": "VariableDefinition",
+    "loc": {
+      "end": 50,
+      "start": 36,
+    },
+    "type": {
+      "kind": "NonNullType",
+      "loc": {
+        "end": 50,
+        "start": 43,
+      },
+      "type": {
+        "kind": "NamedType",
+        "loc": {
+          "end": 49,
+          "start": 43,
+        },
+        "name": {
+          "kind": "Name",
+          "loc": {
+            "end": 49,
+            "start": 43,
+          },
+          "value": "Upload",
+        },
+      },
+    },
+    "variable": {
+      "kind": "Variable",
+      "loc": {
+        "end": 41,
+        "start": 36,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 41,
+          "start": 37,
+        },
+        "value": "var2",
+      },
+    },
+  },
+  "1.variables.var3": {
+    "defaultValue": undefined,
+    "directives": [],
+    "kind": "VariableDefinition",
+    "loc": {
+      "end": 65,
+      "start": 52,
+    },
+    "type": {
+      "kind": "NamedType",
+      "loc": {
+        "end": 65,
+        "start": 59,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 65,
+          "start": 59,
+        },
+        "value": "Upload",
+      },
+    },
+    "variable": {
+      "kind": "Variable",
+      "loc": {
+        "end": 57,
+        "start": 52,
+      },
+      "name": {
+        "kind": "Name",
+        "loc": {
+          "end": 57,
+          "start": 53,
+        },
+        "value": "var3",
+      },
+    },
+  },
+}
+`;

@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`graphql-upload-spec \`processRequest\` with a missing multipart form field file. 1`] = `"File missing in the request."`;
+
+exports[`graphql-upload-spec \`processRequest\` with missing graphql document 1`] = `"Missing ‘query’ field on operations."`;
