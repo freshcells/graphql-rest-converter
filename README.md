@@ -438,11 +438,6 @@ Charlie file content.
 Instead of receiving a `Array<Promise<FileUpload>>` you will now receive an `AsyncGenerator<FileUpload>` that you can
 iterate over.
 
-### Optional `Upload`
-
-You may also now define optional `Upload` arguments. You will receive a `Promise<FileUpload | null>` in your resolver when
-send via `multipart/form-data`.
-
 ```typescript
 // ...
 
@@ -450,6 +445,11 @@ for await (const file of otherFiles) {
   await yourUploadMethod(file.createReadStream())
 }
 ```
+
+### Optional `Upload`
+
+You may also now define optional `Upload` arguments. You will receive a `Promise<FileUpload | null>` in your resolver when
+send via `multipart/form-data`.
 
 **Important**: Make sure to add `CSRF` protection when you allow uploading files with the graphql-upload extension.
 
